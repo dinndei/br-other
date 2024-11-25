@@ -1,4 +1,4 @@
-export enum politicalAffiliation {
+export enum PoliticalAffiliation {
     HardRight = "HardRight",
     Right = "Right",
     CenterRight = "CenterRight",
