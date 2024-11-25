@@ -2,8 +2,9 @@ import { Document } from "mongoose";
 import { Gender } from "./enums/gender";
 import IField from "./IField";
 import ICourse from "./ICourse";
-import { ReligionLevel } from "./enums/ReligionLevel";
-import { politicalAffiliation } from "./enums/politicalAffiliation";
+import { ReligionLevel } from "./enums/religionLevel";
+import { PoliticalAffiliation } from "./enums/politicalAffiliation";
+import { Role } from "./enums/role";
 
 export default interface IUser extends Document {
     firstName: string,
@@ -13,13 +14,13 @@ export default interface IUser extends Document {
     email: string,
     password: string,
     gender: Gender,
+    role: Role,
     fields: [IField],
     courses: [ICourse],
     refusalCnt: number,
-    type:{
+    typeUser:{
         religionLevel: ReligionLevel,
-        politicalAffiliation : politicalAffiliation
+        politicalAffiliation : PoliticalAffiliation
     }
-
 }
 
