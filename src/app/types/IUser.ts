@@ -1,14 +1,26 @@
+import { Document } from "mongoose";
 import { Gender } from "./enums/gender";
+import IField from "./IField";
+import ICourse from "./ICourse";
+import { ReligionLevel } from "./enums/religionLevel";
+import { PoliticalAffiliation } from "./enums/politicalAffiliation";
+import { Role } from "./enums/role";
 
-export default interface IUser extends Document{
-firstName:string,
-lastName:string,
-userName:string,
-age:number,
-password:string,
-gender:Gender,
-fields:[IField],
-password:string,
-
+export default interface IUser extends Document {
+    firstName: string,
+    lastName: string,
+    userName: string,
+    age: number,
+    email: string,
+    password: string,
+    gender: Gender,
+    role: Role,
+    fields: [IField],
+    courses: [ICourse],
+    refusalCnt: number,
+    typeUser:{
+        religionLevel: ReligionLevel,
+        politicalAffiliation : PoliticalAffiliation
+    }
 }
 
