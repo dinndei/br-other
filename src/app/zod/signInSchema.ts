@@ -5,8 +5,8 @@ import { ReligionLevel } from '../types/enums/religionLevel';
 
 // Define Zod schema for IField
 export const fieldSchema = z.object({
-    name: z.string().min(1, "Field name is required"),
-    description: z.string().optional(), // Example property, adjust based on your IField type
+    mainField: z.string().min(1, "Field name is required"),
+    subField: z.string().optional(), // Example property, adjust based on your IField type
 });
 
 export const signupSchema = z.object({
