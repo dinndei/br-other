@@ -7,16 +7,17 @@ import IUser from "@/app/types/IUser";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-    const { username, password } = await req.json();
+    const { userName, password } = await req.json();
 
-    if (!username || !password) {
+    
+    if (!userName || !password) {
         return NextResponse.json({ message: 'Username and password are required' }, { status: 400 });
     }
 
     try {
         await connectToDB();
 
-        const user: IUser | null = await User.findOne({ username });
+        const user: IUser | null = await User.findOne({ userName });
 
         if (!user) {
             return NextResponse.json({ message: 'userName not found' }, { status: 400 });

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 import { connectToDB, disconnectFromDB } from "@/app/DB/connection/connectToDB";
 import User from "@/app/DB/models/UserModel";
+import { hashPassword } from "@/app/lib/passwordHash/hashPassword";
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -16,7 +17,14 @@ export async function POST(req: NextRequest) {
         // const parsedData = userSchema.parse(body);
         // const newUser = new User(parsedData);
 
-        const newUser = new User(body);
+        const hashedPassword = await hashPassword(body.password);
+        
+        // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
+        const newUser = new User({ 
+            ...body, 
+            password: hashedPassword // הסיסמה המוצפנת
+        });
+
         await newUser.save();
 
         console.log("created", newUser);
