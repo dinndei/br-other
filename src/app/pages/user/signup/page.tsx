@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -5,16 +6,32 @@ import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
 import { ReligionLevel } from "@/app/types/enums/religionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
+import Button from "@/app/components/Button";
 
 const SignupForm = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
+    const { register, handleSubmit,control, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
+        defaultValues: {
+            fields: [{ mainField: '', subField: '' }],
+        },
     });
 
+//handle fields
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'fields',
+    });
+
+//submit
     const onSubmit: SubmitHandler<SignupFormData> = (data) => {
         console.log(data);
         alert("Form submitted successfully!");
     };
+
+    //options for fields
+    const mainFieldOptions = ['Main Option 1', 'Main Option 2', 'Main Option 3']; // Replace with your data
+    const subFieldOptions = ['Sub Option A', 'Sub Option B', 'Sub Option C']; // Replace with your data
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4 space-y-4">
@@ -95,19 +112,66 @@ const SignupForm = () => {
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
 
+          
+            {/* Dynamic Fields */}
             <div>
                 <label className="block font-medium">Fields</label>
-                <input
-                    {...register("fields.0.name")}
-                    placeholder="Field Name"
-                    className="w-full border border-gray-300 p-2 rounded mb-2"
-                />
-                <input
-                    {...register("fields.0.level")}
-                    placeholder="Field Level"
-                    className="w-full border border-gray-300 p-2 rounded"
-                />
-                {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
+                {fields.map((field, index) => (
+                    <div key={field.id} className="flex flex-col space-y-2 mb-4">
+                        <div className="flex space-x-2">
+                            <div className="flex-grow">
+                                <label className="block font-medium">Main Field</label>
+                                <select
+                                    {...register(`fields.${index}.mainField` as const)}
+                                    className="w-full border border-gray-300 p-2 rounded"
+                                >
+                                    <option value="">Select Main Field</option>
+                                    {mainFieldOptions.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.fields?.[index]?.mainField && (
+                                    <p className="text-red-500">{errors.fields[index].mainField?.message}</p>
+                                )}
+                            </div>
+                            <div className="flex-grow">
+                                <label className="block font-medium">Sub Field</label>
+                                <select
+                                    {...register(`fields.${index}.subField` as const)}
+                                    className="w-full border border-gray-300 p-2 rounded"
+                                >
+                                    <option value="">Select Sub Field</option>
+                                    {subFieldOptions.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.fields?.[index]?.subField && (
+                                    <p className="text-red-500">{errors.fields[index].subField?.message}</p>
+                                )}
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <button
+                                type="button"
+                                onClick={() => remove(index)}
+                                className="bg-red-500 text-white px-3 py-1 rounded"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                <button
+                    type="button"
+                    onClick={() => append({ mainField: '', subField: '' })}
+                    className="bg-green-500 text-white px-3 py-1 rounded"
+                >
+                    + Add Field
+                </button>
             </div>
 
             <div>
@@ -140,12 +204,12 @@ const SignupForm = () => {
                 {errors.typeUser?.politicalAffiliation && <p className="text-red-500">{errors.typeUser.politicalAffiliation.message}</p>}
             </div>
 
-            <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            >
-                Submit
-            </button>
+            <Button 
+                    type="submit"
+                    className="w-full"
+                >
+                    Submit
+                </Button>
         </form>
     );
 };
