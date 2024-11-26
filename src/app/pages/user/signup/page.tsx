@@ -3,6 +3,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
+import { ReligionLevel } from "@/app/types/enums/religionLevel";
+import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 
 const SignupForm = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
