@@ -1,16 +1,22 @@
 'use client'
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
 import { ReligionLevel } from "@/app/types/enums/religionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import Button from "@/app/components/Button";
+import { sendCode } from "@/app/lib/otp/otpCode";
+
+
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
 
 const SignupForm = () => {
+    const router = useRouter();
+
     const [fields, setFields] = useState<IField[]>([]);
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
@@ -36,7 +42,8 @@ const SignupForm = () => {
     const onSubmit: SubmitHandler<SignupFormData> = (data) => {
         console.log("ZZZZZZZZZZZZZZZZZZZz");
         console.log(data);
-        console.log("errors", errors);
+        const otp = sendCode(data.email)
+        router.push('/verifyCode?email=' + otp );
         alert("Form submitted successfully!");
     };
 
