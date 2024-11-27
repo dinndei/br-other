@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { Gender } from '../types/enums/gender';
 import { PoliticalAffiliation } from '../types/enums/politicalAffiliation';
-import { ReligionLevel } from '../types/enums/religionLevel';
+import { ReligionLevel } from '../types/enums/ReligionLevel';
 
 // Define Zod schema for IField
 export const fieldSchema = z.object({

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
-import { ReligionLevel } from "@/app/types/enums/religionLevel";
+import { ReligionLevel } from "../../../types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import Button from "@/app/components/Button";
 import { sendCode } from "@/app/lib/otp/otpCode";
@@ -40,7 +40,6 @@ const SignupForm = () => {
 
     //submit
     const onSubmit: SubmitHandler<SignupFormData> = (data) => {
-        console.log("ZZZZZZZZZZZZZZZZZZZz");
         console.log(data);
         const otp = sendCode(data.email)
         router.push('/verifyCode?email=' + otp );
@@ -167,19 +166,13 @@ const SignupForm = () => {
                 {errors.typeUser?.politicalAffiliation && <p className="text-red-500">{errors.typeUser.politicalAffiliation.message}</p>}
             </div>
 
-            <button
-                type="submit" // חשוב! כדי למנוע מהכפתור לשלוח את הטופס
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-                Show Form Data
-            </button>
 
-            {/* <Button 
+            <Button 
                     type="submit"
                     className="w-full"
                 >
                     Submit
-                </Button> */}
+                </Button>
         </form>
     );
 };
