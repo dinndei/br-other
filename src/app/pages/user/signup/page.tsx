@@ -1,5 +1,5 @@
 'use client'
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
@@ -7,30 +7,38 @@ import { Gender } from "@/app/types/enums/gender";
 import { ReligionLevel } from "@/app/types/enums/religionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import Button from "@/app/components/Button";
+import FieldsInputList from "@/app/components/FieldsInputList";
+import IField from "@/app/types/IField";
 
 const SignupForm = () => {
-    const { register, handleSubmit,control, formState: { errors } } = useForm<SignupFormData>({
+    const [fields, setFields] = useState<IField[]>([]);
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
+        mode: "onChange",
         defaultValues: {
-            fields: [{ mainField: '', subField: '' }],
+            firstName: "",
+            lastName: "",
+            userName: "",
+            age: 0,
+            email: "",
+            password: "",
+            gender: Gender.Male, // או Gender.Female לפי ערך מתאים
+            fields: [{ mainField: "", subField: "" }], // לפחות שדה אחד
+            typeUser: {
+                religionLevel: ReligionLevel.Orthodox,
+                politicalAffiliation: PoliticalAffiliation.CenterRight,
+            }
         },
     });
 
-//handle fields
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'fields',
-    });
 
-//submit
+    //submit
     const onSubmit: SubmitHandler<SignupFormData> = (data) => {
+        console.log("ZZZZZZZZZZZZZZZZZZZz");
         console.log(data);
+        console.log("errors", errors);
         alert("Form submitted successfully!");
     };
-
-    //options for fields
-    const mainFieldOptions = ['Main Option 1', 'Main Option 2', 'Main Option 3']; // Replace with your data
-    const subFieldOptions = ['Sub Option A', 'Sub Option B', 'Sub Option C']; // Replace with your data
 
 
     return (
@@ -111,69 +119,17 @@ const SignupForm = () => {
                 </select>
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
-
-          
-            {/* Dynamic Fields */}
             <div>
-                <label className="block font-medium">Fields</label>
-                {fields.map((field, index) => (
-                    <div key={field.id} className="flex flex-col space-y-2 mb-4">
-                        <div className="flex space-x-2">
-                            <div className="flex-grow">
-                                <label className="block font-medium">Main Field</label>
-                                <select
-                                    {...register(`fields.${index}.mainField` as const)}
-                                    className="w-full border border-gray-300 p-2 rounded"
-                                >
-                                    <option value="">Select Main Field</option>
-                                    {mainFieldOptions.map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.fields?.[index]?.mainField && (
-                                    <p className="text-red-500">{errors.fields[index].mainField?.message}</p>
-                                )}
-                            </div>
-                            <div className="flex-grow">
-                                <label className="block font-medium">Sub Field</label>
-                                <select
-                                    {...register(`fields.${index}.subField` as const)}
-                                    className="w-full border border-gray-300 p-2 rounded"
-                                >
-                                    <option value="">Select Sub Field</option>
-                                    {subFieldOptions.map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors.fields?.[index]?.subField && (
-                                    <p className="text-red-500">{errors.fields[index].subField?.message}</p>
-                                )}
-                            </div>
-                        </div>
-                        <div className="text-right">
-                            <button
-                                type="button"
-                                onClick={() => remove(index)}
-                                className="bg-red-500 text-white px-3 py-1 rounded"
-                            >
-                                Remove
-                            </button>
-                        </div>
-                    </div>
-                ))}
-                <button
-                    type="button"
-                    onClick={() => append({ mainField: '', subField: '' })}
-                    className="bg-green-500 text-white px-3 py-1 rounded"
-                >
-                    + Add Field
-                </button>
-            </div>
+                <FieldsInputList fields={fields}
+                    setFields={(newFields) => {
+                        setFields(newFields);
+                        setValue("fields", fields);
 
+                    }}
+                />
+                {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
+
+            </div>
             <div>
                 <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                 <select
@@ -204,12 +160,19 @@ const SignupForm = () => {
                 {errors.typeUser?.politicalAffiliation && <p className="text-red-500">{errors.typeUser.politicalAffiliation.message}</p>}
             </div>
 
-            <Button 
+            <button
+                type="submit" // חשוב! כדי למנוע מהכפתור לשלוח את הטופס
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+                Show Form Data
+            </button>
+
+            {/* <Button 
                     type="submit"
                     className="w-full"
                 >
                     Submit
-                </Button>
+                </Button> */}
         </form>
     );
 };

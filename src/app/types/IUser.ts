@@ -2,7 +2,7 @@ import { Document } from "mongoose";
 import { Gender } from "./enums/gender";
 import IField from "./IField";
 import ICourse from "./ICourse";
-import { ReligionLevel } from "./enums/religionLevel";
+import { ReligionLevel } from "./enums/ReligionLevel"
 import { PoliticalAffiliation } from "./enums/politicalAffiliation";
 import { Role } from "./enums/role";
 
