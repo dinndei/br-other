@@ -2,15 +2,28 @@ import {create} from 'zustand';
 import IUser from '@/app/types/IUser'; // Assuming you have this type defined
 import { UserStore } from '../types/storeTypes/userStore';
 
+import { Role } from '../types/enums/role';
+import { Gender } from '../types/enums/gender';
 
 
 export const useUserStore = create<UserStore>((set) => ({
-  user: null,
+  user: {
+    "firstName": "Estee",
+    "lastName": "Frei",
+    "userName": "Ef",
+    "age": 21,
+    "email": "e533@gmail.com",
+    "password": "1234",
+    "role":Role.User,
+    "gender":Gender.Male
+
+
+},
   token: null,
   isAuthenticated: false,
   
   // Login action: Sets user and token, and updates the authentication status
-  login: (user: IUser, token: string) => {
+  login: (user: Partial<IUser>, token: string) => {
     set({
       user,
       token,
@@ -32,7 +45,7 @@ export const useUserStore = create<UserStore>((set) => ({
   },
 
   // Set user directly
-  setUser: (user: IUser | null) => set({ user }),
+  setUser: (user: Partial<IUser> | null) => set({ user }),
 
   // Set token directly
   setToken: (token: string | null) => set({ token }),

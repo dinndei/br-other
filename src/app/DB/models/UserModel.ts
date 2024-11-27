@@ -2,7 +2,7 @@
 import IUser from "@/app/types/IUser";
 import mongoose, { Model, Schema } from "mongoose";
 import fieldSchema from "./FieldModel";
-import { ReligionLevel } from "@/app/types/enums/religionLevel";
+import { ReligionLevel } from '../../types/enums/ReligionLevel';
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { Gender } from "@/app/types/enums/gender";
 import { Role } from "@/app/types/enums/role";
@@ -15,7 +15,7 @@ const IUserSchema: Schema<IUser> = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, unique: true },
     gender: { type: String, enum: Object.values(Gender), required: true },
-    role: { type: String, enum: Object.values(Role), required: true },
+    role: { type: String, enum: Object.values(Role), default:Role.User },
     fields: { type: [fieldSchema], default: [] },
     courses: {
         type: [{
