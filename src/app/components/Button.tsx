@@ -1,5 +1,5 @@
 import React from 'react';
-import { ButtonProps } from '../types/ButtonProps';
+import { ButtonProps } from '../types/props/ButtonProps';
 
 
 const Button: React.FC<ButtonProps> = ({
