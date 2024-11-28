@@ -15,6 +15,7 @@ import { useUserStore } from "@/app/store/userStore";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
 import { signupUser } from "@/app/actions/userActions";
+import IUser from "@/app/types/IUser";
 
 const SignupForm = () => {
     const router = useRouter();
