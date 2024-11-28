@@ -1,25 +1,26 @@
 'use client'
 
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
+import { verifyOTP } from "@/app/lib/otp/verifyCode";
 
 const VerifyOtpForm = () => {
     const router = useRouter();
-    const { sendedOtp } = router.query;
+    const searchParams = useSearchParams();  
+    const email = searchParams.get('email'); 
     const [otp, setOtp] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            if (sendedOtp == otp) {
-                alert('Verification successful!');
-                router.push('/');  // ניווט לדף ברוך הבא
-            } else {
-                alert('Invalid OTP');
+            const response = await verifyOTP(email!, otp)
+            if(response.success){
+                
             }
+            
         } catch (error) {
+            router.push('/pages/user/signup?status=error');
             console.error('Error verifying OTP:', error);
-            alert('Error verifying OTP. Please try again.');
         }
     };
 

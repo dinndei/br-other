@@ -19,16 +19,25 @@ export async function POST(req: NextRequest) {
 
         // const parsedData = userSchema.parse(body);
         // const newUser = new User(parsedData);
+        console.log("body", body.user);
 
         const hashedPassword = await hashPassword(body.password);
         const encryptedType = encryptData(String(body.type));
 
         // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
         const newUser = new User({
-            ...body,
-            password: hashedPassword, // הסיסמה המוצפנת
-            type: encryptedType//הצפנת השתייכות המשתמש
+            firstName: body.user.firstName,
+            lastName: body.user.lastName,
+            userName: body.user.userName,
+            age: body.user.age,
+            email: body.user.email,
+            password: hashedPassword, 
+            gender: body.user.gender,
+            fields: body.user.fields,
+            typeUser: body.user.typeUser
         });
+
+        console.log("newUser", newUser);
 
         await newUser.save();
 

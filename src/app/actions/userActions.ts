@@ -30,9 +30,26 @@ export const signupUser = async (user: Partial<IUser>) :Promise<Partial<IUser>>=
     }
 }
 
-export const resetPassword = async (username:string, newPassword:string) => {
+export const sendOTPCode = async (email: string) => {
+    console.log("comming to action", { email });
+
+    try {
+        const response: AxiosResponse = await axios.post('/api/user/sendOtp', { email });
+        console.log(" response.data",  response.data);
+        
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || "send otp faild");
+        }
+        throw new Error("Unexpected error occurred during signup.");
+        
+    }
+}
+
+export const resetPassword = async (username: string, newPassword: string) => {
     console.log("comming to action", { username, newPassword });
-    
+
     try {
         const response: AxiosResponse<Partial<IUser>> = await axios.post('/api/user/reset-password', { username, newPassword });
         console.log(" response.data",  response.data);

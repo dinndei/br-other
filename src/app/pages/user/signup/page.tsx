@@ -8,13 +8,10 @@ import { Gender } from "@/app/types/enums/gender";
 import { ReligionLevel } from "../../../types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import Button from "@/app/components/Button";
-import { sendCode } from "@/app/lib/otp/otpCode";
-import { useUserStore } from "@/app/store/userStore";
-
-
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
 import { signupUser } from "@/app/actions/userActions";
+import { useUserStore } from "@/app/store/userStore";
 import IUser from "@/app/types/IUser";
 
 const SignupForm = () => {
@@ -22,6 +19,7 @@ const SignupForm = () => {
     const setUser = useUserStore((state) => state.setUser);
 
     const [fields, setFields] = useState<IField[]>([]);
+
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
         mode: "onChange",
@@ -41,15 +39,17 @@ const SignupForm = () => {
         },
     });
 
+    const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+        try {
+            console.log(data);
+            const userData = await signupUser(data);
+            console.log('User signed up successfully:', userData);
+            setUser(userData);
+            router.push('/')
+        } catch (error) {
+            console.error('Error signing up:', error);
+        }
 
-    //submit
-    const onSubmit: SubmitHandler<SignupFormData> = (data) => {
-        console.log(data);
-        //כאן יש שגיאה שקשורה לטייפים שלהם אסתי זה לתיקונך אין לי מושג מה זה
-        const userData = signupUser(data);
-        setUser(userData);
-        router.push("/");
-        alert("Form submitted successfully!");
     };
 
 
