@@ -1,7 +1,7 @@
 'use client'
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
@@ -11,9 +11,11 @@ import Button from "@/app/components/Button";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
 import { signupUser } from "@/app/actions/userActions";
+import { useUserStore } from "@/app/store/userStore";
 
 const SignupForm = () => {
     const router = useRouter();
+    const setUser = useUserStore((state) => state.setUser);
 
     const [fields, setFields] = useState<IField[]>([]);
 
@@ -36,16 +38,17 @@ const SignupForm = () => {
         },
     });
 
-    const onSubmit: SubmitHandler<SignupFormData> =async(data) => {
+    const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
         try {
             console.log(data);
-            const response = await signupUser(data);
-            console.log('User signed up successfully:', response);
+            const userData = await signupUser(data);
+            console.log('User signed up successfully:', userData);
+            setUser(userData);
             router.push('/')
         } catch (error) {
             console.error('Error signing up:', error);
         }
-        
+
     };
 
 
@@ -169,12 +172,12 @@ const SignupForm = () => {
             </div>
 
 
-            <Button 
-                    type="submit"
-                    className="w-full"
-                >
-                    Submit
-                </Button>
+            <Button
+                type="submit"
+                className="w-full"
+            >
+                Submit
+            </Button>
         </form>
     );
 };

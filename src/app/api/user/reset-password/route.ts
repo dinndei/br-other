@@ -1,6 +1,7 @@
 import { connectToDB, disconnectFromDB } from "@/app/DB/connection/connectToDB";
 import User from "@/app/DB/models/UserModel";
-import { hashPassword } from '@/app/lib/passwordHash/hashPassword'; 
+import { hashPassword } from '@/app/lib/passwordHash/hashPassword';
+import { generateToken } from "@/app/lib/tokenConfig/generateToken";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -24,7 +25,19 @@ export async function POST(req: NextRequest) {
         user.password = hashedPassword;
         await user.save();
 
-        return NextResponse.json({ message: 'Password reset successfully' });
+        const token = generateToken(user._id!.toString(), user.role);
+
+        const response = NextResponse.json({ message: 'Password reset successfully',
+            user:user,
+            token:token
+         });
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 12,
+        });
+
 
     } catch (error) {
         console.error(error);
