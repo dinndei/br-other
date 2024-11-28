@@ -17,9 +17,11 @@ export const loginUser = async (userName: string, password: string) => {
     }
 }
 
-export const signupUser = async (user: IUser) => {
-    try {
+export const signupUser = async (user: Partial<IUser>) => {
+    try {        
         const response = await axios.post('/api/user/signup', { user });
+        console.log("action sign up", response);
+        
         return response.data;
     } catch (error) {
 
@@ -31,18 +33,36 @@ export const signupUser = async (user: IUser) => {
     }
 }
 
-export const resetPassword = async (username:string, newPassword:string) => {
+export const resetPassword = async (username: string, newPassword: string) => {
     console.log("comming to action", { username, newPassword });
-    
+
     try {
         const response = await axios.post('/api/user/reset-password', { username, newPassword });
-        console.log(" response.data",  response.data);
-        
+        console.log(" response.data", response.data);
+
         return response.data.message;
     } catch (error) {
 
         if (error) {
-            return { error:'oooppppsss' };
+            return { error: 'oooppppsss' };
+        } else {
+            return { error: 'Something went wrong. Please try again.' };
+        }
+    }
+}
+
+export const sendOTPCode = async(email:string)=>{
+    console.log("comming to action", { email });
+
+    try {
+        const response = await axios.post('/api/user/sendOtp', { email});
+        console.log(" response.data", response.data);
+
+        return response.data.message;
+    } catch (error) {
+
+        if (error) {
+            return { error: 'oooppppsss' };
         } else {
             return { error: 'Something went wrong. Please try again.' };
         }

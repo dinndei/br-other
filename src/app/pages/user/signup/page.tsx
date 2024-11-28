@@ -1,23 +1,22 @@
 'use client'
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/router";
+import { useRouter} from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
 import { ReligionLevel } from "../../../types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import Button from "@/app/components/Button";
-import { sendCode } from "@/app/lib/otp/otpCode";
-
-
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
+import { signupUser } from "@/app/actions/userActions";
 
 const SignupForm = () => {
     const router = useRouter();
 
     const [fields, setFields] = useState<IField[]>([]);
+
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
         mode: "onChange",
@@ -37,13 +36,16 @@ const SignupForm = () => {
         },
     });
 
-
-    //submit
-    const onSubmit: SubmitHandler<SignupFormData> = (data) => {
-        console.log(data);
-        const otp = sendCode(data.email)
-        router.push('/verifyCode?email=' + otp );
-        alert("Form submitted successfully!");
+    const onSubmit: SubmitHandler<SignupFormData> =async(data) => {
+        try {
+            console.log(data);
+            const response = await signupUser(data);
+            console.log('User signed up successfully:', response);
+            router.push('/')
+        } catch (error) {
+            console.error('Error signing up:', error);
+        }
+        
     };
 
 

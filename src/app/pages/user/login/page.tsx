@@ -4,47 +4,30 @@ import PasswordInput from '@/app/components/PasswordInput';
 import { LoginFormData, loginSchema } from '@/app/zod/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
-
+    const router = useRouter();
 
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema)
     });
 
-    // const handleLogin = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-
-    //     if (!userName || !password) {
-    //         setError('נא למלא את כל השדות');
-    //         return;
-    //     }
-
-    //     try {
-    //         const isValid = await loginUser(userName, password);
-
-    //         if (isValid) {
-    //             console.log('ההתחברות בוצעה בהצלחה');
-    //         } else {
-    //             setError('שם משתמש או סיסמה שגויים');
-    //         }
-    //     } catch (error) {
-    //         setError('שגיאה במהלך ההתחברות');
-    //     }
-    // };
 
     const onSubmit = async (data: LoginFormData) => {
         try {
             const isValid = await loginUser(data.userName, data.password);
-            if (isValid) {
-                console.log('ההתחברות בוצעה בהצלחה');
+            console.log("login", isValid);
+            if (isValid.error) {
+                alert(isValid.error);
             } else {
-                alert('שם משתמש או סיסמה שגויים');
+                console.log('ההתחברות בוצעה בהצלחה');
+                
+                router.push('/')
             }
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        catch (error) {
-            alert('שגיאה במהלך ההתחברות');
+        } catch (error) {
+            console.error('שגיאה בלתי צפויה:', error);
+            alert('שגיאה בלתי צפויה במהלך ההתחברות');
         }
     };
 
@@ -73,7 +56,6 @@ const LoginPage = () => {
                         register={register}
                         error={errors.password?.message}
                     />
-                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
 
                     <div className="flex justify-between items-center">
                         <button

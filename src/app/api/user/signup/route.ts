@@ -16,14 +16,24 @@ export async function POST(req: NextRequest) {
 
         // const parsedData = userSchema.parse(body);
         // const newUser = new User(parsedData);
+        console.log("body", body.user);
 
-        const hashedPassword = await hashPassword(body.password);
-        
+        const hashedPassword = await hashPassword(body.user.password);
+
         // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
-        const newUser = new User({ 
-            ...body, 
-            password: hashedPassword // הסיסמה המוצפנת
+        const newUser = new User({
+            firstName: body.user.firstName,
+            lastName: body.user.lastName,
+            userName: body.user.userName,
+            age: body.user.age,
+            email: body.user.email,
+            password: hashedPassword, 
+            gender: body.user.gender,
+            fields: body.user.fields,
+            typeUser: body.user.typeUser
         });
+
+        console.log("newUser", newUser);
 
         await newUser.save();
 
@@ -40,7 +50,7 @@ export async function POST(req: NextRequest) {
     } catch (err) {
         console.error("Error creating user:", err);
         return NextResponse.json(
-            { message: "Server error creating user", error: err},
+            { message: "Server error creating user", error: err },
             { status: 500 }
         );
     } finally {
