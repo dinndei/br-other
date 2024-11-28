@@ -21,7 +21,7 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields }) 
 
     return (
         <div className="max-w-md mx-auto p-4 space-y-4">
-        <label className="block font-medium">Dynamic Fields</label>
+        <label className="block font-medium">הכנס תחומי עניין</label>
         {fields.map((field, index) => (
             <div key={index} className="flex space-x-2 mb-2">
                 <input

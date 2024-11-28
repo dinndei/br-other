@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const fieldSchema = new mongoose.Schema({
-    key: { type: String, required: true },
-    value: { type: mongoose.Schema.Types.Mixed, required: true },
+    mainField: { type: String, required: true },
+    subField: { type: String, required: false }
 });
 
 export default fieldSchema;
