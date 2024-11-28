@@ -20,7 +20,7 @@ export const useUserStore = create<UserStore>((set) => ({
 
 },
   token: null,
-  isAuthenticated: false,
+  isAuthenticated: true,
   
   // Login action: Sets user and token, and updates the authentication status
   login: (user: Partial<IUser>, token: string) => {

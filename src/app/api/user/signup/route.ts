@@ -4,6 +4,7 @@ import User from "@/app/DB/models/UserModel";
 import { decryptData } from "@/app/lib/dataEncryption/decryptData";
 import { encryptData } from "@/app/lib/dataEncryption/encryptData";
 import { hashPassword } from "@/app/lib/passwordHash/hashPassword";
+import { generateToken } from "@/app/lib/tokenConfig/generateToken";
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -20,13 +21,13 @@ export async function POST(req: NextRequest) {
         // const newUser = new User(parsedData);
 
         const hashedPassword = await hashPassword(body.password);
-        const encryptedType =  encryptData(String(body.type));
-        
+        const encryptedType = encryptData(String(body.type));
+
         // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
-        const newUser = new User({ 
-            ...body, 
+        const newUser = new User({
+            ...body,
             password: hashedPassword, // הסיסמה המוצפנת
-            type:encryptedType//הצפנת השתייכות המשתמש
+            type: encryptedType//הצפנת השתייכות המשתמש
         });
 
         await newUser.save();
@@ -35,18 +36,31 @@ export async function POST(req: NextRequest) {
 
         // מחזיר רק מידע בטוח
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password , ...userWithoutPassword } = newUser.toObject();
+        const { password, ...userWithoutPassword } = newUser.toObject();
         //המרה של הטייפ למידע לא מוצפן
-        userWithoutPassword.typeUser=JSON.parse(decryptData(JSON.stringify(userWithoutPassword.typeUser)))
-        return NextResponse.json(
-            { message: "User created successfully", user: userWithoutPassword },
-            { status: 201 }
-        );
+        userWithoutPassword.typeUser = JSON.parse(decryptData(JSON.stringify(userWithoutPassword.typeUser)))
+
+        const token = generateToken(userWithoutPassword._id!.toString(), userWithoutPassword.role);
+
+        const response = NextResponse.json({
+            message: "User created successfully",
+            user: userWithoutPassword,
+            token:token
+        },
+            { status: 201 });
+            //cookies את הטוקן של המשתמש
+        response.cookies.set('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 12,
+        });
+
 
     } catch (err) {
         console.error("Error creating user:", err);
         return NextResponse.json(
-            { message: "Server error creating user", error: err},
+            { message: "Server error creating user", error: err },
             { status: 500 }
         );
     }

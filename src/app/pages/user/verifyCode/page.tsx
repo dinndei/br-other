@@ -15,7 +15,7 @@ const VerifyOtpForm = () => {
                 alert('Verification successful!');
                 router.push('/');  // ניווט לדף ברוך הבא
             } else {
-                alert('Invalid OTP. Please try again.');
+                alert('Invalid OTP');
             }
         } catch (error) {
             console.error('Error verifying OTP:', error);

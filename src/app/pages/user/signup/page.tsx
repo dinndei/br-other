@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
@@ -9,13 +9,16 @@ import { ReligionLevel } from "../../../types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import Button from "@/app/components/Button";
 import { sendCode } from "@/app/lib/otp/otpCode";
+import { useUserStore } from "@/app/store/userStore";
 
 
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
+import { signupUser } from "@/app/actions/userActions";
 
 const SignupForm = () => {
     const router = useRouter();
+    const setUser = useUserStore((state) => state.setUser);
 
     const [fields, setFields] = useState<IField[]>([]);
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<SignupFormData>({
@@ -41,8 +44,10 @@ const SignupForm = () => {
     //submit
     const onSubmit: SubmitHandler<SignupFormData> = (data) => {
         console.log(data);
-        const otp = sendCode(data.email)
-        router.push('/verifyCode?email=' + otp );
+        //כאן יש שגיאה שקשורה לטייפים שלהם אסתי זה לתיקונך אין לי מושג מה זה
+        const userData = signupUser(data);
+        setUser(userData);
+        router.push("/");
         alert("Form submitted successfully!");
     };
 
@@ -167,12 +172,12 @@ const SignupForm = () => {
             </div>
 
 
-            <Button 
-                    type="submit"
-                    className="w-full"
-                >
-                    Submit
-                </Button>
+            <Button
+                type="submit"
+                className="w-full"
+            >
+                Submit
+            </Button>
         </form>
     );
 };
