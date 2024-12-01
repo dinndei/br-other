@@ -5,6 +5,7 @@ import { decryptData } from "@/app/lib/dataEncryption/decryptData";
 import { encryptData } from "@/app/lib/dataEncryption/encryptData";
 import { hashPassword } from "@/app/lib/passwordHash/hashPassword";
 import { generateToken } from "@/app/lib/tokenConfig/generateToken";
+import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -22,7 +23,8 @@ export async function POST(req: NextRequest) {
         console.log("body", body.user);
 
         const hashedPassword = await hashPassword(body.password);
-        const encryptedType = encryptData(String(body.type));
+        const encryptedTypeReligion = encryptData(String(body.typeUser.religionLevel));
+        const encryptedTypePolitical = encryptData(String(body.typeUser.politicalAffiliation));
 
         // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
         const newUser = new User({
@@ -34,7 +36,9 @@ export async function POST(req: NextRequest) {
             password: hashedPassword, 
             gender: body.user.gender,
             fields: body.user.fields,
-            typeUser: body.user.typeUser
+            typeUser: {religionLevel:encryptedTypeReligion,
+                PoliticalAffiliation:encryptedTypePolitical
+            }
         });
 
         console.log("newUser", newUser);
@@ -47,8 +51,12 @@ export async function POST(req: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...userWithoutPassword } = newUser.toObject();
         //המרה של הטייפ למידע לא מוצפן
-        userWithoutPassword.typeUser = JSON.parse(decryptData(JSON.stringify(userWithoutPassword.typeUser)))
-
+       
+        const decryptedTypeReligion = decryptData(encryptedTypeReligion) as ReligionLevel;
+        const decryptedTypePolitical = decryptData(encryptedTypePolitical) as PoliticalAffiliation;
+        if ( userWithoutPassword.typeUser) {
+            userWithoutPassword.typeUser = {religionLevel:decryptedTypeReligion,politicalAffiliation:decryptedTypePolitical};
+        }
         const token = generateToken(userWithoutPassword._id!.toString(), userWithoutPassword.role);
 
         const response = NextResponse.json({
