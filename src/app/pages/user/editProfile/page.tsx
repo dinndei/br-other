@@ -11,14 +11,14 @@ import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { Gender } from "@/app/types/enums/gender";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
-import { EditProfFormData } from "@/app/zod/editProfSchema";
+import { EditProfFormData, editProfSchema } from "@/app/zod/editProfSchema";
 
 const EditUserForm = () => {
   const user=useUserStore((st)=>st.user);
-    const [fields, setFields] = useState<IField[]>([]);
+    const [fields, setFields] = useState<IField[]|undefined>(user?.fields);
 
     const { register, handleSubmit, formState: { errors },setValue } = useForm<EditProfFormData>({
-      //  resolver: zodResolver(signupSchema),
+      resolver: zodResolver(editProfSchema),
         defaultValues:  {
             firstName: user?.firstName||"",
             lastName:user?.lastName|| "",
@@ -36,11 +36,14 @@ const EditUserForm = () => {
   
     const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
         try {
-        //     if (user) {
-        //         const updatedUser = await editUser(String(user._id), data);
-        //         setUser(updatedUser);
-        // }
-              alert("User updated successfully!",data);
+            if (user) {
+                const updatedUser = await editUser(String(user._id), data);
+                if(updatedUser)
+                    console.log("user ypdated",updatedUser);
+                    
+                // setUser(updatedUser);
+        }
+              alert("User updated successfully!\n"+ data);
             
         } catch (error) {
             console.error("Error updating user:", error);
@@ -51,6 +54,7 @@ const EditUserForm = () => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4 space-y-4">
+            <h1>טופס עריכת פרטי משתמש</h1>
             <div>
                 <label htmlFor="firstName" className="block font-medium">First Name</label>
                 <input

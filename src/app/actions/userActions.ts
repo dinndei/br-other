@@ -67,7 +67,8 @@ export const resetPassword = async (username: string, newPassword: string) => {
 
 export const editUser = async (userId: string, user: Partial<IUser>): Promise<Partial<IUser>> => {
     try {
-        const response: AxiosResponse<Partial<IUser>> = await axios.put('/api/user/edit-profile', { userId, ...user });
+        const response: AxiosResponse<Partial<IUser>> = await axios.put('/api/user/edit-profile', 
+            { userId, ...user });
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
