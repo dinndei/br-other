@@ -1,47 +1,78 @@
 'use client'
 import { useState } from 'react';
-import { resetPassword, sendOTPCode } from '@/app/actions/userActions';
+import { findUserByUsername, resetPassword, sendOtpCode } from '@/app/actions/userActions';
 import PasswordInput from '@/app/components/PasswordInput';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ResetFormData, resetPasswordSchema } from '@/app/zod/resetPaasword';
+import { userNameSchema, otpSchema, resetPasswordSchema } from '@/app/zod/resetPaasword';
 import { useForm } from 'react-hook-form';
-import { verifyOTP } from '@/app/lib/otp/verifyCode';
+import { verifyOTP } from '@/app/actions/userActions';
+import { UserNameFormData, OtpFormData, ResetPasswordFormData } from '@/app/zod/resetPaasword';
 
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
+import { useUserForResetStore } from '@/app/store/resetPasswordStore';
 
 const ResetPassword = () => {
+    const [step, setStep] = useState(1); // Step 1: Enter OTP, Step 2: Enter new password
+    const [error, setError] = useState('');
+    const setUsername = useUserForResetStore((state) => state.setUsernameForReset);
+    const nameForReset = useUserForResetStore((state) => state.usernameForReset);
+    const setEmail = useUserForResetStore((state) => state.setEmailForReset);
+    const EmailForReset = useUserForResetStore((state) => state.emailForReset);
 
-    const { register, handleSubmit, formState: { errors } } = useForm<ResetFormData>({
+    const { register: registerUserName, handleSubmit: handleSubmitUserNameForm, formState: { errors: userNameErrors } } = useForm<UserNameFormData>({
+        resolver: zodResolver(userNameSchema),
+    });
+
+    const { register: registerOtp, handleSubmit: handleSubmitOtpForm, formState: { errors: otpErrors } } = useForm<OtpFormData>({
+        resolver: zodResolver(otpSchema),
+    });
+
+    const { register: registerReset, handleSubmit: handleSubmitResetForm, formState: { errors: resetErrors } } = useForm<ResetPasswordFormData>({
         resolver: zodResolver(resetPasswordSchema),
     });
 
+    const router = useRouter();
 
-    const [step, setStep] = useState(1); // Step 1: Enter OTP, Step 2: Enter new password
-    const [error, setError] = useState('');
-    //   const router = useRouter();
-
-    const handleSubmitEmail = async (data: ResetFormData) => {
-        
-        console.log("comming to submit");
-        
+    const handleSubmitUserName = async (data: UserNameFormData) => {
+        setUsername(data.username)
         try {
-            const response = await sendOTPCode(data.email);
+            const response = await findUserByUsername(data.username);
+            const email=response.email
             if (response.success) {
+                console.log("response.email", response.email);
+                setEmail(response.email)
+                try {                    
+                    const response = await sendOtpCode(email);
+                    if (response.success) {
+                        setEmail(response)
+                        // setStep(2);
+                        console.log('נמצא מייל');
+                    } 
+                    else {
+                        setError(response.message);
+                    }
+                }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                catch (error) {
+                    setError('לא נמצא שם משתמש . אנא נסה שוב.');
+                }
                 setStep(2);
-                console.log('OTP נשלח בהצלחה');
             } else {
                 setError(response.message);
             }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (error) {
-            setError('שגיאה בשליחת ה-OTP. אנא נסה שוב.');
+            setError('לא נמצא מייל תואם . אנא נסה שוב.');
         }
     };
 
-    const handleVerifyOtp = async (data: ResetFormData) => {
+    const handleVerifyOtp = async (data: OtpFormData) => {
+        console.log("data.otp", data.otp);
+        console.log("EmailForReset!", EmailForReset!.email);
+        
         try {
-            const response = await verifyOTP(data.email, data.otp)
+            const response = await verifyOTP(EmailForReset!.email, data.otp)
             if (response.success) {
                 setStep(3);
             }
@@ -55,24 +86,23 @@ const ResetPassword = () => {
         }
     };
 
-    const handleResetPassword = async (data: ResetFormData) => {
-        if (data.newPassword === data.confirmPassword) {
-            try {
-                const response = await resetPassword(data.username, data.newPassword)
-                console.log("page response", response);
+    const handleResetPassword = async (data: ResetPasswordFormData) => {
+        if (data.newPassword !== data.confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
+        try {
+            const response = await resetPassword(nameForReset!, data.newPassword);
+            console.log("page response", response);
 
-                if (response === 'Password reset successfully') {
-                    console.log("Password reset successful");
-                    window.location.href = '/'    //ניתוב לדף הבית
-                }
-            }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            catch (error) {
-                setError('Error resetting password. Please try again.');
+            if (response.data) {
+                console.log("Password reset successful");
+                router.push('/'); // ניתוב לדף הבית
             }
         }
-        else {
-            setError('Passwords do not match.');
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        catch (error) {
+            setError('Error resetting password. Please try again.');
         }
     };
 
@@ -83,16 +113,15 @@ const ResetPassword = () => {
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
                 <h2 className="text-2xl font-bold mb-6 text-center">Reset Password</h2>
-                {errors.root && <div className="text-red-500 mb-4">{errors.root.message}</div>}
+                {error && <div className="text-red-500 mb-4">{error}</div>}
                 {step === 1 && (
-                   
-                    <form onSubmit={handleSubmit(handleSubmitEmail)}>
+                    <form onSubmit={handleSubmitUserNameForm(handleSubmitUserName)}>
                         <input
-                            type="email"
-                            placeholder="הכנס אימייל"
-                            {...register('email', { required: "הכנס אימייל" })}
+                            type="text"
+                            placeholder="שם משתמש"
+                            {...registerUserName('username', { required:"הכנס שם משתמש" })}
                         />
-                        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+                        {userNameErrors.username && <p className="text-red-500">{userNameErrors.username.message}</p>}
                         <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">
                             send OTP code
                         </button>
@@ -100,14 +129,13 @@ const ResetPassword = () => {
                 )}
 
                 {step === 2 && (
-                    
-                    <form onSubmit={handleSubmit(handleVerifyOtp)}>
+                    <form onSubmit={handleSubmitOtpForm(handleVerifyOtp)}>
                         <input
                             type="text"
                             placeholder="הכנס את ה-OTP"
-                            {...register('otp')}
+                            {...registerOtp('otp')}
                         />
-                        {errors.otp && <p className="text-red-500">{errors.otp.message}</p>}
+                        {otpErrors.otp && <p className="text-red-500">{otpErrors.otp.message}</p>}
                         <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">
                             אמת OTP
                         </button>
@@ -115,29 +143,23 @@ const ResetPassword = () => {
                 )}
 
                 {step === 3 && (
-                   
-                    <form onSubmit={handleSubmit(handleResetPassword)}>
-                        <input
-                            type="text"
-                            placeholder="הכנס שם משתמש"
-                            {...register('username')}
-                        />
-                        {errors.username && <p className="text-red-500">{errors.username.message}</p>}
+                    <form onSubmit={handleSubmitResetForm(handleResetPassword)}>
                         <PasswordInput
-                            name="password"
+                            name="newPassword"
                             placeholder="הכנס סיסמה חדשה"
-                            register={register}
-                            error={errors.newPassword?.message}
+                            register={registerReset}
+                            error={resetErrors.newPassword?.message}
                         />
                         <PasswordInput
-                            name="password"
+                            name="confirmPassword"
                             placeholder="אמת סיסמה חדשה"
-                            register={register}
-                            error={errors.confirmPassword?.message}
+                            register={registerReset}
+                            error={resetErrors.confirmPassword?.message}
 
                         />
 
-                        {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
+                        {resetErrors.confirmPassword && <p className="text-red-500">{resetErrors.confirmPassword.message}</p>}
+                        {resetErrors.newPassword && <p className="text-red-500">{resetErrors.newPassword.message}</p>}
                         <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">
                             אפס סיסמה
                         </button>
@@ -150,27 +172,3 @@ const ResetPassword = () => {
 
 export default ResetPassword;
 
-// אפשרות לשימוש בקופוננטה BUTTON במקום בקישורים הנעביכים האלה
-
-// const router = useRouter();
-
-//   const goToSignup = () => {
-//     router.push('/pages/user/signup');
-//   };
-
-//   const goToResetPassword = () => {
-//     router.push('/pages/user/resetPassword');
-//   };
-
-//   return (
-//     <div className="flex flex-col items-center gap-4 mt-4">
-//       <Button onClick={goToSignup} className="w-full bg-indigo-600 hover:bg-indigo-800">
-//         צור חשבון חדש
-//       </Button>
-
-//       <Button onClick={goToResetPassword} className="w-full bg-indigo-600 hover:bg-indigo-800">
-//         שכחתי סיסמה
-//       </Button>
-//     </div>
-//   );
-// };

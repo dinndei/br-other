@@ -1,4 +1,4 @@
-import { connectToDB, disconnectFromDB } from "@/app/DB/connection/connectToDB";
+import { connectToDB } from "@/app/DB/connection/connectToDB";
 import User from "@/app/DB/models/UserModel";
 import { hashPassword } from '@/app/lib/passwordHash/hashPassword';
 import { generateToken } from "@/app/lib/tokenConfig/generateToken";
@@ -27,10 +27,11 @@ export async function POST(req: NextRequest) {
 
         const token = generateToken(user._id!.toString(), user.role);
 
-        const response = NextResponse.json({ message: 'Password reset successfully',
-            user:user,
-            token:token
-         });
+        const response = NextResponse.json({
+            message: 'Password reset successfully',
+            user: user,
+            token: token
+        });
         response.cookies.set('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -38,11 +39,10 @@ export async function POST(req: NextRequest) {
             maxAge: 60 * 60 * 12,
         });
 
-
+        return response;
+        
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-    } finally {
-        await disconnectFromDB();
     }
 }

@@ -1,98 +1,106 @@
+// import type { NextApiRequest, NextApiResponse } from 'next';
 // import emailjs from 'emailjs-com';
 // import crypto from 'crypto';
-// import OTP from '@/app/DB/models/OtpModel'
+// import OTP from '@/app/DB/models/OtpModel';
 
+// export  async function POST(req: NextApiRequest, res: NextApiResponse) {
 
-// export async function sendCode(email: string): Promise<{ success: boolean; message: string }> {
-//   console.log("comming to send");
-  
-//   const serviceID = process.env.SERVICEID || 'service_482i0ge';
-//   const templateID = process.env.TEMPLATEID || 'template_9lur4ic';
-//   const userID = process.env.USERID || 'pLqAh4TOK9zUWdkeC';
+//     const { email } = req.body;
 
-//   console.log("serviceID", serviceID);
-//   console.log("templateID", templateID);
-//   console.log("userID", userID);
+//     if (!email) {
+//       return res.status(400).json({ success: false, message: 'Email is required.' });
+//     }
 
+//     console.log('comming to send OTP for email:', email);
 
-//   const otp = crypto.randomBytes(3).toString('hex');  // יצירת 6 ספרות אקראיות
-//   console.log(otp);
-//   const expiryTime = Date.now() + 10 * 60 * 1000;
+//     const serviceID = process.env.SERVICEID || 'service_482i0ge';
+//     const templateID = process.env.TEMPLATEID || 'template_9lur4ic';
+//     const userID = process.env.USERID || 'pLqAh4TOK9zUWdkeC';
 
-//   const otpRecord = new OTP({
-//     email,
-//     otpCode: otp,
-//     expiry: new Date(expiryTime),
-//   });
+//     const otp = crypto.randomBytes(3).toString('hex'); // יצירת 6 ספרות אקראיות
+//     const expiryTime = Date.now() + 10 * 60 * 1000; // תוקף ה-OTP למשך 10 דקות
 
-//   await otpRecord.save();
+//     // יצירת אובייקט OTP חדש
+//     const otpRecord = new OTP({
+//       email,
+//       otpCode: otp,
+//       expiry: new Date(expiryTime),
+//     });
 
-//   const templateParams = {
-//     to_email: email,
-//     subject: 'Your OTP Code',
-//     otp_code: otp,
-//   };
+//     try {
+//       await otpRecord.save();
 
-//   console.log(templateParams);
+//       const templateParams = {
+//         to_email: email,
+//         subject: 'Your OTP Code',
+//         otp_code: otp,
+//       };
 
+//       // שליחת האימייל דרך emailjs
+//       await emailjs.send(serviceID, templateID, templateParams, userID);
+//       console.log('OTP sent successfully');
 
-//   try {
-//     await emailjs.send(serviceID, templateID, templateParams, userID);
-//     console.log('OTP sent successfully');
-//     return { success: true, message: 'OTP נשלח בהצלחה' };
-//   } catch (error) {
-//     console.error('Error sending OTP:', error);
-//     return { success: false, message: 'שגיאה בשליחת ה-OTP. אנא נסה שוב.' };
-//   }
-// };
+//       return res.status(200).json({ success: true, message: 'OTP נשלח בהצלחה' });
+//     } catch (error) {
+//       console.error('Error sending OTP:', error);
+//       return res.status(500).json({ success: false, message: 'שגיאה בשליחת ה-OTP. אנא נסה שוב.' });
+//     }
 
-import type { NextApiRequest, NextApiResponse } from 'next';
-import emailjs from 'emailjs-com';
+// }
+
+import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 import OTP from '@/app/DB/models/OtpModel';
+import { NextResponse } from 'next/server';
+import { connectToDB } from '@/app/DB/connection/connectToDB';
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
-  
-    const { email } = req.body;
+export async function POST(req: Request) {
+    const { email } = await req.json();
 
     if (!email) {
-      return res.status(400).json({ success: false, message: 'Email is required.' });
+        return NextResponse.json({ success: false, message: 'Email is required.' }, { status: 400 });
     }
 
-    console.log('comming to send OTP for email:', email);
+    console.log('Sending OTP for email:', email);
 
-    const serviceID = process.env.SERVICEID || 'service_482i0ge';
-    const templateID = process.env.TEMPLATEID || 'template_9lur4ic';
-    const userID = process.env.USERID || 'pLqAh4TOK9zUWdkeC';
-
-    const otp = crypto.randomBytes(3).toString('hex'); // יצירת 6 ספרות אקראיות
+    // יצירת קוד OTP באורך 6 תו
+    const otp = crypto.randomBytes(3).toString('hex');
     const expiryTime = Date.now() + 10 * 60 * 1000; // תוקף ה-OTP למשך 10 דקות
 
-    // יצירת אובייקט OTP חדש
     const otpRecord = new OTP({
-      email,
-      otpCode: otp,
-      expiry: new Date(expiryTime),
+        email,
+        otpCode: otp,
+        expiry: new Date(expiryTime),
     });
-
+    
     try {
-      await otpRecord.save();
+        await connectToDB();
 
-      const templateParams = {
-        to_email: email,
-        subject: 'Your OTP Code',
-        otp_code: otp,
-      };
+        await otpRecord.save();
 
-      // שליחת האימייל דרך emailjs
-      await emailjs.send(serviceID, templateID, templateParams, userID);
-      console.log('OTP sent successfully');
-      
-      return res.status(200).json({ success: true, message: 'OTP נשלח בהצלחה' });
+        const transporter = nodemailer.createTransport({
+            service: 'gmail', 
+            auth: {
+                user: 'brother.otpcode@gmail.com', // כתובת הדוא"ל שלך
+                pass: 'ghog ahvy isch skxg', // הסיסמה שלך או אפליקציה מאובטחת
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.GMAIL_USER, 
+            to: email, 
+            subject: 'Your OTP Code',
+            text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
+            html: `<p>Your OTP code is <strong>${otp}</strong>. It will expire in 10 minutes.</p>`, // HTML אם רוצים
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log('OTP sent successfully');
+
+        return NextResponse.json({ success: true, message: 'OTP נשלח בהצלחה' }, { status: 200 });
     } catch (error) {
-      console.error('Error sending OTP:', error);
-      return res.status(500).json({ success: false, message: 'שגיאה בשליחת ה-OTP. אנא נסה שוב.' });
-    }
-  
-}
+        console.error('Error sending OTP:', error);
 
+        return NextResponse.json({ success: false, message: 'שגיאה בשליחת ה-OTP. אנא נסה שוב.' }, { status: 500 });
+    }
+}

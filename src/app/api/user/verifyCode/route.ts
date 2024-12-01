@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import OTP from '@/app/DB/models/OtpModel';
 
 export async function POST(req: NextRequest) {
+    const { email, otpInput } = await req.json();
+    
     try {
-        const { email, otpInput } = await req.json();
 
         const otpRecord = await OTP.findOne({ email });
 

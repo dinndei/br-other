@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 import { connectToDB } from "@/app/DB/connection/connectToDB";
 import User from "@/app/DB/models/UserModel";
 import { decryptData } from "@/app/lib/dataEncryption/decryptData";
-import { encryptData } from "@/app/lib/dataEncryption/encryptData";
+// import { encryptData } from "@/app/lib/dataEncryption/encryptData";
 import { hashPassword } from "@/app/lib/passwordHash/hashPassword";
 import { generateToken } from "@/app/lib/tokenConfig/generateToken";
 import { NextRequest, NextResponse } from 'next/server';
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         console.log("body", body.user);
 
         const hashedPassword = await hashPassword(body.password);
-        const encryptedType = encryptData(String(body.type));
+        // const encryptedType = encryptData(String(body.type));
 
         // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
         const newUser = new User({
