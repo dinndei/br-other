@@ -8,6 +8,7 @@ import { Gender } from '../types/enums/gender';
 
 export const useUserStore = create<UserStore>((set) => ({
   user: {
+    "_id":"674592cb8beb04ea47fe4287",
     "firstName": "Estee",
     "lastName": "Frei",
     "userName": "Ef",
@@ -15,7 +16,8 @@ export const useUserStore = create<UserStore>((set) => ({
     "email": "e533@gmail.com",
     "password": "1234",
     "role":Role.User,
-    "gender":Gender.Male
+    "gender":Gender.Male,
+    "fields":[{ "mainField": "teacher", "subField": "java" }]
 
 
 },

@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic';
-import { connectToDB, disconnectFromDB } from "@/app/DB/connection/connectToDB";
+import { connectToDB } from "@/app/DB/connection/connectToDB";
 import User from "@/app/DB/models/UserModel";
 import verifyPassword from '@/app/lib/passwordHash/comparePassword'
 import { generateToken } from "@/app/lib/tokenConfig/generateToken";
@@ -32,7 +32,8 @@ export async function POST(req: NextRequest) {
         const token = generateToken(user._id!.toString(), user.role);
 
         const response = NextResponse.json({
-             message: 'Login successful',
+            message: 'Login successful',
+            status:200,
             user:user,
             token:token
          });
@@ -47,9 +48,6 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
-    }
-    finally {
-        await disconnectFromDB();
     }
 }
 

@@ -31,6 +31,3 @@ export const connectToDB = async () => {
 };
 
 
-export const disconnectFromDB = async () => {
- 
-};
