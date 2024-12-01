@@ -41,9 +41,18 @@ const ProfileComponent: React.FC = () => {
                         <p className="text-sm">Age: {user.age}</p>
                         <p className="text-sm">Gender: {user.gender}</p>
                         <p className="text-sm">Role: {user.role}</p>
-                        <Link href="/edit-profile">
-                            <button className="mt-3 flex items-center text-white bg-green-500 px-4 py-2 rounded-md hover:bg-green-600">
+                        <Link href="/pages/user/editProfile">
+                            <button 
+                            onClick={()=>setOpenBar(false)}
+                            className="mt-3 flex items-center text-white bg-green-500 px-4 py-2 rounded-md hover:bg-green-600">
                                 <FaPen className="mr-2" /> Edit
+                            </button>
+                        </Link>
+                        <Link href="/pages/user/resetPassword">
+                            <button 
+                            onClick={()=>setOpenBar(false)}
+                            className="mt-3 flex items-center text-white bg-green-500 px-4 py-2 rounded-md hover:bg-green-600">
+                                <FaPen className="mr-2" />reset password
                             </button>
                         </Link>
                     </div>

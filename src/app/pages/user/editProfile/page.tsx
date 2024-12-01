@@ -1,140 +1,173 @@
-// 'use client'
-// import React, { useState, useEffect } from 'react';
-// import  IUser  from '../../../types/IUser';
-// import { useHistory } from 'react-router-dom';
+'use client'
+import React, { useEffect, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema, SignupFormData } from "@/app/zod/signInSchema";
+import { useUserStore } from "@/app/store/userStore";
+import { editUser } from "@/app/actions/userActions";
+import Button from "@/app/components/Button";
+import { ReligionLevel } from "@/app/types/enums/ReligionLevel";
+import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
+import { Gender } from "@/app/types/enums/gender";
+import FieldsInputList from "@/app/components/FieldsInputList";
+import IField from "@/app/types/IField";
+import { EditProfFormData, editProfSchema } from "@/app/zod/editProfSchema";
 
-// const Page: React.FC = () => {
-//     const [user, setUser] = useState<IUser | null>(null);
-//     const [editing, setEditing] = useState<{ [key: string]: boolean }>({});
-//     const history = useHistory();
+const EditUserForm = () => {
+  const user=useUserStore((st)=>st.user);
+    const [fields, setFields] = useState<IField[]|undefined>(user?.fields);
 
-//     useEffect(() => {
-//         fetchUserData();
-//     }, []);
+    const { register, handleSubmit, formState: { errors },setValue } = useForm<EditProfFormData>({
+      resolver: zodResolver(editProfSchema),
+        defaultValues:  {
+            firstName: user?.firstName||"",
+            lastName:user?.lastName|| "",
+            userName:user?.userName|| "",
+            age: user?.age|| 0,
+            email:user?.email|| "",
+            gender: user?.gender||Gender.Other,
+            fields:user?.fields|| [{ mainField: "", subField: "" }],
+            typeUser:user?.typeUser||{
+                politicalAffiliation: PoliticalAffiliation.HardRight,
+                religionLevel: ReligionLevel.Other,
+            }},
+    });
 
-//     const fetchUserData = async () => {
-//         const response = await fetch('/api/user');
-//         const data = await response.json();
-//         setUser(data);
-//     };
+  
+    const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+        try {
+            if (user) {
+                const updatedUser = await editUser(String(user._id), data);
+                if(updatedUser)
+                    console.log("user ypdated",updatedUser);
+                    
+                // setUser(updatedUser);
+        }
+              alert("User updated successfully!\n"+ data);
+            
+        } catch (error) {
+            console.error("Error updating user:", error);
+            alert("Failed to update user");
+        }
+    };
 
-//     const handleFieldClick = (field: string) => {
-//         setEditing({ ...editing, [field]: true });
-//     };
 
-//     const handleBlur = async (field: string, value: any) => {
-//         await updateUserField(field, value);
-//         setEditing({ ...editing, [field]: false });
-//     };
+    return (
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4 space-y-4">
+            <h1>טופס עריכת פרטי משתמש</h1>
+            <div>
+                <label htmlFor="firstName" className="block font-medium">First Name</label>
+                <input
+                    id="firstName"
+                    {...register("firstName")}
+                    className="w-full border border-gray-300 p-2 rounded"
+                />
+                {errors.firstName && <p className="text-red-500">{errors.firstName.message}</p>}
+            </div>
 
-//     const updateUserField = async (field: string, value: any) => {
-//         const response = await fetch('/api/user/update', {
-//             method: 'PATCH',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ [field]: value }),
-//         });
-//         const updatedUser = await response.json();
-//         setUser(updatedUser);
-//     };
+            <div>
+                <label htmlFor="lastName" className="block font-medium">Last Name</label>
+                <input
+                    id="lastName"
+                    {...register("lastName")}
+                    className="w-full border border-gray-300 p-2 rounded"
+                />
+                {errors.lastName && <p className="text-red-500">{errors.lastName.message}</p>}
+            </div>
 
-//     if (!user) {
-//         return <div>Loading...</div>;
-//     }
+            <div>
+                <label htmlFor="userName" className="block font-medium">Username</label>
+                <input
+                    id="userName"
+                    {...register("userName")}
+                    className="w-full border border-gray-300 p-2 rounded"
+                />
+                {errors.userName && <p className="text-red-500">{errors.userName.message}</p>}
+            </div>
 
-//     return (
-//         <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-//             <h2 className="text-2xl font-semibold mb-4">Edit Profile</h2>
-//             <form>
-//                 <div className="mb-4">
-//                     <label className="block text-sm font-medium text-gray-700">First Name</label>
-//                     {editing.firstName ? (
-//                         <input
-//                             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-//                             defaultValue={user.firstName}
-//                             onBlur={(e) => handleBlur('firstName', e.target.value)}
-//                             autoFocus
-//                         />
-//                     ) : (
-//                         <span
-//                             className="block p-2 bg-gray-100 rounded-md cursor-pointer"
-//                             onClick={() => handleFieldClick('firstName')}
-//                         >
-//                             {user.firstName}
-//                         </span>
-//                     )}
-//                 </div>
+            <div>
+                <label htmlFor="age" className="block font-medium">Age</label>
+                <input
+                    id="age"
+                    type="number"
+                    {...register("age", { valueAsNumber: true })}
+                    className="w-full border border-gray-300 p-2 rounded"
+                />
+                {errors.age && <p className="text-red-500">{errors.age.message}</p>}
+            </div>
 
-//                 <div className="mb-4">
-//                     <label className="block text-sm font-medium text-gray-700">Last Name</label>
-//                     {editing.lastName ? (
-//                         <input
-//                             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-//                             defaultValue={user.lastName}
-//                             onBlur={(e) => handleBlur('lastName', e.target.value)}
-//                         />
-//                     ) : (
-//                         <span
-//                             className="block p-2 bg-gray-100 rounded-md cursor-pointer"
-//                             onClick={() => handleFieldClick('lastName')}
-//                         >
-//                             {user.lastName}
-//                         </span>
-//                     )}
-//                 </div>
+            <div>
+                <label htmlFor="email" className="block font-medium">Email</label>
+                <input
+                    id="email"
+                    {...register("email")}
+                    className="w-full border border-gray-300 p-2 rounded"
+                />
+                {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+            </div>
 
-//                 <div className="mb-4">
-//                     <label className="block text-sm font-medium text-gray-700">Email</label>
-//                     {editing.email ? (
-//                         <input
-//                             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-//                             defaultValue={user.email}
-//                             onBlur={(e) => handleBlur('email', e.target.value)}
-//                         />
-//                     ) : (
-//                         <span
-//                             className="block p-2 bg-gray-100 rounded-md cursor-pointer"
-//                             onClick={() => handleFieldClick('email')}
-//                         >
-//                             {user.email}
-//                         </span>
-//                     )}
-//                 </div>
 
-//                 <div className="mb-4">
-//                     <label className="block text-sm font-medium text-gray-700">Age</label>
-//                     {editing.age ? (
-//                         <input
-//                             className="mt-1 p-2 border border-gray-300 rounded-md w-full"
-//                             type="number"
-//                             defaultValue={user.age}
-//                             onBlur={(e) => handleBlur('age', e.target.value)}
-//                         />
-//                     ) : (
-//                         <span
-//                             className="block p-2 bg-gray-100 rounded-md cursor-pointer"
-//                             onClick={() => handleFieldClick('age')}
-//                         >
-//                             {user.age}
-//                         </span>
-//                     )}
-//                 </div>
+            <div>
+                <label htmlFor="gender" className="block font-medium">Gender</label>
+                <select
+                    id="gender"
+                    {...register("gender")}
+                    className="w-full border border-gray-300 p-2 rounded"
+                >
+                    <option value="">Select Gender</option>
+                    {Object.values(Gender).map((g) => (
+                        <option key={g} value={g}>{g}</option>
+                    ))}
+                </select>
+                {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
+            </div>
+            <div>
+                <FieldsInputList fields={fields}
+                    setFields={(newFields) => {
+                        setFields(newFields);
+                        setValue("fields", fields);
 
-//                 <button
-//                     className="mt-4 w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600"
-//                     onClick={(e) => {
-//                         e.preventDefault();
-//                         alert('Changes confirmed!');
-//                         // Optional: You can also redirect to profile page after update
-//                         // history.push('/profile');
-//                     }}
-//                 >
-//                     Confirm Changes
-//                 </button>
-//             </form>
-//         </div>
-//     );
-// };
+                    }}
+                />
+                {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
 
-// export default Page;
+            </div>
+            <div>
+                <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
+                <select
+                    id="religionLevel"
+                    {...register("typeUser.religionLevel")}
+                    className="w-full border border-gray-300 p-2 rounded"
+                >
+                    <option value="">Select Religion Level</option>
+                    {Object.values(ReligionLevel).map((rl) => (
+                        <option key={rl} value={rl}>{rl}</option>
+                    ))}
+                </select>
+                {errors.typeUser?.religionLevel && <p className="text-red-500">{errors.typeUser.religionLevel.message}</p>}
+            </div>
+
+            <div>
+                <label htmlFor="politicalAffiliation" className="block font-medium">Political Affiliation</label>
+                <select
+                    id="politicalAffiliation"
+                    {...register("typeUser.politicalAffiliation")}
+                    className="w-full border border-gray-300 p-2 rounded"
+                >
+                    <option value="">Select Political Affiliation</option>
+                    {Object.values(PoliticalAffiliation).map((pa) => (
+                        <option key={pa} value={pa}>{pa}</option>
+                    ))}
+                </select>
+                {errors.typeUser?.politicalAffiliation && <p className="text-red-500">{errors.typeUser.politicalAffiliation.message}</p>}
+            </div>
+
+            <Button type="submit" className="w-full" 
+          >
+                Save Changes
+            </Button>
+        </form>
+    );
+};
+
+export default EditUserForm;
