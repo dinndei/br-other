@@ -1,9 +1,31 @@
+'use client'
+import axios from "axios";
 import Image from "next/image";
+
+async function post() {
+  console.log("comming to post");
+  try {
+    const response = await axios.post('/api/fields/postFields');
+    console.log("response.data", response.data);
+
+    return response.data;
+  } catch (error) {
+
+    if (error) {
+      return { error };
+    } else {
+      return { error: 'Something went wrong. Please try again.' };
+    }
+  }
+}
+
+
 
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        <button onClick={() => post()}>לטעינת השדות</button>
         <Image
           className="dark:invert"
           src="https://nextjs.org/icons/next.svg"

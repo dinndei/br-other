@@ -2,10 +2,12 @@ export const dynamic = 'force-dynamic';
 import { connectToDB } from "@/app/DB/connection/connectToDB";
 import User from "@/app/DB/models/UserModel";
 import { decryptData } from "@/app/lib/dataEncryption/decryptData";
+import { encryptData } from "@/app/lib/dataEncryption/encryptData";
 // import { encryptData } from "@/app/lib/dataEncryption/encryptData";
 import { hashPassword } from "@/app/lib/passwordHash/hashPassword";
 import { generateToken } from "@/app/lib/tokenConfig/generateToken";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
+import { ReligionLevel } from "@/app/types/enums/ReligionLevel";
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
@@ -21,10 +23,14 @@ export async function POST(req: NextRequest) {
         // const parsedData = userSchema.parse(body);
         // const newUser = new User(parsedData);
         console.log("body", body.user);
+        console.log("user", body.user.password);
 
-        const hashedPassword = await hashPassword(body.password);
-        const encryptedTypeReligion = encryptData(String(body.typeUser.religionLevel));
-        const encryptedTypePolitical = encryptData(String(body.typeUser.politicalAffiliation));
+        const hashedPassword = await hashPassword(body.user.password);
+        const encryptedTypeReligion = encryptData(String(body.user.typeUser.religionLevel));
+        console.log("encryptedTypeReligion", encryptedTypeReligion);
+        
+        const encryptedTypePolitical = encryptData(String(body.user.typeUser.politicalAffiliation));
+        console.log("encryptedTypePolitical", encryptedTypePolitical);
 
         // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
         const newUser = new User({
@@ -33,11 +39,12 @@ export async function POST(req: NextRequest) {
             userName: body.user.userName,
             age: body.user.age,
             email: body.user.email,
-            password: hashedPassword, 
+            password: hashedPassword,
             gender: body.user.gender,
             fields: body.user.fields,
-            typeUser: {religionLevel:encryptedTypeReligion,
-                PoliticalAffiliation:encryptedTypePolitical
+            typeUser: {
+                religionLevel: encryptedTypeReligion,
+                politicalAffiliation: encryptedTypePolitical
             }
         });
 
@@ -51,21 +58,21 @@ export async function POST(req: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...userWithoutPassword } = newUser.toObject();
         //המרה של הטייפ למידע לא מוצפן
-       
+
         const decryptedTypeReligion = decryptData(encryptedTypeReligion) as ReligionLevel;
         const decryptedTypePolitical = decryptData(encryptedTypePolitical) as PoliticalAffiliation;
-        if ( userWithoutPassword.typeUser) {
-            userWithoutPassword.typeUser = {religionLevel:decryptedTypeReligion,politicalAffiliation:decryptedTypePolitical};
+        if (userWithoutPassword.typeUser) {
+            userWithoutPassword.typeUser = { religionLevel: decryptedTypeReligion, politicalAffiliation: decryptedTypePolitical };
         }
         const token = generateToken(userWithoutPassword._id!.toString(), userWithoutPassword.role);
 
         const response = NextResponse.json({
             message: "User created successfully",
             user: userWithoutPassword,
-            token:token
+            token: token
         },
             { status: 201 });
-            //cookies את הטוקן של המשתמש
+        //cookies את הטוקן של המשתמש
         response.cookies.set('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -73,7 +80,7 @@ export async function POST(req: NextRequest) {
             maxAge: 60 * 60 * 12,
         });
 
-
+    return response;
     } catch (err) {
         console.error("Error creating user:", err);
         return NextResponse.json(

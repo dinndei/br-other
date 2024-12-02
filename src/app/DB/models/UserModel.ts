@@ -15,7 +15,7 @@ const IUserSchema: Schema<IUser> = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, unique: true },
     gender: { type: String, enum: Object.values(Gender), required: true },
-    role: { type: String, enum: Object.values(Role), default:Role.User },
+    role: { type: String, enum: Object.values(Role), default: Role.User },
     fields: { type: [fieldSchema], default: [] },
     courses: {
         type: [{

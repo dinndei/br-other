@@ -52,14 +52,7 @@ const LoginPage = () => {
 
     // שלב שני: אימות קוד
     const handleOtpSubmit = async (data: OtpFormData) => {
-        // const response = await verifyOTP({ ...userData, otpCode });
-        // if (response.success) {
-        //     router.push('/'); // מעבר לאחר התחברות
-        // } else {
-        //     alert(response.error);
-        // }
-
-
+        
         console.log("data.otp", data.otp);
         console.log("user.email", user!.email);
 
