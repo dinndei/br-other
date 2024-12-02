@@ -73,10 +73,11 @@ const ResetPassword = () => {
 
     const handleVerifyOtp = async (data: OtpFormData) => {
         console.log("data.otp", data.otp);
-        console.log("EmailForReset!", EmailForReset!.email);
+        console.log("EmailForReset!", (EmailForReset as any)!.email );
+        
         
         try {
-            const response = await verifyOTP(EmailForReset!.email, data.otp)
+            const response = await verifyOTP((EmailForReset as any)!.email , data.otp)
             if (response.success) {
                 setStep(3);
             }

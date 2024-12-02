@@ -58,7 +58,7 @@ const LoginPage = () => {
 
 
         try {
-            const response = await verifyOTP(user!.email, data.otp)
+            const response = await verifyOTP(user!.email!, data.otp)
             if (response.success) {
                 router.push('/'); // מעבר לאחר התחברות            }
              } 
