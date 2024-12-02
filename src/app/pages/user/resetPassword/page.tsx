@@ -10,17 +10,18 @@ import { UserNameFormData, OtpFormData, ResetPasswordFormData } from '@/app/zod/
 
 import { useRouter } from 'next/navigation';
 import { useUserForResetStore } from '@/app/store/resetPasswordStore';
+import { maskEmail } from '@/app/lib/dataEncryption/encryptEmail';
 
 const ResetPassword = () => {
     const [step, setStep] = useState(1); // Step 1: Enter OTP, Step 2: Enter new password
     const [error, setError] = useState('');
-    const [maskedEmail, setMaskEmail] =useState('');
+    const [maskedEmail, setMaskEmail] = useState('');
     const setUsername = useUserForResetStore((state) => state.setUsernameForReset);
     const nameForReset = useUserForResetStore((state) => state.usernameForReset);
-    const setEmail = useUserForResetStore((state) => state.setEmailForReset);
-    const EmailForReset = useUserForResetStore((state) => state.emailForReset);
-    
-    
+    const setEmailForReset = useUserForResetStore((state) => state.setEmailForReset);
+    const emailForReset = useUserForResetStore((state) => state.emailForReset);
+
+
     const { register: registerUserName, handleSubmit: handleSubmitUserNameForm, formState: { errors: userNameErrors } } = useForm<UserNameFormData>({
         resolver: zodResolver(userNameSchema),
     });
@@ -39,19 +40,20 @@ const ResetPassword = () => {
         setUsername(data.username)
         try {
             const response = await findUserByUsername(data.username);
-            const email=response.email
+            const email = response.email
             if (response.success) {
-                console.log("response.email", response.email);
-                setEmail(response.email)
-                const tempMask=`${EmailForReset!.slice(0, 3)}@${EmailForReset!.split('@')[1]}`;
+                console.log("response.email", email);
+                setEmailForReset(email);
+                console.log("Store email state:", useUserForResetStore.getState().emailForReset);
+                const tempMask = maskEmail(email!);
                 setMaskEmail(tempMask)
-                try {                    
+                try {
+
+
                     const response = await sendOtpCode(email);
                     if (response.success) {
-                        setEmail(response)
-                        // setStep(2);
                         console.log('נמצא מייל');
-                    } 
+                    }
                     else {
                         setError(response.message);
                     }
@@ -73,11 +75,10 @@ const ResetPassword = () => {
 
     const handleVerifyOtp = async (data: OtpFormData) => {
         console.log("data.otp", data.otp);
-        console.log("EmailForReset!", (EmailForReset as any)!.email );
-        
-        
+        console.log("EmailForReset!", emailForReset!);
+
         try {
-            const response = await verifyOTP((EmailForReset as any)!.email , data.otp)
+            const response = await verifyOTP(emailForReset!, data.otp)
             if (response.success) {
                 setStep(3);
             }
@@ -124,7 +125,7 @@ const ResetPassword = () => {
                         <input
                             type="text"
                             placeholder="שם משתמש"
-                            {...registerUserName('username', { required:"הכנס שם משתמש" })}
+                            {...registerUserName('username', { required: "הכנס שם משתמש" })}
                         />
                         {userNameErrors.username && <p className="text-red-500">{userNameErrors.username.message}</p>}
                         <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">

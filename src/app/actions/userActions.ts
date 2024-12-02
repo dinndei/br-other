@@ -48,7 +48,7 @@ export const findUserByUsername = async (userName: string) => {
 }
 
 export const sendOtpCode = async (email: string) => {
-    console.log("comming to action", { email });
+    console.log("comming to action",  email );
 
     try {
         const response: AxiosResponse = await axios.post('/api/user/sendOtp', { email });

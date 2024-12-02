@@ -9,7 +9,7 @@ import Button from "@/app/components/Button";
 import { ReligionLevel } from "@/app/types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { Gender } from "@/app/types/enums/gender";
-import FieldsInputList from "@/app/components/FieldsInputList";
+// import FieldsInputList from "@/app/components/FieldsInputList";
 //import IField from "@/app/types/IField";
 import { EditProfFormData, editProfSchema } from "@/app/zod/editProfSchema";
 import IFieldToDB from "@/app/types/IFieldToDB";
