@@ -54,7 +54,7 @@ const EditUserForm = () => {
 
 
 
-    const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+    const onSubmit: SubmitHandler<EditProfFormData> = async (data) => {
         try {
             if (user) {
                 const updatedUser = await editUser(String(user._id), data);

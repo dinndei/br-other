@@ -14,11 +14,13 @@ import { useUserForResetStore } from '@/app/store/resetPasswordStore';
 const ResetPassword = () => {
     const [step, setStep] = useState(1); // Step 1: Enter OTP, Step 2: Enter new password
     const [error, setError] = useState('');
+    const [maskedEmail, setMaskEmail] =useState('');
     const setUsername = useUserForResetStore((state) => state.setUsernameForReset);
     const nameForReset = useUserForResetStore((state) => state.usernameForReset);
     const setEmail = useUserForResetStore((state) => state.setEmailForReset);
     const EmailForReset = useUserForResetStore((state) => state.emailForReset);
-
+    
+    
     const { register: registerUserName, handleSubmit: handleSubmitUserNameForm, formState: { errors: userNameErrors } } = useForm<UserNameFormData>({
         resolver: zodResolver(userNameSchema),
     });
@@ -41,6 +43,8 @@ const ResetPassword = () => {
             if (response.success) {
                 console.log("response.email", response.email);
                 setEmail(response.email)
+                const tempMask=`${EmailForReset!.slice(0, 3)}@${EmailForReset!.split('@')[1]}`;
+                setMaskEmail(tempMask)
                 try {                    
                     const response = await sendOtpCode(email);
                     if (response.success) {
@@ -130,6 +134,7 @@ const ResetPassword = () => {
 
                 {step === 2 && (
                     <form onSubmit={handleSubmitOtpForm(handleVerifyOtp)}>
+                        <label> נשלח אלייך קוד חד פעמי למייל {maskedEmail}</label>
                         <input
                             type="text"
                             placeholder="הכנס את ה-OTP"
