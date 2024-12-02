@@ -20,7 +20,6 @@ const SignupForm = () => {
 
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
-    const user = useUserStore((state) => state.user);
 
     // const [fields, setFields] = useState<IField[]>([]);
     const [fieldsData, setFieldsData] = useState<IFieldToDB[]>([]);
