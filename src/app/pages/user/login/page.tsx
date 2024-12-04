@@ -3,7 +3,7 @@ import { loginUser, sendOtpCode, verifyOTP } from '@/app/actions/userActions';
 import PasswordInput from '@/app/components/PasswordInput';
 import { OtpFormData, otpSchema, UserFormData, userSchema } from '@/app/zod/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm} from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/userStore';
@@ -88,7 +88,7 @@ const LoginPage = () => {
                             />
                             {userErrors.username && <p className="text-red-500 text-sm">{userErrors.username.message}</p>}
                         </div>
-                        <PasswordInput
+                        <PasswordInput<UserFormData>
                             name="password"
                             placeholder="הכנס סיסמה"
                             register={registerUser}
@@ -103,6 +103,7 @@ const LoginPage = () => {
                                 התחבר
                             </button>
                         </div>
+
                     </form>
                 )}
 

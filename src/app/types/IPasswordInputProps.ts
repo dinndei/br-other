@@ -1,8 +1,8 @@
-import { UseFormRegister, FieldValues } from "react-hook-form";
+import { UseFormRegister, FieldValues, Path } from "react-hook-form";
 
 export default interface PasswordInputProps <T extends FieldValues>{
     register: UseFormRegister<T>;  
-    name: keyof T;                    
+    name: Path<T>;                    
     placeholder: string;             
     error?: string;                  
   }
