@@ -3,7 +3,7 @@ import { loginUser, sendOtpCode, verifyOTP } from '@/app/actions/userActions';
 import PasswordInput from '@/app/components/PasswordInput';
 import { OtpFormData, otpSchema, UserFormData, userSchema } from '@/app/zod/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm} from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/userStore';
@@ -25,10 +25,10 @@ const LoginPage = () => {
 
 
     const handleLoginSubmit = async (data: UserFormData) => {
-        console.log("comming", data.username,data.password );
-        
+        console.log("comming", data.username, data.password);
+
         const response = await loginUser(data.username, data.password);
-        if (response.status==200) {
+        if (response.status == 200) {
             console.log("response.user", response.user);
 
             setUser(response.user);
@@ -38,13 +38,13 @@ const LoginPage = () => {
                 if (response.success) {
                     setStep(2);
                 }
-                
+
             }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             catch (error) {
                 console.error('לא נמצא שם משתמש . אנא נסה שוב.');
             }
-            
+
         } else {
             alert(response.error);
         }
@@ -52,7 +52,7 @@ const LoginPage = () => {
 
     // שלב שני: אימות קוד
     const handleOtpSubmit = async (data: OtpFormData) => {
-        
+
         console.log("data.otp", data.otp);
         console.log("user.email", user!.email);
 
@@ -61,11 +61,11 @@ const LoginPage = () => {
             const response = await verifyOTP(user!.email!, data.otp)
             if (response.success) {
                 router.push('/'); // מעבר לאחר התחברות            }
-             } 
+            }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (error) {
-            console.error(otpErrors.otp) 
+            console.error(otpErrors.otp)
         }
     };
 
@@ -101,6 +101,23 @@ const LoginPage = () => {
                                 className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             >
                                 התחבר
+                            </button>
+                        </div>
+
+                        <div className="flex justify-between mt-4">
+                            <button
+                                type="button"
+                                onClick={() => router.push('/pages/user/signup')}
+                                className="text-indigo-500 underline"
+                            >
+                                צור חשבון חדש
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => router.push('/pages/user/resetPassword')}
+                                className="text-indigo-500 underline"
+                            >
+                                שכחתי סיסמה
                             </button>
                         </div>
 
