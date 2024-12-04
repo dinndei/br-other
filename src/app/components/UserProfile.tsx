@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link'; // For navigation to the edit page
 import { FaPen } from 'react-icons/fa'; // Pencil icon
 import { useUserStore } from '../store/userStore';

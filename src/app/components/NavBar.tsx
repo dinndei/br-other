@@ -8,7 +8,7 @@ import { useUserStore } from '../store/userStore';
 
 const Navbar: React.FC = () => {
     const [showProfile, setShowProfile] = useState(false);
-    const { logout, user, isAuthenticated } = useUserStore();
+    const { logout, isAuthenticated } = useUserStore();
 
 
     const toggleProfile = () => {
