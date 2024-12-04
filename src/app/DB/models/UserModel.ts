@@ -28,12 +28,10 @@ const IUserSchema: Schema<IUser> = new Schema({
         type: {
             religionLevel: {
                 type: String,
-                enum: Object.values(ReligionLevel),
                 required: true
             },
             politicalAffiliation: {
                 type: String,
-                enum: Object.values(PoliticalAffiliation),
                 required: true
             }
         },

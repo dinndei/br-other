@@ -4,26 +4,27 @@ import Link from 'next/link'; // For navigation to the edit page
 import { FaPen } from 'react-icons/fa'; // Pencil icon
 import { useUserStore } from '../store/userStore';
 import Image from 'next/image';
+import IProfileComponentProps from '../types/IProfileComponentProps';
 
-const ProfileComponent: React.FC = () => {
+const ProfileComponent: React.FC<IProfileComponentProps>= ({openBar, setOpenBar }) => {
 
-    const [openBar, setOpenBar] = useState(false);
-    const toggleOpenBar = () => {
-        setOpenBar(prev => !prev);
-    }
+    // const [openBar, setOpenBar] = useState(false);
+    // const toggleOpenBar = () => {
+    //     setOpenBar(prev => !prev);
+    // }
 
     const { user, isAuthenticated } = useUserStore();
 
     // Show loading or fallback UI if the user is not authenticated
-    if (!user || !isAuthenticated) {
+    if (!isAuthenticated) {
         return <div>Loading...</div>;
     }
 
     return (
 
         <div>
-            <button onClick={toggleOpenBar}>user</button>
-            {openBar &&
+            {/* <button onClick={toggleOpenBar}>user</button> */}
+            {openBar && user&& 
                 <div className="fixed top-5 right-5 p-4 bg-white rounded-lg shadow-lg w-64">
                     <div className="flex flex-col">
                         {/* Profile Image */}
