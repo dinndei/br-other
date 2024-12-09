@@ -1,6 +1,8 @@
 'use client'
 import axios from "axios";
 import Image from "next/image";
+import useDataStore from "./store/fieldsStore";
+import { useEffect } from "react";
 
 async function post() {
   console.log("comming to post");
@@ -22,10 +24,33 @@ async function post() {
 
 
 export default function Home() {
+  const { fields, setFields, setLoading } = useDataStore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (fields.length === 0) {
+        setLoading(true);
+        try {
+          const response = await axios.post('/api/fields/getAllFields');
+          setFields(response.data.fields);
+        } catch (error) {
+          console.error("Error fetching data", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+  }, [setFields, setLoading, fields]);
+
+
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <button onClick={() => post()}>לטעינת השדות</button>
+        <button onClick={() => window.location.href = '/pages/user/signup'}>רישום</button>
         <Image
           className="dark:invert"
           src="https://nextjs.org/icons/next.svg"

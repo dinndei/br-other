@@ -11,7 +11,6 @@ import { useUserStore } from '@/app/store/userStore';
 const LoginPage = () => {
     const router = useRouter();
     const [step, setStep] = useState(1);
-    //const [error, setError] = useState('');
     const setUser = useUserStore((state) => state.setUser);
     const user = useUserStore((state) => state.user);
 
@@ -60,7 +59,15 @@ const LoginPage = () => {
         try {
             const response = await verifyOTP(user!.email!, data.otp)
             if (response.success) {
-                router.push('/'); // מעבר לאחר התחברות            }
+                if (user!.learningApprovalPending !== null) {
+                    alert("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.");
+                    router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
+                } else {
+                    router.push('/'); // מעבר לדף הבית אם אין בקשת למידה ממתינה
+                }
+            }
+            else {
+                alert("קוד ה-OTP שגוי. אנא נסה שוב.");
             }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

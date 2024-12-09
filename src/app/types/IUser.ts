@@ -3,6 +3,7 @@ import { Gender } from "./enums/gender";
 import { ReligionLevel } from "./enums/ReligionLevel"
 import { PoliticalAffiliation } from "./enums/politicalAffiliation";
 import { Role } from "./enums/role";
+import ILearningRequest from "./ILearningRequest";
 
 export default interface IUser extends Document {
     firstName: string,
@@ -17,6 +18,7 @@ export default interface IUser extends Document {
         mainField: string;
         subField?: string;
     }[];
+    learningApprovalPending:string | null;
     courses: mongoose.Types.ObjectId[];
     refusalCnt: number,
     typeUser: {

@@ -4,11 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import ProfileComponent from '../components/UserProfile'
 import { useUserStore } from '../store/userStore';
+import { useRouter } from 'next/navigation';
+import { checkActivCourse } from '../actions/userActions';
 
 
 const Navbar: React.FC = () => {
     const [showProfile, setShowProfile] = useState(false);
-    const { logout, isAuthenticated } = useUserStore();
+    const { user, logout, isAuthenticated } = useUserStore();
+    const router = useRouter();
 
 
     const toggleProfile = () => {
@@ -16,11 +19,28 @@ const Navbar: React.FC = () => {
     }
 
     const handleLogout = () => {
-        logout(); // מבצע את פעולת ה-logout
-        //router.push('/login'); // הפנייה לדף התחברות
+        logout();
+        router.push('/');
+    };
+
+    const handleNewLearningClick = async () => {
+        console.log("vdbewr", user);
+
+        try {
+            const response = await checkActivCourse(user!)
+            if (response) {
+                router.push("/");
+            } else {
+                router.push("/pages/user/newLearning");
+            }
+        } catch (error) {
+            console.error("שגיאה במהלך בדיקת הקורס הפעיל:", error);
+            alert("אירעה שגיאה, נסה שוב מאוחר יותר.");
+        }
     };
 
     return (
+
         <nav className="bg-gray-800 p-4">
             <div className="flex justify-between items-center">
                 {/* פריט ניווט לפרופיל אישי */}
@@ -31,7 +51,7 @@ const Navbar: React.FC = () => {
                     פרופיל אישי
                 </button>
 
-                {/* כאן תוכל להוסיף אפשרויות נוספות כמו התחברות/התנתקות */}
+                {/* אפשרויות נוספות */}
                 <div className="flex space-x-4 text-white">
                     {!isAuthenticated ? (
                         <Link href="/pages/user/login">
@@ -45,15 +65,21 @@ const Navbar: React.FC = () => {
                             התנתקות
                         </button>
                     )}
-                    <Link href="/pages/user/new-learning">
+                    <button
+                        onClick={handleNewLearningClick}
+                        className="text-white"
+                    >
                         למידה חדשה
-                    </Link>
+                    </button>
+
+                    <button
+                        
+                        className="text-white"
+                    >
+                        אודות
+                    </button>
                 </div>
             </div>
-
-
-            <ProfileComponent openBar={showProfile} setOpenBar={setShowProfile} />
-
         </nav>
     );
 }

@@ -15,13 +15,17 @@ const IUserSchema: Schema<IUser> = new Schema({
     gender: { type: String, enum: Object.values(Gender), required: true },
     role: { type: String, enum: Object.values(Role), default: Role.User },
     fields: { type: [fieldSchema], default: [] },
+    learningApprovalPending: { 
+        type: String ,
+        default: null 
+      },
     courses: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course',
         }], default: []
     },
-    refusalCnt: { type: Number },
+    refusalCnt: { type: Number , default:0},
     typeUser: {
         type: {
             religionLevel: {

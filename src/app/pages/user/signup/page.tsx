@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,22 +8,18 @@ import { Gender } from "@/app/types/enums/gender";
 import { ReligionLevel } from "../../../types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import Button from "@/app/components/Button";
-// import FieldsInputList from "@/app/components/FieldsInputList";
-// import IField from "@/app/types/IField";
 import { signupUser } from "@/app/actions/userActions";
 import { useUserStore } from "@/app/store/userStore";
-import IFieldToDB from "@/app/types/IFieldToDB";
-import axios from "axios";
 import IUser from "@/app/types/IUser";
+import useDataStore from "@/app/store/fieldsStore";
 
-const SignupForm = () => {
+const SignupForm = ()=> {
 
+    const [selectedMainField, setSelectedMainField] = useState<string>("");
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
-
-    // const [fields, setFields] = useState<IField[]>([]);
-    const [fieldsData, setFieldsData] = useState<IFieldToDB[]>([]);
-    const [selectedMainField, setSelectedMainField] = useState<string>("");
+    const fieldsData = useDataStore(state => state.fields);
+    console.log("fieldsData", fieldsData);
 
 
 
@@ -45,21 +41,6 @@ const SignupForm = () => {
             }
         },
     });
-
-    useEffect(() => {
-        const fetchFields = async () => {
-            try {
-                const response = await axios.post('/api/fields/getAllFields');
-                if (response.data.success) {
-                    setFieldsData(response.data.fields);
-                }
-            } catch (error) {
-                console.error('Failed to fetch fields:', error);
-            }
-        };
-        fetchFields();
-    }, []);
-
 
 
     const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
@@ -86,6 +67,7 @@ const SignupForm = () => {
     };
 
     return (
+
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4 space-y-4">
             <div>
                 <label htmlFor="firstName" className="block font-medium">First Name</label>
@@ -163,17 +145,8 @@ const SignupForm = () => {
                 </select>
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
-            {/* <div>
-                <FieldsInputList fields={fields}
-                    setFields={(newFields) => {
-                        setFields(newFields);
-                        setValue("fields", fields);
 
-                    }}
-                />
-                {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
 
-            </div> */}
             <div>
                 <label htmlFor="mainField" className="block font-medium">Main Field</label>
                 <select
@@ -215,25 +188,6 @@ const SignupForm = () => {
             </div>
 
 
-            {/* {selectedMainField && fieldsData.length > 0 ? (
-                fieldsData
-                    .filter((field) => field.mainField === selectedMainField)
-                    .map((field) => {
-                        // בודק אם יש תתי שדות לפני המיפוי
-                        if (field.subFields && field.subFields.length > 0) {
-                            return field.subFields.map((sub) => (
-                                <option key={sub} value={sub}>
-                                    {sub}
-                                </option>
-                            ));
-                        } else {
-                            // אם אין תתי שדות, מציג אופציה ריקה או הודעת שגיאה
-                            return <option key="no-subfields" disabled>אין תתי שדות זמינים</option>;
-                        }
-                    })
-            ) : (
-                <option disabled>בחר שדה ראשי</option>
-            )} */}
             <div>
                 <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                 <select
