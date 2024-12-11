@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { verifyOTP } from "@/app/lib/otp/verifyCode";
+import { verifyOTP } from "@/app/actions/userActions";
 
 const VerifyOtpForm = () => {
     const router = useRouter();

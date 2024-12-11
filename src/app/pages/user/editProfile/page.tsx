@@ -17,7 +17,7 @@ import axios from "axios";
 
 const EditUserForm = () => {
     const user = useUserStore((st) => st.user);
-    //const [fields, setFields] = useState<IField[] | undefined>(user?.fields);
+    const [fields, setFields] = useState<IFieldToDB[] | undefined>(user?.fields);
     const [fieldsData, setFieldsData] = useState<IFieldToDB[]>([]);
     const [selectedMainField, setSelectedMainField] = useState<string>("");
 
@@ -30,7 +30,7 @@ const EditUserForm = () => {
             age: user?.age || 0,
             email: user?.email || "",
             gender: user?.gender || Gender.Other,
-            fields: user?.fields || [{ mainField: "", subField: "" }],
+            fields: user?.fields || [{ mainField: "", subFields: [""] }],
             typeUser: user?.typeUser || {
                 politicalAffiliation: PoliticalAffiliation.HardRight,
                 religionLevel: ReligionLevel.Other,
@@ -60,8 +60,8 @@ const EditUserForm = () => {
                 const updatedUser = await editUser(String(user._id), data);
                 if (updatedUser)
                     console.log("user ypdated", updatedUser);
-
-                // setUser(updatedUser);
+//זאת ההכנסה לתוך הסטור של היוזר המעודכן, 
+                //setUser(updatedUser);
             }
             alert("User updated successfully!\n" + data);
 
@@ -150,7 +150,7 @@ const EditUserForm = () => {
                 </select>
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
-            {/* <div>
+            <div>
                 <FieldsInputList fields={fields}
                     setFields={(newFields) => {
                         setFields(newFields);
@@ -160,8 +160,8 @@ const EditUserForm = () => {
                 />
                 {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
 
-            </div> */}
-            <div>
+            </div>
+            {/* <div>
                 <label htmlFor="mainField" className="block font-medium">Main Field</label>
                 <select
                     id="mainField"
@@ -199,7 +199,7 @@ const EditUserForm = () => {
                         )}
                 </select>
                 {errors.fields?.[0]?.subField && <p className="text-red-500">{errors.fields[0].subField.message}</p>}
-            </div>
+            </div> */}
             <div>
                 <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                 <select
