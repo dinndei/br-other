@@ -1,30 +1,29 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link'; // For navigation to the edit page
 import { FaPen } from 'react-icons/fa'; // Pencil icon
 import { useUserStore } from '../store/userStore';
 import Image from 'next/image';
+import IProfileComponentProps from '../types/IProfileComponentProps';
 
-const ProfileComponent: React.FC = () => {
+const UserProfile: React.FC<IProfileComponentProps>= ({openBar, setOpenBar }) => {
 
-    const [openBar, setOpenBar] = useState(false);
-    const toggleOpenBar = () => {
-        setOpenBar(prev => !prev);
-    }
+   
 
     const { user, isAuthenticated } = useUserStore();
 
     // Show loading or fallback UI if the user is not authenticated
-    if (!user || !isAuthenticated) {
+    if (!isAuthenticated) {
         return <div>Loading...</div>;
     }
 
     return (
 
         <div>
-            <button onClick={toggleOpenBar}>user</button>
-            {openBar &&
+            {openBar && user&& 
                 <div className="fixed top-5 right-5 p-4 bg-white rounded-lg shadow-lg w-64">
+            <button onClick={()=>{setOpenBar(false)}}>X</button>
+
                     <div className="flex flex-col">
                         {/* Profile Image */}
                         <div className="w-24 h-24 mb-4 relative">
@@ -61,4 +60,4 @@ const ProfileComponent: React.FC = () => {
     );
 };
 
-export default ProfileComponent;
+export default UserProfile;

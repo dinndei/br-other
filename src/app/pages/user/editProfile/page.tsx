@@ -2,14 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupSchema, SignupFormData } from "@/app/zod/signInSchema";
 import { useUserStore } from "@/app/store/userStore";
 import { editUser } from "@/app/actions/userActions";
 import Button from "@/app/components/Button";
 import { ReligionLevel } from "@/app/types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { Gender } from "@/app/types/enums/gender";
-import FieldsInputList from "@/app/components/FieldsInputList";
+// import FieldsInputList from "@/app/components/FieldsInputList";
 //import IField from "@/app/types/IField";
 import { EditProfFormData, editProfSchema } from "@/app/zod/editProfSchema";
 import IFieldToDB from "@/app/types/IFieldToDB";
@@ -54,7 +53,7 @@ const EditUserForm = () => {
 
 
 
-    const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+    const onSubmit: SubmitHandler<EditProfFormData> = async (data) => {
         try {
             if (user) {
                 const updatedUser = await editUser(String(user._id), data);

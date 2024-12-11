@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import PasswordInputProps from '../types/IPasswordInputProps';
+import { FieldValues } from 'react-hook-form';
 
-const PasswordInput : React.FC<PasswordInputProps> = ({ register, name, placeholder, error }) => {
+const PasswordInput  = <T extends FieldValues>({ register, name, placeholder, error }: PasswordInputProps<T>) => {
   const [showPassword, setShowPassword] = useState(false); 
 
   const togglePasswordVisibility = () => {
