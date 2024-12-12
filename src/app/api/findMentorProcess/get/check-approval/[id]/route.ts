@@ -1,6 +1,6 @@
 import { connectToDB } from '@/app/DB/connection/connectToDB';
 import LearningRequest from '@/app/DB/models/LearningRequestModel';
-import { NextRequest, NextResponse } from 'next/server';
+import {  NextResponse } from 'next/server';
 
 export async function GET({ params }: { params: { requestId: string } }) {
     const requestId  = params;

@@ -1,5 +1,7 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, { useEffect,
+    //  useState 
+    } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserStore } from "@/app/store/userStore";
@@ -11,16 +13,18 @@ import { Gender } from "@/app/types/enums/gender";
 // import FieldsInputList from "@/app/components/FieldsInputList";
 //import IField from "@/app/types/IField";
 import { EditProfFormData, editProfSchema } from "@/app/zod/editProfSchema";
-import IFieldToDB from "@/app/types/IFieldToDB";
-import axios from "axios";
+// import IFieldToDB from "@/app/types/IFieldToDB";
+// import axios from "axios";
 
 const EditUserForm = () => {
     const user = useUserStore((st) => st.user);
-    const [fields, setFields] = useState<IFieldToDB[] | undefined>(user?.fields);
-    const [fieldsData, setFieldsData] = useState<IFieldToDB[]>([]);
-    const [selectedMainField, setSelectedMainField] = useState<string>("");
+    // const [fields, setFields] = useState<IFieldToDB[] | undefined>(user?.fields);
+    // const [fieldsData, setFieldsData] = useState<IFieldToDB[]>([]);
+    // const [selectedMainField, setSelectedMainField] = useState<string>("");
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<EditProfFormData>({
+    const { register, handleSubmit, formState: { errors },
+    //  setValue 
+    } = useForm<EditProfFormData>({
         resolver: zodResolver(editProfSchema),
         defaultValues: {
             firstName: user?.firstName || "",
@@ -29,7 +33,7 @@ const EditUserForm = () => {
             age: user?.age || 0,
             email: user?.email || "",
             gender: user?.gender || Gender.Other,
-            fields: user?.fields || [{ mainField: "", subFields: [""] }],
+            // fields: user?.fields || [{ mainField: "", subFields: [""] }],
             typeUser: user?.typeUser || {
                 politicalAffiliation: PoliticalAffiliation.HardRight,
                 religionLevel: ReligionLevel.Other,
@@ -40,10 +44,10 @@ const EditUserForm = () => {
     useEffect(() => {
         const fetchFields = async () => {
             try {
-                const response = await axios.post('/api/fields/getAllFields');
-                if (response.data.success) {
-                    setFieldsData(response.data.fields);
-                }
+                // const response = await axios.post('/api/fields/getAllFields');
+                // if (response.data.success) {
+                //     setFieldsData(response.data.fields);
+                // }
             } catch (error) {
                 console.error('Failed to fetch fields:', error);
             }
@@ -70,13 +74,13 @@ const EditUserForm = () => {
         }
     };
 
-    const handleMainFieldChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedField = e.target.value;
-        setSelectedMainField(selectedField);
-        setValue("fields.0.mainField", selectedField); // Set the main field value directly
-        setValue("fields.0.subField", "");
+    // const handleMainFieldChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    //     const selectedField = e.target.value;
+    //     setSelectedMainField(selectedField);
+    //     setValue("fields.0.mainField", selectedField); // Set the main field value directly
+    //     setValue("fields.0.subField", "");
 
-    };
+    // };
 
 
 
@@ -149,7 +153,7 @@ const EditUserForm = () => {
                 </select>
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
-            <div>
+            {/* <div>
                 <FieldsInputList fields={fields}
                     setFields={(newFields) => {
                         setFields(newFields);
@@ -159,7 +163,7 @@ const EditUserForm = () => {
                 />
                 {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
 
-            </div>
+            </div> */}
             {/* <div>
                 <label htmlFor="mainField" className="block font-medium">Main Field</label>
                 <select
@@ -179,7 +183,7 @@ const EditUserForm = () => {
             </div>
 
             {/* Sub Field */}
-            <div>
+            {/* <div>
                 <label htmlFor="subField" className="block font-medium">Sub Field</label>
                 <select
                     id="subField"
@@ -198,7 +202,7 @@ const EditUserForm = () => {
                         )}
                 </select>
                 {errors.fields?.[0]?.subField && <p className="text-red-500">{errors.fields[0].subField.message}</p>}
-            </div> 
+            </div>  */}
             <div>
                 <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                 <select

@@ -12,14 +12,14 @@ import { signupUser } from "@/app/actions/userActions";
 import { useUserStore } from "@/app/store/userStore";
 import IUser from "@/app/types/IUser";
 import useDataStore from "@/app/store/fieldsStore";
-import FieldsInputList from "@/app/components/FieldsInputList";
+// import FieldsInputList from "@/app/components/FieldsInputList";
 
 const SignupForm = () => {
 
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
     const fieldsData = useDataStore(state => state.fields);
-    const setFields = useDataStore(state => state.setFields);
+    // const setFields = useDataStore(state => state.setFields);
 
     console.log("fieldsData", fieldsData);
 
@@ -140,9 +140,9 @@ const SignupForm = () => {
                 </div>
 
 
-                <div>
+                {/* <div>
                     <FieldsInputList fields={fieldsData} setFields={setFields } />
-                </div>
+                </div> */}
                 <div>
                     <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                     <select
