@@ -6,7 +6,7 @@ export const loginUser = async (userName: string, password: string) => {
     console.log("comming to action", { userName, password });
 
     try {
-        const response = await axios.post('/api/user/login', { userName, password });
+        const response = await axios.post('/api/user/login',{userName, password});
         console.log("response.data", response.data);
 
         return response.data;
