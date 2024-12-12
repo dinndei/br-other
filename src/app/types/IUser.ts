@@ -16,7 +16,7 @@ export default interface IUser extends Document {
     role: Role,
     fields: {
         mainField: string;
-        subField?: string;
+        subField?: string[];
     }[];
     learningApprovalPending:string | null;
     courses: mongoose.Types.ObjectId[];

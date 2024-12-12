@@ -12,10 +12,10 @@ import { signupUser } from "@/app/actions/userActions";
 import { useUserStore } from "@/app/store/userStore";
 import IUser from "@/app/types/IUser";
 import useDataStore from "@/app/store/fieldsStore";
+import FieldsInputList from "@/app/components/FieldsInputList";
 
 const SignupForm = ()=> {
 
-    const [selectedMainField, setSelectedMainField] = useState<string>("");
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
     const fieldsData = useDataStore(state => state.fields);
@@ -23,7 +23,7 @@ const SignupForm = ()=> {
 
 
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<SignupFormData>({
+    const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
         mode: "onChange",
         defaultValues: {
@@ -34,7 +34,7 @@ const SignupForm = ()=> {
             email: "",
             password: "",
             gender: Gender.Male, // או Gender.Female לפי ערך מתאים
-            fields: [{ mainField: "", subField: "" }], // לפחות שדה אחד
+            fields: [{ mainField: "", subFields: "" }], // לפחות שדה אחד
             typeUser: {
                 religionLevel: ReligionLevel.Orthodox,
                 politicalAffiliation: PoliticalAffiliation.CenterRight,
@@ -58,13 +58,7 @@ const SignupForm = ()=> {
 
     };
 
-    const handleMainFieldChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedField = e.target.value;
-        setSelectedMainField(selectedField);
-        setValue("fields.0.mainField", selectedField); // Set the main field value directly
-        setValue("fields.0.subField", "");
-
-    };
+    
 
     return (
 
@@ -145,49 +139,11 @@ const SignupForm = ()=> {
                 </select>
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
+ 
 
-
-            <div>
-                <label htmlFor="mainField" className="block font-medium">Main Field</label>
-                <select
-                    id="mainField"
-                    {...register("fields.0.mainField")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                    onChange={handleMainFieldChange}
-                >
-                    <option value="">Select Main Field</option>
-                    {fieldsData.map((field) => (
-                        <option key={field.mainField} value={field.mainField}>
-                            {field.mainField}
-                        </option>
-                    ))}
-                </select>
-                {errors.fields?.[0]?.mainField && <p className="text-red-500">{errors.fields[0].mainField.message}</p>}
-            </div>
-
-            {/* Sub Field */}
-            <div>
-                <label htmlFor="subField" className="block font-medium">Sub Field</label>
-                <select
-                    id="subField"
-                    {...register("fields.0.subField")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                >
-                    <option value="">Select Sub Field</option>
-                    {fieldsData
-                        .filter((field) => field.mainField === selectedMainField)
-                        .flatMap((field) =>
-                            field.subFields.map((sub) => (
-                                <option key={sub} value={sub}>
-                                    {sub}
-                                </option>
-                            ))
-                        )}
-                </select>
-                {errors.fields?.[0]?.subField && <p className="text-red-500">{errors.fields[0].subField.message}</p>}
-            </div>
-
-
+<div>
+    <FieldsInputList fields={fieldsData} setFields={}/>
+</div>
             <div>
                 <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                 <select

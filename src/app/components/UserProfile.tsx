@@ -6,12 +6,9 @@ import { useUserStore } from '../store/userStore';
 import Image from 'next/image';
 import IProfileComponentProps from '../types/IProfileComponentProps';
 
-const ProfileComponent: React.FC<IProfileComponentProps>= ({openBar, setOpenBar }) => {
+const UserProfile: React.FC<IProfileComponentProps>= ({openBar, setOpenBar }) => {
 
-    // const [openBar, setOpenBar] = useState(false);
-    // const toggleOpenBar = () => {
-    //     setOpenBar(prev => !prev);
-    // }
+   
 
     const { user, isAuthenticated } = useUserStore();
 
@@ -23,9 +20,10 @@ const ProfileComponent: React.FC<IProfileComponentProps>= ({openBar, setOpenBar 
     return (
 
         <div>
-            {/* <button onClick={toggleOpenBar}>user</button> */}
             {openBar && user&& 
                 <div className="fixed top-5 right-5 p-4 bg-white rounded-lg shadow-lg w-64">
+            <button onClick={()=>{setOpenBar(false)}}>X</button>
+
                     <div className="flex flex-col">
                         {/* Profile Image */}
                         <div className="w-24 h-24 mb-4 relative">
@@ -62,4 +60,4 @@ const ProfileComponent: React.FC<IProfileComponentProps>= ({openBar, setOpenBar 
     );
 };
 
-export default ProfileComponent;
+export default UserProfile;

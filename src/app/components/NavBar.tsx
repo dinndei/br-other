@@ -2,10 +2,10 @@
 'use client'
 import { useState } from 'react';
 import Link from 'next/link';
-import ProfileComponent from '../components/UserProfile'
 import { useUserStore } from '../store/userStore';
 import { useRouter } from 'next/navigation';
 import { checkActivCourse } from '../actions/userActions';
+import UserProfile from './UserProfile';
 
 
 const Navbar: React.FC = () => {
@@ -50,6 +50,9 @@ const Navbar: React.FC = () => {
                 >
                     פרופיל אישי
                 </button>
+                {showProfile&&
+                <UserProfile openBar={showProfile} setOpenBar={setShowProfile}/>
+}
 
                 {/* אפשרויות נוספות */}
                 <div className="flex space-x-4 text-white">
