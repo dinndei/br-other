@@ -198,7 +198,7 @@ const EditUserForm = () => {
                         )}
                 </select>
                 {errors.fields?.[0]?.subField && <p className="text-red-500">{errors.fields[0].subField.message}</p>}
-            </div> */}
+            </div> 
             <div>
                 <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                 <select
