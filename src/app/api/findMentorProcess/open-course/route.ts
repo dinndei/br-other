@@ -3,8 +3,7 @@ import UserModel from '@/app/DB/models/UserModel';
 import CourseModel from '@/app/DB/models/CourseModel';
 import LearningRequestModel from '@/app/DB/models/LearningRequestModel';
 import { NextRequest, NextResponse } from 'next/server';
-import mongoose, { Types } from 'mongoose';
-import IUser from '@/app/types/IUser';
+import mongoose from 'mongoose';
 
 export async function POST(req: NextRequest) {
     const { student, mentor, request } = await req.json();
