@@ -1,5 +1,4 @@
 'use client'
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useUserStore } from '@/app/store/userStore';
 import { approveCourse, declineCourse, getRequestByID, getStudentByID } from '@/app/actions/findMentorAction';
@@ -7,7 +6,6 @@ import IUser from '@/app/types/IUser';
 import ILearningRequest from '@/app/types/ILearningRequest';
 
 const ApproveLearningPage = () => {
-    const router = useRouter();
     const [requestDetails, setRequestDetails] = useState<ILearningRequest>();
     const [requestId, setRequestId] = useState<string>('');
     const [requesterId, setRequesterId] = useState<string>('');
@@ -57,6 +55,8 @@ const ApproveLearningPage = () => {
             setError('Failed to load request details.');
         } finally {
             setLoading(false);
+            console.log(loading);
+            
         }
     };
 
@@ -79,10 +79,10 @@ const ApproveLearningPage = () => {
 
     const handleApproval = async (approved: boolean) => {
         if (approved) {
-            const response = await approveCourse(studentDetails! ,mentor!, requestDetails!)
+            await approveCourse(studentDetails! ,mentor!, requestDetails!)
         }
         else{
-            const response = await declineCourse(requestDetails!)
+            await declineCourse(requestDetails!)
         }
     };
 

@@ -8,7 +8,7 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields }) 
         { mainField: "Health", subFields: ["Nutrition", "Mental Health", "Fitness"] },
         { mainField: "Education", subFields: ["Math", "Science", "History"] },
     ];
-//איפה אמור להיות הקריאה לפילדס?
+    //איפה אמור להיות הקריאה לפילדס?
 
     const handleMainFieldChange = (index: number, value: string) => {
         const updatedFields = [...fields];
@@ -83,6 +83,7 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields }) 
 
 
                         </select>
+                       
                     </div>
                     <button
                         type="button"
@@ -101,6 +102,9 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields }) 
                 +
             </button>
         </div>
+
+
+
     );
 };
 

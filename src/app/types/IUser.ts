@@ -3,7 +3,6 @@ import { Gender } from "./enums/gender";
 import { ReligionLevel } from "./enums/ReligionLevel"
 import { PoliticalAffiliation } from "./enums/politicalAffiliation";
 import { Role } from "./enums/role";
-import ILearningRequest from "./ILearningRequest";
 
 export default interface IUser extends Document {
     firstName: string,
