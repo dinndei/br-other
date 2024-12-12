@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import IUser from "../types/IUser";
 import ILearningRequest from "../types/ILearningRequest";
-import { request } from "http";
 
 export const saveLearningRequest = async (requesterId: string, mainField: string, subField: string) => {
     console.log("comming to action with:", requesterId, mainField, subField);
@@ -49,7 +48,7 @@ export const processMentorsApproval = async (mentors: IUser[], request: ILearnin
     let approved = false;
     const timeout = 10 * 60 * 1000;  // 10 דקות המתנה
 
-    for (let mentor of mentors) {
+    for (const mentor of mentors) {
         try {
             await sendApprovalRequest(mentor, request);
             console.log(`Approval request sent to: ${mentor.email}`);
