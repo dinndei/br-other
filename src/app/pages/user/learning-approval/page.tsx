@@ -4,6 +4,7 @@ import { useUserStore } from '@/app/store/userStore';
 import { approveCourse, declineCourse, getRequestByID, getStudentByID } from '@/app/actions/findMentorAction';
 import IUser from '@/app/types/IUser';
 import ILearningRequest from '@/app/types/ILearningRequest';
+import { useRouter } from 'next/navigation';
 
 const ApproveLearningPage = () => {
     const [requestDetails, setRequestDetails] = useState<ILearningRequest>();
@@ -13,6 +14,8 @@ const ApproveLearningPage = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    const route = useRouter();
 
     const mentor = useUserStore((state) => state.user);
     // setRequestId(mentor!.learningApprovalPending!)
@@ -79,10 +82,14 @@ const ApproveLearningPage = () => {
 
     const handleApproval = async (approved: boolean) => {
         if (approved) {
-            await approveCourse(studentDetails! ,mentor!, requestDetails!)
+            const response = await approveCourse(studentDetails! ,mentor!, requestDetails!)
+            console.log(response);
+            route.push(`/pages/user/activCourse/${response._id}`)
+
         }
         else{
             await declineCourse(requestDetails!)
+            route.push('/')
         }
     };
 

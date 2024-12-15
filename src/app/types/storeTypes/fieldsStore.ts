@@ -5,4 +5,5 @@ export interface DataStore {
     loading: boolean;
     setFields: (fields: IFieldToDB[]) => void;
     setLoading: (loading: boolean) => void;
+    fetchFields: () => Promise<IFieldToDB[]>;
 }
