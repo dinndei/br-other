@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import IUser from "../types/IUser";
 import ILearningRequest from "../types/ILearningRequest";
-import { request } from "http";
 
 export const saveLearningRequest = async (requesterId: string, mainField: string, subField: string) => {
     console.log("comming to action with:", requesterId, mainField, subField);

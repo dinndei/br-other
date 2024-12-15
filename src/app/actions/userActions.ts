@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from "axios";
 import IUser from "../types/IUser";
-import ILearningRequest from "../types/ILearningRequest";
 
 export const loginUser = async (userName: string, password: string) => {
     console.log("comming to action", { userName, password });
