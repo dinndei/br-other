@@ -1,6 +1,5 @@
 'use client'
-import useFieldsDataStore from '@/app/store/fieldsStore';
-import { findMentor, saveLearningRequest } from '@/app/actions/findMentorAction';
+import { findMentors, saveLearningRequest } from '@/app/actions/findMentorAction';
 import useDataStore from '@/app/store/fieldsStore';
 import { useUserStore } from '@/app/store/userStore';
 import IUser from '@/app/types/IUser';
@@ -19,14 +18,14 @@ const NewLearningPage: React.FC = () => {
 
     const router = useRouter();
 
-    const { control, handleSubmit, setValue, formState: { } } = useForm();
+    const { control, handleSubmit, setValue, formState: {  } } = useForm();
     console.log(mentors);
 
 
-    const { fieldsData, fetchFieldsData, setFieldsData } = useFieldsDataStore();
+    const { fieldsData, fetchFieldsData, setFieldsData } = useDataStore();
 
     useEffect(() => {
-        const savedFields = JSON.parse(localStorage.getItem('fieldsData') || '[]');
+        const savedFields = JSON.parse(localStorage.getItem('fields') || '[]');
         if (savedFields.length > 0) {
             setFieldsData(savedFields);
         } else {
@@ -61,7 +60,7 @@ const NewLearningPage: React.FC = () => {
                 if (saveRequestResponse.status == 201) {
                     console.log("בקשה נשמרה בהצלחה:", saveRequestResponse);
 
-                    const response = await findMentor(saveRequestResponse.data.request);
+                    const response = await findMentors(saveRequestResponse.data.request);
                     console.log("Mentors found:", response);
 
                     setMentors(response);
@@ -102,7 +101,7 @@ const NewLearningPage: React.FC = () => {
                                         className="w-full px-4 py-2 border rounded-lg mt-2 text-black bg-white"
                                     >
                                         <option value="">בחר תחום</option>
-                                        {fields.map((field) => (
+                                        {fieldsData.map((field) => (
 
                                             <option key={field.mainField} value={field.mainField} >
                                                 {field.mainField}
@@ -132,7 +131,7 @@ const NewLearningPage: React.FC = () => {
                                         disabled={!selectedMainField}
                                     >
                                         <option value="">בחר תת-תחום</option>
-                                        {fields
+                                        {fieldsData
                                             .filter((field) => field.mainField === selectedMainField)
                                             .flatMap((field) =>
                                                 field.subFields.map((sub) => (
