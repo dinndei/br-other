@@ -2,8 +2,6 @@
 import IUser from "@/app/types/IUser";
 import mongoose, { Model, Schema } from "mongoose";
 import fieldSchema from "./FieldModel";
-import { ReligionLevel } from "@/app/types/enums/ReligionLevel";
-import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { Gender } from "@/app/types/enums/gender";
 import { Role } from "@/app/types/enums/role";
 
@@ -17,23 +15,25 @@ const IUserSchema: Schema<IUser> = new Schema({
     gender: { type: String, enum: Object.values(Gender), required: true },
     role: { type: String, enum: Object.values(Role), default: Role.User },
     fields: { type: [fieldSchema], default: [] },
+    learningApprovalPending: { 
+        type: String ,
+        default: null 
+      },
     courses: {
         type: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Course',
         }], default: []
     },
-    refusalCnt: { type: Number },
+    refusalCnt: { type: Number , default:0},
     typeUser: {
         type: {
             religionLevel: {
                 type: String,
-                enum: Object.values(ReligionLevel),
                 required: true
             },
             politicalAffiliation: {
                 type: String,
-                enum: Object.values(PoliticalAffiliation),
                 required: true
             }
         },

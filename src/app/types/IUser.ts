@@ -17,6 +17,7 @@ export default interface IUser extends Document {
         mainField: string;
         subField?: string;
     }[];
+    learningApprovalPending:string | null;
     courses: mongoose.Types.ObjectId[];
     refusalCnt: number,
     typeUser: {

@@ -5,9 +5,9 @@ export const loginUser = async (userName: string, password: string) => {
     console.log("comming to action", { userName, password });
 
     try {
-        const response = await axios.post('/api/user/login', { userName, password });
+        const response = await axios.post('/api/user/login',{userName, password});
         console.log("response.data", response.data);
-        
+
         return response.data;
     } catch (error) {
 
@@ -22,6 +22,8 @@ export const loginUser = async (userName: string, password: string) => {
 export const signupUser = async (user: Partial<IUser>): Promise<Partial<IUser>> => {
     try {
         const response: AxiosResponse<Partial<IUser>> = await axios.post('/api/user/signup', { user });
+        console.log("res.data",response.data);
+        
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -48,7 +50,7 @@ export const findUserByUsername = async (userName: string) => {
 }
 
 export const sendOtpCode = async (email: string) => {
-    console.log("comming to action", { email });
+    console.log("comming to action", email);
 
     try {
         const response: AxiosResponse = await axios.post('/api/user/sendOtp', { email });
@@ -103,7 +105,7 @@ export const resetPassword = async (username: string, newPassword: string) => {
 
 export const editUser = async (userId: string, user: Partial<IUser>): Promise<Partial<IUser>> => {
     try {
-        const response: AxiosResponse<Partial<IUser>> = await axios.put('/api/user/edit-profile', 
+        const response: AxiosResponse<Partial<IUser>> = await axios.put('/api/user/edit-profile',
             { userId, ...user });
         return response.data;
     } catch (error) {
@@ -113,3 +115,23 @@ export const editUser = async (userId: string, user: Partial<IUser>): Promise<Pa
         throw new Error("Unexpected error occurred during user update");
     }
 };
+
+export const checkActivCourse = async (user: Partial<IUser>) :Promise<boolean>=> {
+    console.log("in action", user);
+
+    try {
+        const response: AxiosResponse = await axios.post('/api/user/check-activ-course',
+            { user });
+
+        return response.data.hasActiveCourse
+        ;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || "Failed to check activ course");
+        }
+        throw new Error("Unexpected error occurred during check activ course");
+    }
+};
+
+
+

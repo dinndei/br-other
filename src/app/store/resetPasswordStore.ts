@@ -3,8 +3,8 @@ import {UserForResetStore } from '../types/storeTypes/usernameForReset';
 
 
 export const useUserForResetStore = create<UserForResetStore>((set) => ({
-    usernameForReset: null, // ערך ברירת המחדל
+    usernameForReset: null, 
     setUsernameForReset: (usernameForReset) => set({ usernameForReset: usernameForReset }),
-    emailForReset: null, // ערך ברירת המחדל
+    emailForReset: null, 
     setEmailForReset: (emailForReset) => set({ emailForReset: emailForReset })
 }));

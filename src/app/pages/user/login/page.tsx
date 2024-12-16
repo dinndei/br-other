@@ -11,7 +11,6 @@ import { useUserStore } from '@/app/store/userStore';
 const LoginPage = () => {
     const router = useRouter();
     const [step, setStep] = useState(1);
-    //const [error, setError] = useState('');
     const setUser = useUserStore((state) => state.setUser);
     const user = useUserStore((state) => state.user);
 
@@ -25,10 +24,10 @@ const LoginPage = () => {
 
 
     const handleLoginSubmit = async (data: UserFormData) => {
-        console.log("comming", data.username,data.password );
-        
+        console.log("comming", data.username, data.password);
+
         const response = await loginUser(data.username, data.password);
-        if (response.status==200) {
+        if (response.status == 200) {
             console.log("response.user", response.user);
 
             setUser(response.user);
@@ -38,13 +37,13 @@ const LoginPage = () => {
                 if (response.success) {
                     setStep(2);
                 }
-                
+
             }
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             catch (error) {
                 console.error('לא נמצא שם משתמש . אנא נסה שוב.');
             }
-            
+
         } else {
             alert(response.error);
         }
@@ -52,20 +51,28 @@ const LoginPage = () => {
 
     // שלב שני: אימות קוד
     const handleOtpSubmit = async (data: OtpFormData) => {
-        
+
         console.log("data.otp", data.otp);
         console.log("user.email", user!.email);
 
 
         try {
-            const response = await verifyOTP(user!.email, data.otp)
+            const response = await verifyOTP(user!.email!, data.otp)
             if (response.success) {
-                router.push('/'); // מעבר לאחר התחברות            }
-             } 
+                if (user!.learningApprovalPending !== null) {
+                    alert("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.");
+                    router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
+                } else {
+                    router.push('/'); // מעבר לדף הבית אם אין בקשת למידה ממתינה
+                }
+            }
+            else {
+                alert("קוד ה-OTP שגוי. אנא נסה שוב.");
+            }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (error) {
-            console.error(otpErrors.otp) 
+            console.error(otpErrors.otp)
         }
     };
 
@@ -88,7 +95,7 @@ const LoginPage = () => {
                             />
                             {userErrors.username && <p className="text-red-500 text-sm">{userErrors.username.message}</p>}
                         </div>
-                        <PasswordInput
+                        <PasswordInput<UserFormData>
                             name="password"
                             placeholder="הכנס סיסמה"
                             register={registerUser}
@@ -103,6 +110,24 @@ const LoginPage = () => {
                                 התחבר
                             </button>
                         </div>
+
+                        <div className="flex justify-between mt-4">
+                            <button
+                                type="button"
+                                onClick={() => router.push('/pages/user/signup')}
+                                className="text-indigo-500 underline"
+                            >
+                                צור חשבון חדש
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => router.push('/pages/user/resetPassword')}
+                                className="text-indigo-500 underline"
+                            >
+                                שכחתי סיסמה
+                            </button>
+                        </div>
+
                     </form>
                 )}
 

@@ -15,7 +15,8 @@ const ICourseSchema: Schema<ICourse> = new Schema({
         required: true
     },
     beginingDate: { type: Date, required: true },
-    feild: { type: fieldSchema }
+    feild: { type: fieldSchema },
+    isActiv: { type:Boolean , required:true}
 
 })
 

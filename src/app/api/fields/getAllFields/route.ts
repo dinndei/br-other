@@ -1,18 +1,20 @@
 import { connectToDB } from "@/app/DB/connection/connectToDB";
 import Field from "@/app/DB/models/FieldToDBModel"; 
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function GET() {
     try {
         await connectToDB();
 
-        // משיכת כל השדות מהמסד נתונים עם תתי השדות
-        const fields = await Field.find({}, 'mainField subFields'); // בחר את השדות הרלוונטיים
+        const fields = await Field.find({}, 'mainField subFields'); 
 
         if (!fields || fields.length === 0) {
             return NextResponse.json({ message: 'No fields found' }, { status: 404 });
         }
 
+
+        console.log("fields", fields);
+        
         const response = NextResponse.json({
             message: 'Fields retrieved successfully',
             fields: fields,

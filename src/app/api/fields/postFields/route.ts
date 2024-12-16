@@ -27,7 +27,7 @@ export async function POST() {
 
     } catch (error) {
         console.error('Error seeding fields:', error);
-        return NextResponse.json({ message: 'Error seeding fields', success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ message: 'Error seeding fields', success: false, error: error }, { status: 500 });
 
     }
 }
