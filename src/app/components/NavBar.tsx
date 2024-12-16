@@ -13,6 +13,7 @@ const Navbar: React.FC = () => {
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
 
+console.log(showProfile);
 
     const toggleProfile = () => {
         setShowProfile(prev => !prev);
