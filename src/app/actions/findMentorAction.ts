@@ -22,7 +22,7 @@ export const saveLearningRequest = async (requesterId: string, mainField: string
     }
 }
 
-export const findMentor = async (request: ILearningRequest): Promise<IUser[]> => {
+export const findMentors = async (request: ILearningRequest): Promise<IUser[]> => {
     console.log("comming to action with:", request);
 
     try {
@@ -30,6 +30,7 @@ export const findMentor = async (request: ILearningRequest): Promise<IUser[]> =>
             mainField: request.mainField,
             subField: request.subField,
         });
+
         console.log("response in action", response);
 
         processMentorsApproval(response.data, request);
@@ -47,7 +48,7 @@ export const findMentor = async (request: ILearningRequest): Promise<IUser[]> =>
 export const processMentorsApproval = async (mentors: IUser[], request: ILearningRequest) => {
     let approved = false;
     const timeout = 10 * 60 * 1000;  // 10 דקות המתנה
-//זה הכול?
+
     for (const mentor of mentors) {
         try {
             await sendApprovalRequest(mentor, request);

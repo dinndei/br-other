@@ -1,8 +1,9 @@
 import IFieldToDB from "../IFieldToDB";
 
 export interface DataStore {
-    fields: IFieldToDB[]; // נתונים שמגיעים ממונגו
+    fieldsData: IFieldToDB[]; // נתונים שמגיעים ממונגו
     loading: boolean;
-    setFields: (fields: IFieldToDB[]) => void;
+    setFieldsData: (fields: IFieldToDB[]) => void;
     setLoading: (loading: boolean) => void;
+    fetchFieldsData: () => Promise<IFieldToDB[]>;
 }

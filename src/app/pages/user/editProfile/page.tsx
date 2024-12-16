@@ -1,5 +1,8 @@
 'use client'
-import React, { useEffect, useState } from "react";
+import React, {
+    useEffect,
+    //  useState 
+} from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserStore } from "@/app/store/userStore";
@@ -11,15 +14,14 @@ import { Gender } from "@/app/types/enums/gender";
 // import FieldsInputList from "@/app/components/FieldsInputList";
 //import IField from "@/app/types/IField";
 import { EditProfFormData, editProfSchema } from "@/app/zod/editProfSchema";
-import IFieldToDB from "@/app/types/IFieldToDB";
-import axios from "axios";
+import IField from "@/app/types/IField";
+import FieldsInputList from "@/app/components/FieldsInputList";
+// import IFieldToDB from "@/app/types/IFieldToDB";
+// import axios from "axios";
 
 const EditUserForm = () => {
     const user = useUserStore((st) => st.user);
-    const [fields, setFields] = useState<IFieldToDB[] | undefined>(user?.fields);
-    const [fieldsData, setFieldsData] = useState<IFieldToDB[]>([]);
-    const [selectedMainField, setSelectedMainField] = useState<string>("");
-
+    const [fields, setFields] = React.useState<IField[]>(user?.fields);
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<EditProfFormData>({
         resolver: zodResolver(editProfSchema),
         defaultValues: {
@@ -29,7 +31,7 @@ const EditUserForm = () => {
             age: user?.age || 0,
             email: user?.email || "",
             gender: user?.gender || Gender.Other,
-            fields: user?.fields || [{ mainField: "", subFields: [""] }],
+            fields: fields,
             typeUser: user?.typeUser || {
                 politicalAffiliation: PoliticalAffiliation.HardRight,
                 religionLevel: ReligionLevel.Other,
@@ -37,20 +39,11 @@ const EditUserForm = () => {
         },
     });
 
-    useEffect(() => {
-        const fetchFields = async () => {
-            try {
-                const response = await axios.post('/api/fields/getAllFields');
-                if (response.data.success) {
-                    setFieldsData(response.data.fields);
-                }
-            } catch (error) {
-                console.error('Failed to fetch fields:', error);
-            }
-        };
-        fetchFields();
-    }, []);
 
+
+    useEffect(() => {
+        setValue("fields", fields);
+    }, [fields, setValue]);
 
 
     const onSubmit: SubmitHandler<EditProfFormData> = async (data) => {
@@ -59,7 +52,7 @@ const EditUserForm = () => {
                 const updatedUser = await editUser(String(user._id), data);
                 if (updatedUser)
                     console.log("user ypdated", updatedUser);
-//זאת ההכנסה לתוך הסטור של היוזר המעודכן, 
+                //זאת ההכנסה לתוך הסטור של היוזר המעודכן, 
                 //setUser(updatedUser);
             }
             alert("User updated successfully!\n" + data);
@@ -68,14 +61,6 @@ const EditUserForm = () => {
             console.error("Error updating user:", error);
             alert("Failed to update user");
         }
-    };
-
-    const handleMainFieldChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedField = e.target.value;
-        setSelectedMainField(selectedField);
-        setValue("fields.0.mainField", selectedField); // Set the main field value directly
-        setValue("fields.0.subField", "");
-
     };
 
 
@@ -150,55 +135,11 @@ const EditUserForm = () => {
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
             <div>
-                <FieldsInputList fields={fields}
-                    setFields={(newFields) => {
-                        setFields(newFields);
-                        setValue("fields", fields);
-
-                    }}
-                />
+                <FieldsInputList fields={fields} setFields={setFields} />
                 {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
 
             </div>
-            {/* <div>
-                <label htmlFor="mainField" className="block font-medium">Main Field</label>
-                <select
-                    id="mainField"
-                    {...register("fields.0.mainField")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                    onChange={handleMainFieldChange}
-                >
-                    <option value="">Select Main Field</option>
-                    {fieldsData.map((field) => (
-                        <option key={field.mainField} value={field.mainField}>
-                            {field.mainField}
-                        </option>
-                    ))}
-                </select>
-                {errors.fields?.[0]?.mainField && <p className="text-red-500">{errors.fields[0].mainField.message}</p>}
-            </div>
 
-            {/* Sub Field */}
-            <div>
-                <label htmlFor="subField" className="block font-medium">Sub Field</label>
-                <select
-                    id="subField"
-                    {...register("fields.0.subField")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                >
-                    <option value="">Select Sub Field</option>
-                    {fieldsData
-                        .filter((field) => field.mainField === selectedMainField)
-                        .flatMap((field) =>
-                            field.subFields.map((sub) => (
-                                <option key={sub} value={sub}>
-                                    {sub}
-                                </option>
-                            ))
-                        )}
-                </select>
-                {errors.fields?.[0]?.subField && <p className="text-red-500">{errors.fields[0].subField.message}</p>}
-            </div> */}
             <div>
                 <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
                 <select

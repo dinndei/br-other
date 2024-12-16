@@ -3,9 +3,9 @@ import IUser from "../types/IUser";
 
 export const loginUser = async (userName: string, password: string) => {
     console.log("comming to action", { userName, password });
-const body={ userName, password };
+
     try {
-        const response = await axios.post('/api/user/login',body);
+        const response = await axios.post('/api/user/login',{userName, password});
         console.log("response.data", response.data);
 
         return response.data;
@@ -22,6 +22,8 @@ const body={ userName, password };
 export const signupUser = async (user: Partial<IUser>): Promise<Partial<IUser>> => {
     try {
         const response: AxiosResponse<Partial<IUser>> = await axios.post('/api/user/signup', { user });
+        console.log("res.data",response.data);
+        
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
