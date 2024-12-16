@@ -2,7 +2,6 @@
 'use client'
 import { useState } from 'react';
 import Link from 'next/link';
-import ProfileComponent from '../components/UserProfile'
 import { useUserStore } from '../store/userStore';
 import { useRouter } from 'next/navigation';
 import { checkActivCourse } from '../actions/userActions';
@@ -13,6 +12,7 @@ const Navbar: React.FC = () => {
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
 
+console.log(showProfile);
 
     const toggleProfile = () => {
         setShowProfile(prev => !prev);

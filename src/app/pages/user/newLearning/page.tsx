@@ -18,7 +18,7 @@ const NewLearningPage: React.FC = () => {
 
     const router = useRouter();
 
-    const { control, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { control, handleSubmit, setValue, formState: {  } } = useForm();
     console.log(mentors);
 
 
