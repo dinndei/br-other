@@ -13,18 +13,21 @@ import { useUserStore } from "@/app/store/userStore";
 import IUser from "@/app/types/IUser";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
+
 // import FieldsInputList from "@/app/components/FieldsInputList";
 
 const SignupForm = () => {
 
     const router = useRouter();
+    const storeUser = useUserStore((st) => st.user);
+
     const setUser = useUserStore((state) => state.setUser);
     const [fields, setFields] = React.useState<IField[]>([{ mainField: "", subField: "" }]);
 
     const { register, setValue, handleSubmit, formState: { errors } } = useForm
-        //<SignupFormData>
+        <SignupFormData>
         ({
-            // resolver: zodResolver(signupSchema),
+             resolver: zodResolver(signupSchema),
             mode: "onChange",
             defaultValues: {
                 firstName: "",
@@ -33,8 +36,8 @@ const SignupForm = () => {
                 age: 0,
                 email: "",
                 password: "",
-                gender: Gender.Male, // או Gender.Female לפי ערך מתאים
-                fields: fields, // לפחות שדה אחד
+                gender: Gender.Male,
+                fields: fields,
                 typeUser: {
                     religionLevel: ReligionLevel.Orthodox,
                     politicalAffiliation: PoliticalAffiliation.CenterRight,
@@ -47,6 +50,9 @@ const SignupForm = () => {
         setValue("fields", fields);
     }, [fields, setValue]);
 
+useEffect(() => {
+  console.log("Updated user in store EFFECT:", storeUser);
+}, [storeUser]);
 
     const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
         console.log("data on submit", data);
@@ -60,7 +66,12 @@ const SignupForm = () => {
             if (userData)
                 console.log('User signed up successfully:', userData);
             const user = (userData as { user: IUser }).user;
+            console.log("user before store",user);
+            
             setUser(user);
+   
+            console.log("user after store",storeUser);
+
             router.push('/')
             console.log("user", user);
 
@@ -199,3 +210,4 @@ const SignupForm = () => {
 };
 
 export default SignupForm;
+ 

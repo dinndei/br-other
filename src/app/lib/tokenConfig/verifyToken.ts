@@ -4,9 +4,11 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
-export function verifyToken(token: string): JWTPayload {
+export function verifyToken(token: string | null): JWTPayload|null {
     try {
-        return jwt.verify(token, JWT_SECRET) as JWTPayload; // פענוח ואימות הטוקן
+        if (token)
+            return jwt.verify(token, JWT_SECRET) as JWTPayload;// פענוח ואימות הטוקן
+        return null;
     } catch (error) {
         throw new Error('Invalid or expired token ' + error);
     }
