@@ -1,39 +1,31 @@
 import {create} from 'zustand';
-import IUser from '@/app/types/IUser'; // Assuming you have this type defined
+import IUser from '@/app/types/IUser'; 
 import { UserStore } from '../types/storeTypes/userStore';
-
-import { Role } from '../types/enums/role';
-import { Gender } from '../types/enums/gender';
+import { verifyToken } from '../lib/tokenConfig/verifyToken';
 
 
-export const useUserStore = create<UserStore>((set) => ({
-  user: {
-    "_id":"674592cb8beb04ea47fe4287",
-    "firstName": "Estee",
-    "lastName": "Frei",
-    "userName": "Ef",
-    "age": 21,
-    "email": "e533@gmail.com",
-    "password": "1234",
-    "role":Role.User,
-    "gender":Gender.Male,
-    "fields":[{ "mainField": "teacher", "subField": "java" }]
-
-
-},
+export const useUserStore = create<UserStore>(
+  
+    (set) => ({
+  user: null,
   token: null,
-  isAuthenticated: true,
+  isAuthenticated:false,
   
   // Login action: Sets user and token, and updates the authentication status
   login: (user: Partial<IUser>, token: string) => {
+    const decodedToken = verifyToken(token); // מוודא שהטוקן תקף
     set({
-      user,
-      token,
-      isAuthenticated: true,
+      user: decodedToken ? user : null, // אם הטוקן תקף, שומר את המשתמש
+      token: decodedToken ? token : null, // שומר את הטוקן אם הוא תקף
+      isAuthenticated: !!decodedToken, // מחזיר true אם הטוקן תקף, אחרת false
     });
-    // You can set the token and user to cookies or localStorage here
-    document.cookie = `token=${token}; path=/`;
+    if (decodedToken) {
+      console.log("מאומת מאומת מאומת");
+      
+      document.cookie = `token=${token}; path=/`; // שומר את הטוקן בעוגיה
+    }
   },
+  
 
   // Logout action: Clears user and token, and updates the authentication status
   logout: () => {
@@ -47,8 +39,16 @@ export const useUserStore = create<UserStore>((set) => ({
   },
 
   // Set user directly
-  setUser: (user: Partial<IUser> | null) => set({ user }),
+  setUser: (user: Partial<IUser> | null) =>{ 
+    set((state) => {
+      console.log("State before update:", state.user);
+      console.log("User being set:", user);
+    
+      return { user };
+    });
+  },
 
   // Set token directly
   setToken: (token: string | null) => set({ token }),
-}));
+})
+);

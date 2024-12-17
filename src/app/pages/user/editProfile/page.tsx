@@ -1,8 +1,5 @@
 'use client'
-import React, {
-    useEffect,
-    //  useState 
-} from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserStore } from "@/app/store/userStore";
@@ -11,17 +8,18 @@ import Button from "@/app/components/Button";
 import { ReligionLevel } from "@/app/types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { Gender } from "@/app/types/enums/gender";
-// import FieldsInputList from "@/app/components/FieldsInputList";
-//import IField from "@/app/types/IField";
 import { EditProfFormData, editProfSchema } from "@/app/zod/editProfSchema";
 import IField from "@/app/types/IField";
 import FieldsInputList from "@/app/components/FieldsInputList";
-// import IFieldToDB from "@/app/types/IFieldToDB";
-// import axios from "axios";
+import { useRouter } from "next/navigation";
+import IUser from "@/app/types/IUser";
+
 
 const EditUserForm = () => {
-    const user = useUserStore((st) => st.user);
-    const [fields, setFields] = React.useState<IField[]>(user?.fields);
+    const router = useRouter();
+    const user = useUserStore((state) => state.user);
+    const setUser = useUserStore((state) => state.setUser);
+    const [fields, setFields] = useState<IField[]>(user?.fields||[]);
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<EditProfFormData>({
         resolver: zodResolver(editProfSchema),
         defaultValues: {
@@ -52,11 +50,16 @@ const EditUserForm = () => {
                 const updatedUser = await editUser(String(user._id), data);
                 if (updatedUser)
                     console.log("user ypdated", updatedUser);
-                //זאת ההכנסה לתוך הסטור של היוזר המעודכן, 
-                //setUser(updatedUser);
-            }
+                const newUser = (updatedUser as { user: IUser }).user;
+            setUser(newUser);
+            router.push('/')
+            console.log("user", user);
+          
             alert("User updated successfully!\n" + data);
-
+  }
+  else{
+    alert("no user to update")
+  }
         } catch (error) {
             console.error("Error updating user:", error);
             alert("Failed to update user");
