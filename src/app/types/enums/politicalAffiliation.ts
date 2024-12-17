@@ -7,3 +7,14 @@ export enum PoliticalAffiliation {
     HardLeft = "HardLeft"
 }
 
+
+// Map to numeric values
+export const politicalAffiliationValues: Record<PoliticalAffiliation, number> = {
+    [PoliticalAffiliation.HardRight]: 1,
+    [PoliticalAffiliation.Right]: 2,
+    [PoliticalAffiliation.CenterRight]: 3,
+    [PoliticalAffiliation.CenterLeft]: 4,
+    [PoliticalAffiliation.Left]: 5,
+    [PoliticalAffiliation.HardLeft]: 6,
+};
+
