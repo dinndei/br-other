@@ -12,11 +12,10 @@ const UserProfile: React.FC<IProfileComponentProps>= ({openBar, setOpenBar }) =>
 
     const { user, isAuthenticated } = useUserStore();
 
-    // Show loading or fallback UI if the user is not authenticated
-    if (!isAuthenticated) {
-        return <div>Loading...</div>;
-    }
-
+    // if(!isAuthenticated)
+    //     return(
+    // <div>loading...</div>
+    //     )
     return (
 
         <div>
