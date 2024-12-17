@@ -4,6 +4,7 @@ import Image from "next/image";
 import useDataStore from "./store/fieldsStore";
 import { useEffect } from "react";
 
+
 async function post() {
   console.log("comming to post");
   try {
@@ -24,15 +25,15 @@ async function post() {
 
 
 export default function Home() {
-  const { fields, setFields, setLoading } = useDataStore();
+  const { fieldsData, setFieldsData, setLoading } = useDataStore();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (fields.length === 0) {
+      if (fieldsData.length === 0) {
         setLoading(true);
         try {
           const response = await axios.post('/api/fields/getAllFields');
-          setFields(response.data.fields);
+          setFieldsData(response.data.fields);
         } catch (error) {
           console.error("Error fetching data", error);
         } finally {
@@ -42,7 +43,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, [setFields, setLoading, fields]);
+  }, [setFieldsData, setLoading, fieldsData]);
 
 
 

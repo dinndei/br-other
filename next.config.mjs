@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
 
-export default nextConfig;
+
+export default {
+    experimental: {
+        // אפשר WebSockets דרך חיבור HTTP
+        serverComponentsExternalPackages: ["socket.io"],
+    },
+};
+
+
+
+
