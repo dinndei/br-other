@@ -9,7 +9,7 @@ import UserProfile from './UserProfile';
 
 
 const Navbar: React.FC = () => {
-    const [showProfile, setShowProfile] = useState(false);
+    const [showProfile, setShowProfile] = useState(true);
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
 
