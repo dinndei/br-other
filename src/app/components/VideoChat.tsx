@@ -42,13 +42,18 @@ const VideoChat = ({ userId = "defaultUser1", otherUserId = "defaultUser2" }: { 
         return () => {
             peerRef.current?.destroy();
         };
-    }, [userId]);
+    }, []);
 
     const startCall = async () => {
         const targetUserId = otherUserId || "defaultUser2";
 
         try {
-            const response = await fetch(`/api/video?userId=${targetUserId}`);
+            const response = await fetch(`/api/video?userId=${targetUserId}`,
+                {
+                    method: "GET",
+                }
+
+            );
             if (!response.ok) {
                 throw new Error(`Failed to fetch peer ID for user: ${targetUserId}`);
             }

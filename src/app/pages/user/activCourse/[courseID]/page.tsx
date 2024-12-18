@@ -24,7 +24,7 @@ const StudyPage = (
                 }
                 const data = await response.json();
                 setCourseData(data);
-                console.log(courseData);
+                console.log("course data ",courseData);
                 
             } catch (error) {
                 console.error('Error fetching course data:', error);
@@ -58,7 +58,7 @@ const StudyPage = (
                         <div>
                             <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
                             {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
-                            <VideoChat userId={"1234"} otherUserId={"1234"}  />
+                            <VideoChat userId={"12346760233dd69d63fc510648da"} otherUserId={"6760233dd69d63fc510648da"}  />
                         </div>
 
                         <div>

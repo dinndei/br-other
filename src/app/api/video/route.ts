@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // מבנה נתונים לשמירת Peer IDs
 const peers: Record<string, string> = {};
@@ -30,10 +30,11 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+    console.log("GETTTTTTTTTTTTTTT");
+    
+    const userId = request.nextUrl.searchParams.get("userId");
     console.log("userId in get" ,userId);
     
 
@@ -52,8 +53,8 @@ export async function GET(request: Request) {
       );
     }
 
-    console.log("Fetched Peer ID for userId:", userId, peerId);
-    return NextResponse.json({ peerId });
+    console.log("Fetched Peer ID for userId: ", userId," : ", peerId);
+    return NextResponse.json({ peerId },{status:200});
   } catch (error) {
     console.error("Error in GET /api/video:", error);
     return NextResponse.json(

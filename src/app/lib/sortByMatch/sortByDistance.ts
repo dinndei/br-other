@@ -2,15 +2,15 @@ import IUser from "@/app/types/IUser";
 import { calculatePoliticGap, calculateReligionGap } from "./calculateGaps";
 
 // Function to calculate the total gap
-export const sortByDistance = (user: IUser, mentors: IUser[]): IUser[] => {
+export const sortByDistance = (user: Partial<IUser>, mentors: Partial<IUser>[]): Partial<IUser>[] => {
     const mentorGaps = mentors.map(mentor => ({
         mentor,
         dist: calculatePoliticGap(
-            user.typeUser.politicalAffiliation,
-            mentor.typeUser.politicalAffiliation
+            user.typeUser!.politicalAffiliation,
+            mentor.typeUser!.politicalAffiliation
         ) + calculateReligionGap(
-            user.typeUser.religionLevel,
-            mentor.typeUser.religionLevel
+            user.typeUser!.religionLevel,
+            mentor.typeUser!.religionLevel
         ),
     }));
 
