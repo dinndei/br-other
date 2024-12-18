@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
         studentExists.courses.push(courseId);
         mentorExists.courses.push(courseId);
 
+        studentExists.activeLearningRequestPending = courseId.toString();
         mentorExists.learningApprovalPending = null;
         mentorExists.refusalCnt = 0;
 

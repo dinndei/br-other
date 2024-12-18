@@ -84,7 +84,7 @@ const ApproveLearningPage = () => {
         if (approved) {
             const response = await approveCourse(studentDetails! ,mentor!, requestDetails!)
             console.log(response);
-            route.push(`/pages/user/activCourse/${response._id}`)
+            route.push(`/pages/user/activCourse/${response.course._id}`)
 
         }
         else{
