@@ -12,6 +12,7 @@ const VideoChat = ({ userId = "defaultUser1", otherUserId = "defaultUser2" }: { 
         const peer = new Peer();
         peerRef.current = peer;
 
+        
         peer.on("open", async (peerId) => {
             console.log("My Peer ID:", peerId);
 
