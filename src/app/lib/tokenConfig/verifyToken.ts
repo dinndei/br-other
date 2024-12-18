@@ -1,17 +1,24 @@
 
-import JWTPayload from '@/app/types/JWTPayload';
-import jwt from 'jsonwebtoken';
+import axios from 'axios';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+export async function verifyToken(token: string) {
+    
+  try {
+    const response = await axios.get('/api/user/verify-token', {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
 
-export function verifyToken(token: string | null): JWTPayload|null {
-    console.log('JWT_SECRET:', process.env.JWT_SECRET);
-    console.log('JWT_SECRET me:',JWT_SECRET);
-    try {
-        if (token)
-            return jwt.verify(token, JWT_SECRET) as JWTPayload;// פענוח ואימות הטוקן
-        return null;
-    } catch (error) {
-        throw new Error('Invalid or expired token ' + error);
+    if (response.data.isValid) {
+      console.log('Token is valid');
+      return true;
+    } else {
+      console.log('Token is invalid');
+      return false;
     }
+  } catch (error) {
+    console.error('Error verifying token:', error);
+  }
 }
+

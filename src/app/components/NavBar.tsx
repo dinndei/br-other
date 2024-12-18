@@ -14,9 +14,6 @@ const Navbar: React.FC = () => {
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
 
-    console.log(showProfile);
-    console.log(isAuthenticated);
-
     const toggleProfile = () => {
         setShowProfile(prev => !prev);
     }
@@ -27,7 +24,6 @@ const Navbar: React.FC = () => {
     };
 
     const handleNewLearningClick = async () => {
-        console.log("vdbewr", user);
 
         try {
             const response = await checkActivCourse(user!)
@@ -51,14 +47,14 @@ const Navbar: React.FC = () => {
                     onClick={toggleProfile}
                     className="text-white"
                 >
-                   {user&& <ProfileImage url={user.profileImage!} firstName={user.firstName!} size={"small"}/>}
+                    {user && <ProfileImage url={user.profileImage!} firstName={user.firstName!} size={"small"} />}
                 </button>
                 {showProfile &&
                     <UserProfile openBar={showProfile} setOpenBar={setShowProfile} />
                 }
 
                 {/* אפשרויות נוספות */}
-                <div className="flex space-x-4 text-white">
+                {/* <div className="flex space-x-4 text-white">
                     {!isAuthenticated ? (
                         <Link href="/pages/user/login">
                             התחברות
@@ -84,6 +80,53 @@ const Navbar: React.FC = () => {
                     >
                         אודות
                     </button>
+
+                    <button
+
+                        className="text-white"
+                    >
+                        רשימת קורסים
+                    </button>
+
+                </div> */}
+                <div className="flex space-x-4 text-white">
+                    {!isAuthenticated ? (
+                        <>
+                            <Link href="/pages/user/login">
+                                התחברות
+                            </Link>
+                            <button
+                                className="text-white"
+                            >
+                                אודות
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button
+                                onClick={handleLogout}
+                                className="text-white"
+                            >
+                                התנתקות
+                            </button>
+                            <button
+                                onClick={handleNewLearningClick}
+                                className="text-white"
+                            >
+                                למידה חדשה
+                            </button>
+                            <button
+                                className="text-white"
+                            >
+                                אודות
+                            </button>
+                            <button
+                                className="text-white"
+                            >
+                                רשימת קורסים
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </nav>
