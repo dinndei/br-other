@@ -69,7 +69,7 @@ export const processMentorsApproval = async (mentors: IUser[], request: ILearnin
             console.error(`Error processing mentor: ${mentor.email}`, error);
         }
     }
-    if (approved) {
+    if (!approved) {
         console.log("No mentor approved the request, notifying the requester...");
         notifyUserRequestStatus(request, false)
     }
@@ -77,6 +77,8 @@ export const processMentorsApproval = async (mentors: IUser[], request: ILearnin
 }
 
 const notifyUserRequestStatus = async(request:Partial<ILearningRequest>, isApproved:boolean, mentor: IUser | null = null)=>{
+    console.log("notifyUserRequestStatus");
+    
     const response: AxiosResponse = await axios.post('/api/findMentorProcess/notify-user-request', {
         request: request,
         isApproved: isApproved,
@@ -101,7 +103,7 @@ const waitForApprovalOrTimeout = async (requestId: string, timeout: number): Pro
     while (Date.now() - startTime < timeout) {
         const isDeleted = await isRequestDeleted(requestId);
 
-        if (isDeleted) {
+        if (!isDeleted) {
             console.log("Request approved and deleted");
             return true; // האישור התקבל
         }
@@ -184,6 +186,20 @@ export const declineCourse = async (request: Partial<ILearningRequest>) => {
         throw error;
     }
 }
+
+export const resetActiveRequest = async (requesterId: string) => {
+    try {
+        const response: AxiosResponse = await axios.post('/api/findMentorProcess/reset-active-request', {
+            requestId: requesterId
+        });
+        console.log("Response:", response.data);
+    } catch (error) {
+        console.error("Error reset  ActiveRequest:", error);
+        throw error;
+    }
+}
+
+
 
 
 

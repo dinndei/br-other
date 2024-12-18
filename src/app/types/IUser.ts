@@ -17,12 +17,14 @@ export default interface IUser extends Document {
         mainField: string;
         subField: string;
     }[];
-    learningApprovalPending:string | null;
+    learningApprovalPending: string | null; // מנטור ממתין לאישור
+    activeLearningRequestPending: string | null; // בקשה פעילה ממתינה לאישור
     courses: mongoose.Types.ObjectId[];
     refusalCnt: number,
     typeUser: {
         religionLevel: ReligionLevel,
         politicalAffiliation: PoliticalAffiliation
-    }
+    },
+    profileImage?: string;
 }
 

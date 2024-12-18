@@ -5,12 +5,14 @@ import User from '@/app/DB/models/UserModel';
 export async function POST(req: Request) {
     const { request, isApproved, mentor } = await req.json();
 
-    if (!request || !request.studentId) {
+    console.log("request, isApproved, mentor", request, isApproved, mentor);
+
+    if (!request || !request.requesterId) {
         return NextResponse.json({ success: false, message: 'Request and student ID are required.' }, { status: 400 });
     }
 
     try {
-        const student = await User.findById(request.studentId);
+        const student = await User.findById(request.requesterId);
         if (!student) {
             return NextResponse.json({ success: false, message: 'Student not found.' }, { status: 404 });
         }

@@ -19,7 +19,6 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields }) 
         }
     }, [fetchFieldsData, setFieldsData]);
 
-    console.log('Current fields in store:', fieldsData);
 
 
     // יש פילדס שמכיל את המידע ויש את פילדס דאטה שממנו אנחנו מקבלים את המידע-עוד מעט נעשה אותו מהשרת ודיבי. כרגע זה המידע שלי.

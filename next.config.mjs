@@ -6,6 +6,10 @@ export default {
         // אפשר WebSockets דרך חיבור HTTP
         serverComponentsExternalPackages: ["socket.io"],
     },
+    images: {
+        domains: ['res.cloudinary.com'], 
+    },
+
 };
 
 
