@@ -14,11 +14,14 @@ const NewLearningPage: React.FC = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [mentors, setMentors] = useState<IUser[]>([]);
 
+
+
     const user = useUserStore(state => state.user);
+
 
     const router = useRouter();
 
-    const { control, handleSubmit, setValue, formState: {  } } = useForm();
+    const { control, handleSubmit, setValue, formState: { } } = useForm();
     console.log(mentors);
 
 
@@ -114,7 +117,7 @@ const NewLearningPage: React.FC = () => {
                             />
                         </div>
 
-                        {/* Select for choosing sub field */}
+                         {/* Select for choosing sub field */}
                         <div className="mb-4">
                             <Controller
                                 name="subField"
@@ -143,7 +146,9 @@ const NewLearningPage: React.FC = () => {
                                     </select>
                                 )}
                             />
-                        </div>
+                        </div> 
+
+                       
 
 
                         <button
