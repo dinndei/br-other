@@ -1,8 +1,8 @@
 'use client'
-import axios from "axios";
+// import axios from "axios";
 import Image from "next/image";
-import useDataStore from "./store/fieldsStore";
-import { useEffect } from "react";
+// import useDataStore from "./store/fieldsStore";
+// import { useEffect } from "react";
 
 
 // async function post() {
@@ -25,7 +25,7 @@ import { useEffect } from "react";
 
 
 export default function Home() {
-  const { fieldsData, setFieldsData, setLoading } = useDataStore();
+  // const { fieldsData, setFieldsData, setLoading } = useDataStore();
 
   //טעינת שדות התחלתית למונגו 
   //const { fields, setFields, setLoading } = useDataStore();

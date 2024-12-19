@@ -19,6 +19,8 @@ const StudyPage = (
     //const courseId = Array.isArray(params?.courseId) ? params?.courseId[0] : params?.courseId;    const router = useRouter();
     const [courseData, setCourseData] = useState<ICourse | null>(null);
 
+    console.log("courseData", courseData);
+
 
     useEffect(() => {
         const fetchCourseData = async () => {
