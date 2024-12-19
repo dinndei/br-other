@@ -7,10 +7,15 @@ import { useRouter } from 'next/navigation';
 import { checkActivCourse } from '../actions/userActions';
 import UserProfile from './UserProfile';
 import ProfileImage from './ProfileImage';
+import CoursesList from './CoursesList';
+
 
 
 const Navbar: React.FC = () => {
     const [showProfile, setShowProfile] = useState(false);
+    const [showCourses, setShowCourses] = useState(false);
+
+
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
 
@@ -38,99 +43,83 @@ const Navbar: React.FC = () => {
         }
     };
 
+    const toggleCoursesList = () => {
+        setShowCourses(prev => !prev);
+    };
+
+
+
     return (
-
-        <nav className="bg-gray-800 p-4">
-            <div className="flex justify-between items-center">
-                {/* פריט ניווט לפרופיל אישי */}
-                <button
-                    onClick={toggleProfile}
-                    className="text-white"
-                >
-                    {user && <ProfileImage url={user.profileImage!} firstName={user.firstName!} size={"small"} />}
-                </button>
-                {showProfile &&
-                    <UserProfile openBar={showProfile} setOpenBar={setShowProfile} />
-                }
-
-                {/* אפשרויות נוספות */}
-                {/* <div className="flex space-x-4 text-white">
-                    {!isAuthenticated ? (
-                        <Link href="/pages/user/login">
-                            התחברות
-                        </Link>
-                    ) : (
-                        <button
-                            onClick={handleLogout}
-                            className="text-white"
-                        >
-                            התנתקות
-                        </button>
-                    )}
+        <>
+            {/* נבר עליון */}
+            <nav className="bg-gray-800 p-4">
+                <div className="flex justify-between items-center">
                     <button
-                        onClick={handleNewLearningClick}
+                        onClick={toggleProfile}
                         className="text-white"
                     >
-                        למידה חדשה
+                        {user && <ProfileImage url={user.profileImage!} firstName={user.firstName!} size={"small"} />}
                     </button>
+                    {showProfile &&
+                        <UserProfile openBar={showProfile} setOpenBar={setShowProfile} />
+                    }
 
-                    <button
+                    <div className="flex space-x-4 text-white">
+                        {!isAuthenticated ? (
+                            <>
+                                <Link href="/pages/user/login">
+                                    התחברות
+                                </Link>
+                                <button className="text-white">
+                                    אודות
+                                </button>
+                                <Link href="/pages/galery">
+                                    גלריה
+                                </Link>
 
-                        className="text-white"
-                    >
-                        אודות
-                    </button>
-
-                    <button
-
-                        className="text-white"
-                    >
-                        רשימת קורסים
-                    </button>
-
-                </div> */}
-                <div className="flex space-x-4 text-white">
-                    {!isAuthenticated ? (
-                        <>
-                            <Link href="/pages/user/login">
-                                התחברות
-                            </Link>
-                            <button
-                                className="text-white"
-                            >
-                                אודות
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button
-                                onClick={handleLogout}
-                                className="text-white"
-                            >
-                                התנתקות
-                            </button>
-                            <button
-                                onClick={handleNewLearningClick}
-                                className="text-white"
-                            >
-                                למידה חדשה
-                            </button>
-                            <button
-                                className="text-white"
-                            >
-                                אודות
-                            </button>
-                            <button
-                                className="text-white"
-                            >
-                                רשימת קורסים
-                            </button>
-                        </>
-                    )}
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-white"
+                                >
+                                    התנתקות
+                                </button>
+                                <button
+                                    onClick={handleNewLearningClick}
+                                    className="text-white"
+                                >
+                                    למידה חדשה
+                                </button>
+                                <button className="text-white">
+                                    אודות
+                                </button>
+                                <button
+                                    className="text-white flex items-center"
+                                    onClick={toggleCoursesList}
+                                >
+                                    {showCourses ? (
+                                       <p>  ▲</p>
+                                    ) : (
+                                       <p>  ▼</p> 
+                                    )}
+                                    רשימת קורסים
+                                </button>
+                                <Link href="/pages/galery">
+                                    גלריה
+                                </Link>
+                            </>
+                        )}
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+
+            {/* תפריט צדדי מתחת לנבר */}
+            {showCourses && <CoursesList />}
+        </>
     );
+
 }
 
 export default Navbar;

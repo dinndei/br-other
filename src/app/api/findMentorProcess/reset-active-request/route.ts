@@ -8,9 +8,15 @@ export async function POST(req: NextRequest) {
     try {
         await connectToDB();
 
-        await User.findByIdAndUpdate(userId, {
-            activeLearningRequestPending: null
-        });
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { activeLearningRequestPending: null },
+            { new: true } 
+        );
+
+        if (!updatedUser) {
+            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        }
 
         return NextResponse.json({ success: true, message: "Request reset successfully" });
     } catch (error) {
