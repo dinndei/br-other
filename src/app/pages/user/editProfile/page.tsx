@@ -190,7 +190,7 @@ const EditUserForm = () => {
                 {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
             </div>
             <div>
-                <FieldsInputList fields={fields} setFields={setFields} />
+                <FieldsInputList fields={fields} setFields={setFields} showEditButtons={true}/>
                 {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
 
             </div>
