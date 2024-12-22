@@ -121,6 +121,9 @@ const UploadAndDisplay = () => {
                         <p>No images found.</p>
                     )}
                 </div>
+                
+
+
             )}
         </div>
     );

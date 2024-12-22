@@ -4,13 +4,20 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
     const { userId } = await req.json();
+    console.log("userId", userId);
 
     try {
         await connectToDB();
 
-        await User.findByIdAndUpdate(userId, {
-            activeLearningRequestPending: null
-        });
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { activeLearningRequestPending: null },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+        }
 
         return NextResponse.json({ success: true, message: "Request reset successfully" });
     } catch (error) {
