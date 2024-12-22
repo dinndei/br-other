@@ -133,5 +133,17 @@ export const checkActivCourse = async (user: Partial<IUser>) :Promise<boolean>=>
     }
 };
 
+export const getUserById = async (id: string): Promise<Partial<IUser>> => {
+    console.log("comming to action", id );
+    try {
+        const response = await axios.get(`/api/user/get/${id}`);
+        console.log("Response:", response);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        throw error;
+    }
+}
+
 
 
