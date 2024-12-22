@@ -1,12 +1,13 @@
 'use client';
-
 import { getCourseByID } from '@/app/actions/courseAction';
-// import ChatPage from '@/app/components/Chat';
 import VideoChat from '@/app/components/VideoChat';
 import ICourse from '@/app/types/ICourse';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import AblyChat from "@/app/components/AblyChat"
+
+
 
 const StudyPage = (
     // { params }: { params: { courseId: string } }
@@ -55,13 +56,13 @@ const StudyPage = (
 
                         <div>
                             <h3 className="text-xl font-medium text-gray-700">Chat with Mentor</h3>
-                            {/* <ChatPage/> */}
+                           <AblyChat courseId={courseID}/>
                         </div>
 
                         <div>
                             <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
                             {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
-                            <VideoChat userId={"1234"} otherUserId={"1234"} />
+                            <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} />
                         </div>
 
                         <div>

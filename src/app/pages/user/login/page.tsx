@@ -40,7 +40,6 @@ const LoginPage = () => {
                 }
 
             }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             catch (error) {
                 console.error('לא נמצא שם משתמש . אנא נסה שוב.');
             }

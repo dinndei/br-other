@@ -7,7 +7,7 @@ import { verifyToken } from '../lib/tokenConfig/verifyToken';
 export const useUserStore = create<UserStore>(
 
   (set) => ({
-    user: null,
+    user: {userName:"dina"},
     token: null,
     isAuthenticated: false,
 
