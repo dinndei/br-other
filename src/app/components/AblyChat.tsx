@@ -1,52 +1,69 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { fetchMessagesByCourseId, sendMessage } from "../actions/chatActions";
+import { Types } from "ably";
+import { Realtime } from "ably";
 import { useUserStore } from "../store/userStore";
-import { log } from "console";
-import checkModelStatus from "../actions/textModelActions";
+import axios from "axios";
 
-const Chat = ({ courseId="6763f73f3b12e25ed1e2971d" }: { courseId: string }) => {
-    const [messages, setMessages] = useState<{ username: string; text: string ,courseId:string}[]>([]);
+const ably = new Realtime({ key: "1jLHPA.p9RW9g:MVb0GFzKUviMVC1i5vyIGPqIX4XyGj1Dg_762-7Mw4c" });
+
+const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) => {
+    const [messages, setMessages] = useState<{ username: string; text: string }[]>([]);
     const [message, setMessage] = useState("");
-    const username = useUserStore(st=>st.user?.userName)||"xxx";
-//לעצב את העמוד כמו צאט נורמלי
+    const username = useUserStore((st) => st.user?.userName) || "xxx";
 
-//להוסיף לוגיקה של חסימת משתמש-אולי משתנה.
     useEffect(() => {
-        const loadMessages = async () => {
+        const channel = ably.channels.get(courseId);
+
+        // Subscribe to messages on the channel
+        channel.subscribe("newMessage", (msg: Types.Message) => {
+            setMessages((prev) => [...prev, msg.data]);
+        });
+
+        // Fetch initial messages from the server
+        const fetchMessages = async () => {
             try {
-                const fetchedMessages = await fetchMessagesByCourseId(courseId);
-                console.log("!!!!!!!!!!!!",fetchedMessages);
-                
-                setMessages(fetchedMessages);
+                const response = await axios.get(`/api/ablyChat/${courseId}`);
+                setMessages(response.data.messages);
             } catch (error) {
-                console.error("Error loading messages:", error);
+                console.error("Error fetching messages:", error);
             }
         };
 
-        loadMessages();
+        fetchMessages();
+
+        return () => {
+            channel.unsubscribe();
+        };
     }, [courseId]);
 
     const handleSendMessage = async () => {
         if (message.trim()) {
             try {
-                let messageStatus=await checkModelStatus(message);
-                console.log("status",messageStatus);
-                await sendMessage(username, message, courseId);
-                setMessages((prev) => [...prev, { username, text: message,courseId }]);
+                // Send message to the server
+                await axios.post("/api/ablyChat", {
+                    username,
+                    text: message,
+                    courseId,
+                });
+
+                // Publish message to Ably
+                const channel = ably.channels.get(courseId);
+                channel.publish("newMessage", { username, text: message });
+
                 setMessage("");
             } catch (error) {
                 console.error("Error sending message:", error);
             }
         }
     };
-//hit send on click on enter
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-          handleSendMessage();
-      }
-  };
+        if (e.key === "Enter") {
+            handleSendMessage();
+        }
+    };
 
     return (
         <div className="flex flex-col h-screen max-w-md mx-auto bg-gray-100">
@@ -65,17 +82,17 @@ const Chat = ({ courseId="6763f73f3b12e25ed1e2971d" }: { courseId: string }) => 
                             msg.username === username ? "justify-end" : "justify-start"
                         }`}
                     >
-                        
                         <div
                             className={`max-w-xs px-4 py-2 rounded-lg text-white ${
-                                msg.username === username ? "bg-green-500" : "bg-gray-300 text-black"
+                                msg.username === username
+                                    ? "bg-green-500"
+                                    : "bg-gray-300 text-black"
                             }`}
                         >
-                             <span className="text-xs text-gray-200 block mt-1">
+                            <p className="text-sm">{msg.text}</p>
+                            <span className="text-xs text-gray-200 block mt-1">
                                 {msg.username === username ? "You" : msg.username}
                             </span>
-                            <p className="text-sm">{msg.text}</p>
-                           
                         </div>
                     </div>
                 ))}
