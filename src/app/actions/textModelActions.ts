@@ -1,18 +1,18 @@
 import axios from "axios";
 
-export default async function checkModelStatus(message: string) {
+export default async function checkModelStatus(message:string) {
     try {
         const response = await axios.post(
             'https://api-inference.huggingface.co/models/FredZhang7/one-for-all-toxicity-v3',
-            { inputs: message },
+            { inputs:message },
             { headers: { Authorization: `Bearer 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` } }
         );
 
-        if (response.data[0][0]["label"] == "LABEL_1")
-            return "negetive";
-        return "positive";
+       if(response.data[0][0]["label"]=="LABEL_1")
+        return "negetive" ;
+    return "positive";
 
-    } catch (error: unknown) {
+    }  catch (error: unknown) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 503) {
                 console.log("Model loading, retrying...", error.response.data.estimated_time);

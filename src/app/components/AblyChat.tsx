@@ -5,6 +5,7 @@ import { Types } from "ably";
 import { Realtime } from "ably";
 import { useUserStore } from "../store/userStore";
 import axios from "axios";
+import checkModelStatus from "../actions/textModelActions";
 
 const ably = new Realtime({ key: "1jLHPA.p9RW9g:MVb0GFzKUviMVC1i5vyIGPqIX4XyGj1Dg_762-7Mw4c" });
 
@@ -13,6 +14,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
     const [message, setMessage] = useState("");
     const username = useUserStore((st) => st.user?.userName) || "xxx";
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const audio = new Audio("C:/Users/User/Documents/הכשרה הדסים/BR-OTHER/br-other/public/ding.mp3");
 
     useEffect(() => {
         const channel = ably.channels.get(courseId);
@@ -20,6 +22,14 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
         // Subscribe to messages on the channel
         channel.subscribe("newMessage", (msg: Types.Message) => {
             setMessages((prev) => [...prev, msg.data]);
+
+              
+        // Play notification sound
+        if (msg.data.username !== username) { // השמיעו צליל רק אם ההודעה אינה של המשתמש הנוכחי
+            audio.play().catch((error) => {
+                console.error("Failed to play sound:", error);
+            });
+        }
         });
 
         // Fetch initial messages from the server
@@ -42,6 +52,11 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
     const handleSendMessage = async () => {
         if (message.trim()) {
             try {
+                const messageStatus=await checkModelStatus(message);
+                console.log("status",messageStatus);
+                if(messageStatus=="negetive")
+                    alert("Your message contains inappropriate language and cannot be sent.");
+                else{
                 // Send message to the server
                 await axios.post("/api/ablyChat", {
                     username,
@@ -52,7 +67,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
                 // Publish message to Ably
                 const channel = ably.channels.get(courseId);
                 channel.publish("newMessage", { username, text: message });
-
+            }
                 setMessage("");
             } catch (error) {
                 console.error("Error sending message:", error);
@@ -65,6 +80,9 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
             handleSendMessage();
         }
     };
+
+
+
 //auto scroll to bottom
     useEffect(() => {
         if (messagesEndRef.current) {
@@ -96,10 +114,11 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
                                     : "bg-gray-300 text-black"
                             }`}
                         >
-                            <p className="text-sm">{msg.text}</p>
-                            <span className="text-xs text-gray-200 block mt-1">
+                              <span className="text-xs text-gray-200 block mt-1">
                                 {msg.username === username ? "You" : msg.username}
                             </span>
+                            <p className="text-sm">{msg.text}</p>
+                          
                         </div>
                     </div>
                 ))}
