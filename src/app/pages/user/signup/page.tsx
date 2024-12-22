@@ -112,6 +112,7 @@ const SignupForm = () => {
             }
         }
     };
+    
     const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
         console.log("data on submit", data);
         
@@ -231,7 +232,7 @@ const SignupForm = () => {
                 </div>
 
                 <div>
-                    <FieldsInputList fields={fields} setFields={setFields} />
+                    <FieldsInputList fields={fields} setFields={setFields} showEditButtons={true}/>
                     {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
                 </div>
                 <div>
