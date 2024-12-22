@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
     const { userId } = await req.json();
+    console.log("userId", userId);
 
     try {
         await connectToDB();
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             { activeLearningRequestPending: null },
-            { new: true } 
+            { new: true }
         );
 
         if (!updatedUser) {
