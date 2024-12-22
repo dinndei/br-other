@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Types } from "ably";
 import { Realtime } from "ably";
 import { useUserStore } from "../store/userStore";
@@ -12,6 +12,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
     const [messages, setMessages] = useState<{ username: string; text: string }[]>([]);
     const [message, setMessage] = useState("");
     const username = useUserStore((st) => st.user?.userName) || "xxx";
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const channel = ably.channels.get(courseId);
@@ -64,7 +65,13 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
             handleSendMessage();
         }
     };
-
+//auto scroll to bottom
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
+    
     return (
         <div className="flex flex-col h-screen max-w-md mx-auto bg-gray-100">
             {/* Header */}
@@ -96,6 +103,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
                         </div>
                     </div>
                 ))}
+                <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
