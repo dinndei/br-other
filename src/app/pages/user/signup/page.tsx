@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,21 +13,25 @@ import { useUserStore } from "@/app/store/userStore";
 import IUser from "@/app/types/IUser";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
+import axios from "axios";
+
 
 // import FieldsInputList from "@/app/components/FieldsInputList";
 
 const SignupForm = () => {
 
+    const [uploading, setUploading] = useState(false);
+
     const router = useRouter();
     const storeUser = useUserStore((st) => st.user);
 
-    const setUser = useUserStore((state) => state.setUser);
+    const login = useUserStore((state) => state.login);
     const [fields, setFields] = React.useState<IField[]>([{ mainField: "", subField: "" }]);
 
-    const { register, setValue, handleSubmit, formState: { errors } } = useForm
-        <SignupFormData>
+    const { register, setValue, handleSubmit, formState: { errors } } = useForm<SignupFormData>
+
         ({
-             resolver: zodResolver(signupSchema),
+            resolver: zodResolver(signupSchema),
             mode: "onChange",
             defaultValues: {
                 firstName: "",
@@ -50,15 +54,67 @@ const SignupForm = () => {
         setValue("fields", fields);
     }, [fields, setValue]);
 
-useEffect(() => {
-  console.log("Updated user in store EFFECT:", storeUser);
-}, [storeUser]);
+    useEffect(() => {
+        console.log("Updated user in store EFFECT:", storeUser);
+    }, [storeUser]);
 
+    // const uploadImage = async (file: File) => {
+    //     setUploading(true);
+    //     const formData = new FormData();
+    //     formData.append('file', file);
+    //     formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+
+    //     try {
+    //         // העלאת התמונה ל-Cloudinary
+    //         const response = await axios.post(
+    //             `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+    //             formData
+    //         );
+
+    //         // קבלת ה-URL של התמונה
+    //         const uploadedImageUrl = response.data.secure_url;
+
+    //         return uploadedImageUrl; // מחזיר את ה-URL של התמונה
+    //     } catch (error) {
+    //         console.error("Error uploading image:", error);
+    //         return null;
+    //     } finally {
+    //         setUploading(false);
+    //     }
+    // };
+
+    const uploadImage = async (file: File): Promise<string | undefined> => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+
+        try {
+            setUploading(true);
+            const response = await axios.post(
+                `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                formData
+            );
+            setUploading(false);
+            return response.data.secure_url; // URL של התמונה שהועלתה
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            setUploading(false);
+            return undefined;
+        }
+    };
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const imageUrl = await uploadImage(file);
+            if (imageUrl) {
+                setValue("profileImage", imageUrl); // שמור את ה-URL של התמונה בטופס
+            }
+        }
+    };
     const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
         console.log("data on submit", data);
-        console.log("Submitted data:", data.fields);
-
-
+        
         try {
             const userData = await signupUser(data);
             console.log("user data on submit", userData);
@@ -66,14 +122,15 @@ useEffect(() => {
             if (userData)
                 console.log('User signed up successfully:', userData);
             const user = (userData as { user: IUser }).user;
-            console.log("user before store",user);
-            
-            setUser(user);
-   
-            console.log("user after store",storeUser);
+            const token = (userData as { user: IUser, token: string }).token;
 
+            console.log("user before store", user);
+
+            // שולח ללוגין במקום setUser
+            login(user, token);
+
+            console.log("user after store", storeUser);
             router.push('/')
-            console.log("user", user);
 
         } catch (error) {
             console.error('Error signing up:', error);
@@ -113,6 +170,17 @@ useEffect(() => {
                         className="w-full border border-gray-300 p-2 rounded"
                     />
                     {errors.userName && <p className="text-red-500">{errors.userName.message}</p>}
+                </div>
+
+                <div>
+                    <label htmlFor="profileImage">Profile Image</label>
+                    <input
+                        id="profileImage"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange} // פונקציה נפרדת להעלאת התמונה
+                    />
+                    {uploading && <p>Uploading image...</p>}
                 </div>
 
                 <div>
@@ -210,4 +278,3 @@ useEffect(() => {
 };
 
 export default SignupForm;
- 

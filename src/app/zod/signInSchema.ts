@@ -15,6 +15,7 @@ export const signupSchema = z.object({
     password: z.string().min(6, "Password must be at least 6 characters"),
     gender: z.nativeEnum(Gender),
     fields: z.array(fieldSchema).min(1, "At least one field is required"),
+    profileImage: z.string().optional(),
     typeUser: z.object({
         religionLevel: z.nativeEnum(ReligionLevel),
         politicalAffiliation: z.nativeEnum(PoliticalAffiliation),

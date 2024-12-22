@@ -13,13 +13,19 @@ import IField from "@/app/types/IField";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import { useRouter } from "next/navigation";
 import IUser from "@/app/types/IUser";
+import axios from "axios";
+import ProfileImage from "@/app/components/ProfileImage";
+
 
 
 const EditUserForm = () => {
+
+    const [uploading, setUploading] = useState(false);
+
     const router = useRouter();
     const user = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
-    const [fields, setFields] = useState<IField[]>(user?.fields||[]);
+    const [fields, setFields] = useState<IField[]>(user?.fields || []);
     const { register, handleSubmit, formState: { errors }, setValue } = useForm<EditProfFormData>({
         resolver: zodResolver(editProfSchema),
         defaultValues: {
@@ -33,16 +39,44 @@ const EditUserForm = () => {
             typeUser: user?.typeUser || {
                 politicalAffiliation: PoliticalAffiliation.HardRight,
                 religionLevel: ReligionLevel.Other,
-            }
+            },
+            profileImage: "@/profile.png"
         },
     });
-
-
 
     useEffect(() => {
         setValue("fields", fields);
     }, [fields, setValue]);
 
+    const uploadImage = async (file: File): Promise<string | undefined> => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+
+        try {
+            setUploading(true);
+            const response = await axios.post(
+                `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                formData
+            );
+            setUploading(false);
+            return response.data.secure_url; // URL של התמונה שהועלתה
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            setUploading(false);
+            return undefined;
+        }
+    };
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const imageUrl = await uploadImage(file);
+            if (imageUrl) {
+                setValue("profileImage", imageUrl); // שמור את ה-URL של התמונה בטופס
+            }
+        }
+    };
 
     const onSubmit: SubmitHandler<EditProfFormData> = async (data) => {
         try {
@@ -51,15 +85,15 @@ const EditUserForm = () => {
                 if (updatedUser)
                     console.log("user ypdated", updatedUser);
                 const newUser = (updatedUser as { user: IUser }).user;
-            setUser(newUser);
-            router.push('/')
-            console.log("user", user);
-          
-            alert("User updated successfully!\n" + data);
-  }
-  else{
-    alert("no user to update")
-  }
+                setUser(newUser);
+                router.push('/')
+                console.log("user", user);
+
+                alert("User updated successfully!\n" + data);
+            }
+            else {
+                alert("no user to update")
+            }
         } catch (error) {
             console.error("Error updating user:", error);
             alert("Failed to update user");
@@ -70,7 +104,14 @@ const EditUserForm = () => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4 space-y-4">
-            <h1>טופס עריכת פרטי משתמש</h1>
+            <div className="flex items-center space-x-4 mb-6">
+                <ProfileImage url={user?.profileImage} firstName={user?.firstName}  size="large"  />
+                <div>
+                    <h2 className="text-lg font-bold">שלום, {user?.firstName}</h2>
+                    <p className="text-sm text-gray-600">ערוך את פרטי החשבון שלך כאן</p>
+                </div>
+            </div>
+            
             <div>
                 <label htmlFor="firstName" className="block font-medium">First Name</label>
                 <input
@@ -99,6 +140,17 @@ const EditUserForm = () => {
                     className="w-full border border-gray-300 p-2 rounded"
                 />
                 {errors.userName && <p className="text-red-500">{errors.userName.message}</p>}
+            </div>
+
+            <div>
+                <label htmlFor="profileImage">Profile Image</label>
+                <input
+                    id="profileImage"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange} // פונקציה נפרדת להעלאת התמונה
+                />
+                {uploading && <p>Uploading image...</p>}
             </div>
 
             <div>

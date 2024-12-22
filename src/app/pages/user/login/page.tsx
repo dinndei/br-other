@@ -7,11 +7,12 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/userStore';
+import { resetActiveRequest } from '@/app/actions/findMentorAction';
 
 const LoginPage = () => {
     const router = useRouter();
     const [step, setStep] = useState(1);
-    const setUser = useUserStore((state) => state.setUser);
+    const login = useUserStore((state) => state.login);
     const user = useUserStore((state) => state.user);
 
     const { register: registerUser, handleSubmit: handleSubmitUserForm, formState: { errors: userErrors } } = useForm<UserFormData>({
@@ -30,7 +31,7 @@ const LoginPage = () => {
         if (response.status == 200) {
             console.log("response.user", response.user);
 
-            setUser(response.user);
+            login(response.user, response.token);
             const email = response.user.email
             try {
                 const response = await sendOtpCode(email);
@@ -39,7 +40,6 @@ const LoginPage = () => {
                 }
 
             }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             catch (error) {
                 console.error('לא נמצא שם משתמש . אנא נסה שוב.');
             }
@@ -63,7 +63,15 @@ const LoginPage = () => {
                     alert("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.");
                     router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
                 } else {
-                    router.push('/'); // מעבר לדף הבית אם אין בקשת למידה ממתינה
+                    if (user!.activeLearningRequestPending !== null) {
+                        alert("יש לך למידה שאושרה, מעבירים אותך לקורס");
+
+                        await resetActiveRequest(user!.id)
+                 
+                        router.push(`/pages/user/activCourse/${user!.activeLearningRequestPending}`) // ניתוב לקורס
+                    } else {
+                        router.push('/'); // מעבר לדף הבית אם אין בקשת למידה ממתינה
+                    }
                 }
             }
             else {

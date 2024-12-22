@@ -36,3 +36,17 @@ body {
   padding-left: 30px; /* Add space between columns */
   background-clip: padding-box;
 }
+
+@import "https://cdn.jsdelivr.net/npm/stream-chat-react/dist/css/index.css";
+
+.custom-message-list {
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #f7fafc;
+  padding: 1rem;
+}
+
+.custom-message-input {
+  background-color: white;
+  padding: 1rem;
+}

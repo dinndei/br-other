@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         const hashedPassword = await hashPassword(body.user.password);
         const encryptedTypeReligion = encryptData(String(body.user.typeUser.religionLevel));
         console.log("encryptedTypeReligion", encryptedTypeReligion);
-        
+
         const encryptedTypePolitical = encryptData(String(body.user.typeUser.politicalAffiliation));
         console.log("encryptedTypePolitical", encryptedTypePolitical);
 
@@ -42,10 +42,12 @@ export async function POST(req: NextRequest) {
             password: hashedPassword,
             gender: body.user.gender,
             fields: body.user.fields,
+            profileImage: body.user.profileImage,
             typeUser: {
                 religionLevel: encryptedTypeReligion,
                 politicalAffiliation: encryptedTypePolitical
-            }
+            },
+
         });
 
         console.log("newUser", newUser);
@@ -80,7 +82,7 @@ export async function POST(req: NextRequest) {
             maxAge: 60 * 60 * 12,
         });
 
-    return response;
+        return response;
     } catch (err) {
         console.error("Error creating user:", err);
         return NextResponse.json(

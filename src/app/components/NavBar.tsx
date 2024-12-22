@@ -6,14 +6,16 @@ import { useUserStore } from '../store/userStore';
 import { useRouter } from 'next/navigation';
 import { checkActivCourse } from '../actions/userActions';
 import UserProfile from './UserProfile';
+import ProfileImage from './ProfileImage';
 
 
 const Navbar: React.FC = () => {
-    const [showProfile, setShowProfile] = useState(true);
+    const [showProfile, setShowProfile] = useState(false);
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
 
-console.log(showProfile);
+    console.log(showProfile);
+    console.log(isAuthenticated);
 
     const toggleProfile = () => {
         setShowProfile(prev => !prev);
@@ -49,11 +51,11 @@ console.log(showProfile);
                     onClick={toggleProfile}
                     className="text-white"
                 >
-                    פרופיל אישי
+                   {user&& <ProfileImage url={user.profileImage!} firstName={user.firstName!} size={"small"}/>}
                 </button>
-                {showProfile&&
-                <UserProfile openBar={showProfile} setOpenBar={setShowProfile}/>
-}
+                {showProfile &&
+                    <UserProfile openBar={showProfile} setOpenBar={setShowProfile} />
+                }
 
                 {/* אפשרויות נוספות */}
                 <div className="flex space-x-4 text-white">
@@ -77,7 +79,7 @@ console.log(showProfile);
                     </button>
 
                     <button
-                        
+
                         className="text-white"
                     >
                         אודות

@@ -5,8 +5,8 @@ export const getCourseByID = async (courseId: string) => {
 
     try {
         const response: AxiosResponse = await axios.get(`/api/course/get/${courseId}`);
-        console.log("Response:", response.data);
-        return response.data;
+        console.log("Response:", response);
+        return response;
     } catch (error) {
         console.error("Error fetching course:", error);
         throw error;
