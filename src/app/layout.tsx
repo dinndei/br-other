@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./components/NavBar";
 import AuthInitializer from "./components/AuthInitializer";
+import VideoRoom, { UseCallFrameDemo } from "./components/DailyVideo";
 
 
 const geistSans = localFont({
@@ -36,6 +37,7 @@ export default function RootLayout({
         <AuthInitializer/>
         <Navbar />
         {children}
+        {/* <UseCallFrameDemo/> */}
       </body>
     </html>
   );

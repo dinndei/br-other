@@ -1,121 +1,116 @@
-import { useEffect, useRef, useState } from "react";
-import Peer from "peerjs";
-import axios from "axios";
 
-const VideoChat = ({ userId = "6760233dd69d63fc510648da", otherUserId = "6760233dd69d63fc510648da" }: { userId?: string; otherUserId?: string }) => {
-    const [isInCall, setIsInCall] = useState(false);
-    const peerRef = useRef<Peer | null>(null);
-    const localVideoRef = useRef<HTMLVideoElement>(null);
-    const remoteVideoRef = useRef<HTMLVideoElement>(null);
-    const localStreamRef = useRef<MediaStream | null>(null);
-    const currentCallRef = useRef<Peer.MediaConnection | null>(null);
+// import { useEffect, useState } from 'react';
+// import Video from './Video'; // ייבוא הקומפוננטה שלך
+
+// const VideoChat = () => {
+//     const [stream, setStream] = useState<MediaStream | null>(null);
+
+//     useEffect(() => {
+//         const getUserMedia = async () => {
+//             try {
+//                 console.log('Requesting user media...');
+//                 const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+//                 console.log('Media stream obtained:', mediaStream);
+//                 setStream(mediaStream); // שמירת ה- stream ב-state
+//             } catch (error) {
+//                 console.error('Error accessing media devices:', error);
+//             }
+//         };
+
+//         getUserMedia();
+
+//         // ניקוי כאשר הקומפוננטה נפרסת
+//         return () => {
+//             if (stream) {
+//                 stream.getTracks().forEach(track => track.stop());
+//             }
+//         };
+//     }, []);
+
+//     if (!stream) {
+//         return <div>Loading video...</div>; // מחכה ל-stream אם הוא לא קיים
+//     }
+
+//     return (
+//         <div>
+//             <h2>Video Chat</h2>
+//             <Video stream={stream} /> {/* העברת ה-stream לקומפוננטה Video */}
+//         </div>
+//     );
+// };
+
+// export default VideoChat;
+
+import { useEffect, useState, useRef } from 'react';
+import Peer from 'peerjs';
+
+const VideoChat = ({ userId, stream }: { userId: string, stream: MediaStream }) => {
+    const [peerId, setPeerId] = useState<string | null>(null);
+    const [otherPeerId, setOtherPeerId] = useState<string | null>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
+        // יצירת PeerJS עבור המשתמש המקומי
         const peer = new Peer();
-        peerRef.current = peer;
 
-        peer.on("open", async (peerId) => {
-            console.log("My Peer ID:", peerId);
+        peer.on('open', (id) => {
+            console.log('My peer ID is:', id);
+            setPeerId(id);
 
-            const response = await fetch("/api/video/post", {
-                method: "POST",
+            // שליחת ה-peerId לשרת
+            fetch('/api/video', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userId, peerId }),
+                body: JSON.stringify({ userId, peerId: id }),
             });
-            console.log("response", response);
         });
 
-        peer.on("call", (call) => {
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                localStreamRef.current = stream;
-                localVideoRef.current!.srcObject = stream;
-                localVideoRef.current!.play();
-                call.answer(stream);
-                currentCallRef.current = call;
-
-                call.on("stream", (remoteStream) => {
-                    if (remoteVideoRef.current) {
-                        remoteVideoRef.current.srcObject = remoteStream;
-                        remoteVideoRef.current.play();
-                    } else {
-                        console.error("Remote video element not found.");
-                    }
-                });
+        peer.on('call', (call) => {
+            // קבלת שיחה
+            call.answer(stream); // השמע את ה-stream המקומי
+            call.on('stream', (remoteStream) => {
+                // הצג את ה-stream של המשתמש המרוחק
+                if (videoRef.current) {
+                    videoRef.current.srcObject = remoteStream;
+                }
             });
-            setIsInCall(true);
         });
+
+        // חיפוש ה-peerId של המשתמש השני דרך ה-API שלך
+        const fetchPeerId = async () => {
+            try {
+                const response = await fetch(`/api/video/post?userId=${userId}`);
+                const data = await response.json();
+                if (data.peerId) {
+                    setOtherPeerId(data.peerId);
+                    const call = peer.call(data.peerId, stream); // יוזמת שיחה עם המשתמש השני
+                    call.on('stream', (remoteStream) => {
+                        if (videoRef.current) {
+                            videoRef.current.srcObject = remoteStream;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching peerId:', error);
+            }
+        };
+
+        fetchPeerId();
 
         return () => {
-            peerRef.current?.destroy();
+            peer.destroy(); // נקיון לאחר שהקומפוננטה תנותק
         };
-    }, [userId]);
-
-    const startCall = async () => {
-        const targetUserId = otherUserId || "6760233dd69d63fc510648da";
-
-        try {
-            const response = await axios.get(`/api/video/post?userId=${targetUserId}`);
-
-            if (!response.data.peerId) {
-                console.error(`Peer ID not found for user: ${targetUserId}`);
-                return;
-            }
-
-            const peerId = response.data.peerId;
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-                localStreamRef.current = stream;
-                localVideoRef.current!.srcObject = stream;
-                localVideoRef.current!.play();
-
-                const call = peerRef.current!.call(peerId, stream);
-                currentCallRef.current = call;
-
-                call.on("stream", (remoteStream) => {
-                    if (remoteVideoRef.current) {
-                        remoteVideoRef.current.srcObject = remoteStream;
-                        remoteVideoRef.current.play();
-                    }
-                });
-
-                setIsInCall(true);
-            });
-        } catch (error) {
-            console.error("Error starting call:", error);
-        }
-    };
-
-    const endCall = () => {
-        // הפסקת השיחה הנוכחית
-        currentCallRef.current?.close();
-        localStreamRef.current?.getTracks().forEach((track) => track.stop());
-
-        // ניקוי הווידאו
-        if (localVideoRef.current) localVideoRef.current.srcObject = null;
-        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
-
-        setIsInCall(false);
-    };
+    }, [userId, stream]);
 
     return (
         <div>
-            {!isInCall && <button onClick={startCall}>Start Call</button>}
-            {isInCall && (
-                <div className="flex flex-col items-center">
-                    <div className="flex space-x-4">
-                        <div>
-                            Local Video
-                            <video ref={localVideoRef} muted className="w-64 h-64 border-2 border-gray-300" />
-                        </div>
-                        <div>
-                            Remote Video
-                            <video ref={remoteVideoRef} className="w-64 h-64 border-2 border-gray-300" />
-                        </div>
-                    </div>
-                    <button onClick={endCall} className="mt-4 px-4 py-2 bg-red-500 text-white rounded">End Call</button>
-                </div>
-            )}
+            <video ref={videoRef} autoPlay playsInline />
+            <div>
+                {peerId && <p>Your Peer ID: {peerId}</p>}
+                {otherPeerId && <p>Other Peer ID: {otherPeerId}</p>}
+            </div>
         </div>
     );
 };

@@ -20,6 +20,7 @@ const StudyPage = (
     //const courseId = Array.isArray(params?.courseId) ? params?.courseId[0] : params?.courseId;    const router = useRouter();
     const [courseData, setCourseData] = useState<ICourse | null>(null);
 
+    const [stream, setStream] = useState<MediaStream | null>(null);
     console.log("courseData", courseData);
 
 
@@ -30,8 +31,8 @@ const StudyPage = (
                 if (!(response.status == 200)) {
                     throw new Error('Failed to fetch course data');
                 }
-                const data = await response.data;
-                console.log("data", data);
+                const data = await response.data.course;
+                console.log("data", data.course);
 
                 setCourseData(data);
             } catch (error) {
@@ -41,6 +42,32 @@ const StudyPage = (
 
         fetchCourseData();
     }, [courseID]);
+
+    useEffect(() => {
+        const getUserMedia = async () => {
+            try {
+                const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                setStream(localStream);
+            } catch (error) {
+                console.error('Error getting media:', error);
+            }
+        };
+
+        getUserMedia();
+
+        // ניקוי ה-`stream` כאשר הקומפוננטה מתנתקת
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    if (!stream || !courseData) {
+        return <p>Loading...</p>;
+    }
+
+
 
     return (
         <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -58,14 +85,14 @@ const StudyPage = (
 
                         <div>
                             <h3 className="text-xl font-medium text-gray-700">Chat with Mentor</h3>
-                           <AblyChat courseId={courseID}/>
+                            <AblyChat courseId={courseID} />
                         </div>
 
                         <div>
                             <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
                             {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
-                            <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} />
-                        </div>
+                            {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
+                            <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>
 
                         <div>
                             <h3 className="text-xl font-medium text-gray-700">Upload Files</h3>
