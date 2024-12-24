@@ -21,7 +21,7 @@ const user=useUserStore(st=>st.user);
       {/* תוכן */}
       <div className="relative z-10 text-center px-4">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-          ♥ אני אחר, ואני אח ♥
+           אני אחר, אני אח 
         </h1>
         <p className="mt-4 text-xl md:text-2xl max-w-xl mx-auto">
           כי השינוי מתחיל מאיתנו

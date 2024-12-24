@@ -13,7 +13,7 @@ const UserProfile: React.FC<IProfileComponentProps> = ({ openBar, setOpenBar }) 
 
         <div>
             {openBar && user &&
-                <div className="fixed top-5 right-5 p-4 bg-white rounded-lg shadow-lg w-64">
+                <div className="fixed top-5 left-5 p-4 bg-white rounded-lg shadow-lg w-64">
                     <button onClick={() => { setOpenBar(false) }}>X</button>
 
                     <div className="flex flex-col">
