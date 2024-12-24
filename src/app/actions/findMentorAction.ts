@@ -187,10 +187,12 @@ export const declineCourse = async (request: Partial<ILearningRequest>) => {
     }
 }
 
-export const resetActiveRequest = async (requesterId: string) => {
+export const resetActiveRequest = async (userId: string) => {
+    console.log("in action", userId);
+    
     try {
         const response: AxiosResponse = await axios.post('/api/findMentorProcess/reset-active-request', {
-            requestId: requesterId
+            userId: userId
         });
         console.log("Response:", response.data);
     } catch (error) {

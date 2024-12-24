@@ -6,6 +6,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
     const courseId = req.nextUrl.pathname.split('/').pop();
 
+    console.log("courseId", courseId);
+    
     try {
         await connectToDB();
 
@@ -15,10 +17,8 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: 'Course not found' }, { status: 404 });
         }
 
-        return NextResponse.json({
-            studentId: course.studentID,  
-            mentorId: course.teacherID,    
-        }, { status: 200 });
+        return NextResponse.json({course:course}, { status: 200 });
+                 
     } catch (error) {
         console.error('Error fetching course:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

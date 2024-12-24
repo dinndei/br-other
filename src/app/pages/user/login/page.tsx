@@ -12,8 +12,13 @@ import { resetActiveRequest } from '@/app/actions/findMentorAction';
 const LoginPage = () => {
     const router = useRouter();
     const [step, setStep] = useState(1);
+    // const [tempUser, setTempUser] = useState<Partial<IUser>>({});
+    const [tempToken, setTempToken] = useState("")
+    // const [tempEmail, setTempEmail] = useState("")
     const login = useUserStore((state) => state.login);
+    const setUser = useUserStore((state) => state.setUser);
     const user = useUserStore((state) => state.user);
+
 
     const { register: registerUser, handleSubmit: handleSubmitUserForm, formState: { errors: userErrors } } = useForm<UserFormData>({
         resolver: zodResolver(userSchema),
@@ -25,23 +30,19 @@ const LoginPage = () => {
 
 
     const handleLoginSubmit = async (data: UserFormData) => {
-        console.log("comming", data.username, data.password);
-
         const response = await loginUser(data.username, data.password);
         if (response.status == 200) {
-            console.log("response.user", response.user);
-
-            login(response.user, response.token);
-            const email = response.user.email
+            setUser(response.user);
+            setTempToken(response.token)
             try {
-                const response = await sendOtpCode(email);
-                if (response.success) {
+                const res = await sendOtpCode(response.user.email);
+                if (res.success) {
                     setStep(2);
                 }
 
             }
             catch (error) {
-                console.error('לא נמצא שם משתמש . אנא נסה שוב.');
+                console.error(error);
             }
 
         } else {
@@ -52,22 +53,19 @@ const LoginPage = () => {
     // שלב שני: אימות קוד
     const handleOtpSubmit = async (data: OtpFormData) => {
 
-        console.log("data.otp", data.otp);
-        console.log("user.email", user!.email);
-
-
+       console.log("user.email", user?.email);
         try {
             const response = await verifyOTP(user!.email!, data.otp)
             if (response.success) {
+                login(user!, tempToken)
                 if (user!.learningApprovalPending !== null) {
                     alert("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.");
                     router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
                 } else {
                     if (user!.activeLearningRequestPending !== null) {
                         alert("יש לך למידה שאושרה, מעבירים אותך לקורס");
+                        await resetActiveRequest((user!._id) as string)
 
-                        await resetActiveRequest(user!.id)
-                 
                         router.push(`/pages/user/activCourse/${user!.activeLearningRequestPending}`) // ניתוב לקורס
                     } else {
                         router.push('/'); // מעבר לדף הבית אם אין בקשת למידה ממתינה
