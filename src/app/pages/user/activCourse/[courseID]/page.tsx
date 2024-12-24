@@ -103,7 +103,7 @@ const StudyPage = () => {
                         {courseData?.feild?.mainField}    &nbsp;
                         {courseData?.feild?.subField}
                     </p>
-                    
+
                 </header>
 
                 {/* Content */}
@@ -120,7 +120,7 @@ const StudyPage = () => {
                             <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
                             {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
                             {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
-                            <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>
+                            <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>)}
 
                     {activeTab === 'upload' && (
                         <div>
@@ -137,6 +137,6 @@ const StudyPage = () => {
             </div>
         </div>
     );
-};
+}
 
 export default StudyPage;
