@@ -115,4 +115,4 @@ const VideoChat = ({ userId, stream }: { userId: string, stream: MediaStream }) 
     );
 };
 
-export default VideoChat;
+export default VideoCall;
