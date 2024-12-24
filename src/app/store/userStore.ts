@@ -21,6 +21,7 @@ export const useUserStore = create<UserStore>((set) => ({
     set({
       user: null,
       isAuthenticated: false,
+      
     });
     // Clear cookies or localStorage here
     document.cookie = 'token=; Max-Age=0; path=/'; // Clear token from cookies

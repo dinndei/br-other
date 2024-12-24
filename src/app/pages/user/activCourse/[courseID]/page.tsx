@@ -103,7 +103,7 @@ const StudyPage = () => {
                         {courseData?.feild?.mainField}    &nbsp;
                         {courseData?.feild?.subField}
                     </p>
-                    
+
                 </header>
 
                 {/* Content */}
@@ -120,23 +120,23 @@ const StudyPage = () => {
                             <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
                             {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
                             {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
-                            <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>
-
-                    {activeTab === 'upload' && (
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Files</h2>
-                            {/* <Link
+                            {/* <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>)} */}
+</div>)}
+                            {activeTab === 'upload' && (
+                                <div>
+                                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Files</h2>
+                                    {/* <Link
                                 href={`/upload-files/6763f73f3b12e25ed1e2971d`}
                                 className="text-blue-500 hover:underline"
                             > */}
-                            <UploadFiles courseId={courseData!._id.toString()} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
-                            {/* </Link> */}
-                        </div>
-                    )}
-                </main>
+                                    <UploadFiles courseId={courseData!._id.toString()} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
+                                    {/* </Link> */}
+                                </div>
+                            )}
+                        </main>
             </div>
         </div>
     );
-};
+}
 
 export default StudyPage;
