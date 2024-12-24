@@ -93,7 +93,7 @@ export async function POST(req: Request) {
             to: email, 
             subject: 'Your OTP Code',
             text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
-            html: `<p>Your OTP code is <strong>${otp}</strong>. It will expire in 10 minutes.</p>`, // HTML אם רוצים
+            html: `<p>Your OTP code is <strong>${otp}</strong>. It will expire in 10 minutes.</p>`, 
         };
 
         await transporter.sendMail(mailOptions);

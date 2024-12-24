@@ -8,11 +8,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useUserStore } from '@/app/store/userStore';
 import { resetActiveRequest } from '@/app/actions/findMentorAction';
+import IUser from '@/app/types/IUser';
 
 const LoginPage = () => {
     const router = useRouter();
     const [step, setStep] = useState(1);
-    // const [tempUser, setTempUser] = useState<Partial<IUser>>({});
+    const [tempUser, setTempUser] = useState<Partial<IUser>>({});
     const [tempToken, setTempToken] = useState("")
     // const [tempEmail, setTempEmail] = useState("")
     const login = useUserStore((state) => state.login);
@@ -32,7 +33,7 @@ const LoginPage = () => {
     const handleLoginSubmit = async (data: UserFormData) => {
         const response = await loginUser(data.username, data.password);
         if (response.status == 200) {
-            setUser(response.user);
+            setTempUser(response.user);
             setTempToken(response.token)
             try {
                 const res = await sendOtpCode(response.user.email);
@@ -52,21 +53,22 @@ const LoginPage = () => {
 
     // שלב שני: אימות קוד
     const handleOtpSubmit = async (data: OtpFormData) => {
-
-       console.log("user.email", user?.email);
         try {
-            const response = await verifyOTP(user!.email!, data.otp)
+            const response = await verifyOTP(tempUser!.email!, data.otp)
             if (response.success) {
-                login(user!, tempToken)
-                if (user!.learningApprovalPending !== null) {
+                setUser(tempUser)                
+                login(tempUser!, tempToken)   
+                console.log("this is the user", user);
+                             
+                if (tempUser!.learningApprovalPending!== null) {
                     alert("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.");
                     router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
                 } else {
-                    if (user!.activeLearningRequestPending !== null) {
+                    if (tempUser!.activeLearningRequestPending !== null) {
                         alert("יש לך למידה שאושרה, מעבירים אותך לקורס");
-                        await resetActiveRequest((user!._id) as string)
+                        await resetActiveRequest((tempUser!._id) as string)
 
-                        router.push(`/pages/user/activCourse/${user!.activeLearningRequestPending}`) // ניתוב לקורס
+                        router.push(`/pages/user/activCourse/${tempUser!.activeLearningRequestPending}`) // ניתוב לקורס
                     } else {
                         router.push('/'); // מעבר לדף הבית אם אין בקשת למידה ממתינה
                     }
@@ -78,7 +80,7 @@ const LoginPage = () => {
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (error) {
-            console.error(otpErrors.otp)
+            console.error(error)
         }
     };
 

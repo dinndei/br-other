@@ -9,8 +9,6 @@ import UserProfile from './UserProfile';
 import ProfileImage from './ProfileImage';
 import CoursesList from './CoursesList';
 
-
-
 const Navbar: React.FC = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [showCourses, setShowCourses] = useState(false);
@@ -67,9 +65,9 @@ const Navbar: React.FC = () => {
                     <div className="flex space-x-4 text-white">
                         {!isAuthenticated ? (
                             <>
-                                <Link href="/pages/user/login">
+                                {/* <Link href="/pages/user/login">
                                     התחברות
-                                </Link>
+                                </Link> */}
                                 <button className="text-white">
                                     אודות
                                 </button>

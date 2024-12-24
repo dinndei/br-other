@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import IUser from "../types/IUser";
 import ILearningRequest from "../types/ILearningRequest";
+import { sortByDistance } from "../lib/sortByMatch/sortByDistance";
 
 export const saveLearningRequest = async (requesterId: string, mainField: string, subField: string) => {
     console.log("comming to action with:", requesterId, mainField, subField);
@@ -22,7 +23,7 @@ export const saveLearningRequest = async (requesterId: string, mainField: string
     }
 }
 
-export const findMentors = async (request: ILearningRequest): Promise<IUser[]> => {
+export const findMentors = async (user:Partial<IUser>,request: ILearningRequest): Promise<IUser[]> => {
     console.log("comming to action with:", request);
 
     try {
@@ -32,8 +33,9 @@ export const findMentors = async (request: ILearningRequest): Promise<IUser[]> =
         });
 
         console.log("response in action", response);
+        const sortedMentors = sortByDistance( user, response.data)
 
-        processMentorsApproval(response.data, request);
+        processMentorsApproval(sortedMentors, request);
 
         return response.data
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Types } from "ably";
+import Types from "ably";
 import { Realtime } from "ably";
 import { useUserStore } from "../store/userStore";
 import axios from "axios";

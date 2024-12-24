@@ -2,7 +2,7 @@ import IUser from "@/app/types/IUser";
 
 
 // Function to calculate the total gap
-export const sortByDistance = (user: IUser, mentors: IUser[]): IUser[] => {
+export const sortByDistance = (user: Partial<IUser>, mentors: IUser[]): IUser[] => {
     const mentorGaps=mentors.map(mentor=>({
         id:mentor._id,
         politicDist:calculateG

@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import AblyChat from '@/app/components/AblyChat';
-import VideoChat from '@/app/components/VideoChat';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+// import VideoChat from '@/app/components/VideoChat';
+// import Link from 'next/link';
+// import { useRouter } from 'next/router';
 import { useParams } from 'next/navigation';
 import { getCourseByID } from '@/app/actions/courseAction';
 import ICourse from '@/app/types/ICourse';
@@ -28,7 +28,7 @@ const StudyPage = () => {
                 if (response.status != 200) {
                     throw new Error('Failed to fetch course data');
                 }
-                const data = await response.data.course.course;
+                const data = await response.data.course;
                 console.log("data", data.course);
                 setCourseData(data);
             } catch (error) {
@@ -103,7 +103,7 @@ const StudyPage = () => {
                         {courseData?.feild?.mainField}    &nbsp;
                         {courseData?.feild?.subField}
                     </p>
-                    
+
                 </header>
 
                 {/* Content */}
@@ -120,7 +120,8 @@ const StudyPage = () => {
                             <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
                             {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
                             {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
-                            <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>
+                            {/* <VideoChat userId={courseData.teacherID.toString()} stream={stream} /> */}
+                        </div>)}
 
                     {activeTab === 'upload' && (
                         <div>
@@ -134,8 +135,8 @@ const StudyPage = () => {
                         </div>
                     )}
                 </main>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
