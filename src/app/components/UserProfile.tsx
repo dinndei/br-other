@@ -7,9 +7,6 @@ import IProfileComponentProps from '../types/IProfileComponentProps';
 import ProfileImage from './ProfileImage';
 
 const UserProfile: React.FC<IProfileComponentProps> = ({ openBar, setOpenBar }) => {
-
-
-
     const { user} = useUserStore();
 
     return (

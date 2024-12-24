@@ -18,6 +18,7 @@ const StudyPage = () => {
     const params = useParams();
     const courseID = Array.isArray(params?.courseID) ? params.courseID[0] : params.courseID;
     const [courseData, setCourseData] = useState<ICourse | null>(null);
+    const [stream, setStream] = useState<MediaStream | null>(null);
     const user = useUserStore(state => state.user)
 
     useEffect(() => {
@@ -27,8 +28,8 @@ const StudyPage = () => {
                 if (response.status != 200) {
                     throw new Error('Failed to fetch course data');
                 }
-                const data = await response.data.course;
-                console.log("data", data);
+                const data = await response.data.course.course;
+                console.log("data", data.course);
                 setCourseData(data);
             } catch (error) {
                 console.error('Error fetching course data:', error);
@@ -37,6 +38,31 @@ const StudyPage = () => {
 
         fetchCourseData();
     }, [courseID]);
+
+    useEffect(() => {
+        const getUserMedia = async () => {
+            try {
+                const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                setStream(localStream);
+            } catch (error) {
+                console.error('Error getting media:', error);
+            }
+        };
+
+        getUserMedia();
+
+        // ניקוי ה-`stream` כאשר הקומפוננטה מתנתקת
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, []);
+
+    if (!stream || !courseData) {
+        return <p>Loading...</p>;
+    }
+
 
 
     return (
@@ -84,17 +110,17 @@ const StudyPage = () => {
                 <main className="flex-1 p-6 bg-gray-50 ">
                     {activeTab === 'chat' && (
                         <div>
-                            {/* <h2 className="text-2xl font-bold text-gray-800 mb-4">Chat with Mentor</h2> */}
-                            <AblyChat courseId="6763f73f3b12e25ed1e2971d" />
+                            <h3 className="text-xl font-medium text-gray-700">Chat with Mentor</h3>
+                            <AblyChat courseId={courseID} />
                         </div>
                     )}
 
                     {activeTab === 'video' && (
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Video Call</h2>
-                            {/* <VideoChat userId="6761666723beecc2d11d5f45" otherUserId="6761666723beecc2d11d5f45" /> */}
-                        </div>
-                    )}
+                            <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
+                            {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
+                            {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
+                            <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>
 
                     {activeTab === 'upload' && (
                         <div>

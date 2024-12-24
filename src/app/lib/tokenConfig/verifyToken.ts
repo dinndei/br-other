@@ -12,10 +12,10 @@ export async function verifyToken(token: string) {
 
     if (response.data.isValid) {
       console.log('Token is valid');
-      return true;
+      return response.data;
     } else {
       console.log('Token is invalid');
-      return false;
+      return response.data;
     }
   } catch (error) {
     console.error('Error verifying token:', error);

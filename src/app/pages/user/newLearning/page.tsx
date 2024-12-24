@@ -201,7 +201,7 @@ const NewLearningPage: React.FC = () => {
                         <FieldsInputList
                             fields={fields}
                             setFields={setFields}
-                            showEditButtons={false} // מסתירים כפתורי עריכה
+                            showEditButtons={false} 
                         />
 
                         <div className="flex justify-between mt-6">

@@ -1,10 +1,11 @@
 
 import { NextResponse } from "next/server";
 
-// מבנה נתונים לשמירת Peer IDs
 const peers: Record<string, string> = {};
 
 export async function POST(request: Request) {
+    console.log("rvrvrvrvvrvr");
+    
     try {
         const { userId, peerId } = await request.json();
         console.log("userId, peerId  in API", userId, peerId);
