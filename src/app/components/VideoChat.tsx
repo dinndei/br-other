@@ -53,9 +53,9 @@ const VideoChat = ({ userId, stream }: { userId: string, stream: MediaStream }) 
         // יצירת PeerJS עבור המשתמש המקומי
         const peer = new Peer();
 
-        peer.on('open', (id) => {
-            console.log('My peer ID is:', id);
-            setPeerId(id);
+        
+        peer.on("open", async (peerId) => {
+            console.log("My Peer ID:", peerId);
 
             // שליחת ה-peerId לשרת
             fetch('/api/video', {
@@ -78,31 +78,51 @@ const VideoChat = ({ userId, stream }: { userId: string, stream: MediaStream }) 
             });
         });
 
-        // חיפוש ה-peerId של המשתמש השני דרך ה-API שלך
-        const fetchPeerId = async () => {
-            try {
-                const response = await fetch(`/api/video/post?userId=${userId}`);
-                const data = await response.json();
-                if (data.peerId) {
-                    setOtherPeerId(data.peerId);
-                    const call = peer.call(data.peerId, stream); // יוזמת שיחה עם המשתמש השני
-                    call.on('stream', (remoteStream) => {
-                        if (videoRef.current) {
-                            videoRef.current.srcObject = remoteStream;
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching peerId:', error);
-            }
-        };
-
-        fetchPeerId();
-
         return () => {
-            peer.destroy(); // נקיון לאחר שהקומפוננטה תנותק
+            peerRef.current?.destroy();
         };
-    }, [userId, stream]);
+    }, []);
+
+    const startCall = async () => {
+        const targetUserId = otherUserId || "defaultUser2";
+
+        try {
+            const response = await fetch(`/api/video?userId=${targetUserId}`,
+                {
+                    method: "GET",
+                }
+
+            );
+            if (!response.ok) {
+                throw new Error(`Failed to fetch peer ID for user: ${targetUserId}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.peerId) {
+                console.error(`Peer ID not found for user: ${targetUserId}`);
+                return;
+            }
+
+            console.log("Peer ID found:", data.peerId);
+            const peerId = data.peerId;
+
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+                localVideoRef.current!.srcObject = stream;
+                localVideoRef.current!.play();
+                const call = peerRef.current!.call(peerId, stream);
+
+                call.on("stream", (remoteStream) => {
+                    remoteVideoRef.current!.srcObject = remoteStream;
+                    remoteVideoRef.current!.play();
+                });
+
+                setIsInCall(true); // מציג את שיחת הווידאו
+            });
+        } catch (error) {
+            console.error("Error starting call:", error);
+        }
+    };
 
     return (
         <div>
