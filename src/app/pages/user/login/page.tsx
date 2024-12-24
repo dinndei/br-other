@@ -35,8 +35,8 @@ const LoginPage = () => {
             setUser(response.user);
             setTempToken(response.token)
             try {
-                const response = await sendOtpCode(user!.email!);
-                if (response.success) {
+                const res = await sendOtpCode(response.user.email);
+                if (res.success) {
                     setStep(2);
                 }
 
