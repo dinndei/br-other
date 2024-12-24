@@ -31,6 +31,8 @@ const StudyPage = () => {
                 const data = await response.data.course;
                 console.log("data", data.course);
                 setCourseData(data);
+                console.log("course data ",courseData);
+                
             } catch (error) {
                 console.error('Error fetching course data:', error);
             }
