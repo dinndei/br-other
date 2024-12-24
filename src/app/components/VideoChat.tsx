@@ -1,67 +1,118 @@
-import { useEffect, useRef, useState } from 'react';
-import DailyIframe from '@daily-co/daily-js';
 
-interface VideoCallProps {
-  roomUrl: string;
-}
+// import { useEffect, useState } from 'react';
+// import Video from './Video'; // ייבוא הקומפוננטה שלך
 
-const VideoCall: React.FC<VideoCallProps> = ({ roomUrl }) => {
-  const videoContainerRef = useRef<HTMLDivElement | null>(null);
-  const [callObject, setCallObject] = useState<DailyIframe | null>(null);
-  const [error, setError] = useState<string | null>(null);
+// const VideoChat = () => {
+//     const [stream, setStream] = useState<MediaStream | null>(null);
 
-  // פונקציה שמחברת את המשתמש לחדר
-  const joinRoom = async () => {
-    if (!callObject) return;
-    try {
-      // הצטרפות לחדר
-      await callObject.join({ url: roomUrl });
-    } catch (err) {
-      setError('לא ניתן להצטרף לחדר: ' + err.message);
-    }
-  };
+//     useEffect(() => {
+//         const getUserMedia = async () => {
+//             try {
+//                 console.log('Requesting user media...');
+//                 const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+//                 console.log('Media stream obtained:', mediaStream);
+//                 setStream(mediaStream); // שמירת ה- stream ב-state
+//             } catch (error) {
+//                 console.error('Error accessing media devices:', error);
+//             }
+//         };
 
-  // אתחול של Daily.co API והקמת החדר
-  useEffect(() => {
-    const initCall = () => {
-      const daily = DailyIframe.createCallObject();
-      setCallObject(daily);
-      daily.on('joined-meeting', () => {
-        console.log('המשתמש הצטרף לחדר');
-      });
-      daily.on('error', (e: any) => {
-        setError('שגיאה: ' + e.error);
-      });
+//         getUserMedia();
 
-      // הצגת הוידאו בתוך ה-container
-      if (videoContainerRef.current) {
-        daily.attachVideoElement(videoContainerRef.current);
-      }
-    };
+//         // ניקוי כאשר הקומפוננטה נפרסת
+//         return () => {
+//             if (stream) {
+//                 stream.getTracks().forEach(track => track.stop());
+//             }
+//         };
+//     }, []);
 
-    initCall();
+//     if (!stream) {
+//         return <div>Loading video...</div>; // מחכה ל-stream אם הוא לא קיים
+//     }
 
-    return () => {
-      if (callObject) {
-        callObject.destroy();
-      }
-    };
-  }, []);
+//     return (
+//         <div>
+//             <h2>Video Chat</h2>
+//             <Video stream={stream} /> {/* העברת ה-stream לקומפוננטה Video */}
+//         </div>
+//     );
+// };
 
-  // קריאה לפונקציה להיכנס לחדר אחרי שהתשתית מוכנה
-  useEffect(() => {
-    if (callObject && roomUrl) {
-      joinRoom();
-    }
-  }, [callObject, roomUrl]);
+// export default VideoChat;
 
-  return (
-    <div>
-      <h2>שיחת וידאו</h2>
-      {error && <div className="error-message">{error}</div>}
-      <div ref={videoContainerRef} style={{ width: '100%', height: '500px', border: '1px solid black' }} />
-    </div>
-  );
+import { useEffect, useState, useRef } from 'react';
+import Peer from 'peerjs';
+
+const VideoChat = ({ userId, stream }: { userId: string, stream: MediaStream }) => {
+    const [peerId, setPeerId] = useState<string | null>(null);
+    const [otherPeerId, setOtherPeerId] = useState<string | null>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        // יצירת PeerJS עבור המשתמש המקומי
+        const peer = new Peer();
+
+        peer.on('open', (id) => {
+            console.log('My peer ID is:', id);
+            setPeerId(id);
+
+            // שליחת ה-peerId לשרת
+            fetch('/api/video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId, peerId: id }),
+            });
+        });
+
+        peer.on('call', (call) => {
+            // קבלת שיחה
+            call.answer(stream); // השמע את ה-stream המקומי
+            call.on('stream', (remoteStream) => {
+                // הצג את ה-stream של המשתמש המרוחק
+                if (videoRef.current) {
+                    videoRef.current.srcObject = remoteStream;
+                }
+            });
+        });
+
+        // חיפוש ה-peerId של המשתמש השני דרך ה-API שלך
+        const fetchPeerId = async () => {
+            try {
+                const response = await fetch(`/api/video/post?userId=${userId}`);
+                const data = await response.json();
+                if (data.peerId) {
+                    setOtherPeerId(data.peerId);
+                    const call = peer.call(data.peerId, stream); // יוזמת שיחה עם המשתמש השני
+                    call.on('stream', (remoteStream) => {
+                        if (videoRef.current) {
+                            videoRef.current.srcObject = remoteStream;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching peerId:', error);
+            }
+        };
+
+        fetchPeerId();
+
+        return () => {
+            peer.destroy(); // נקיון לאחר שהקומפוננטה תנותק
+        };
+    }, [userId, stream]);
+
+    return (
+        <div>
+            <video ref={videoRef} autoPlay playsInline />
+            <div>
+                {peerId && <p>Your Peer ID: {peerId}</p>}
+                {otherPeerId && <p>Other Peer ID: {otherPeerId}</p>}
+            </div>
+        </div>
+    );
 };
 
 export default VideoCall;
