@@ -1,32 +1,14 @@
 'use client'
 import axios from "axios";
-// import useDataStore from "./store/fieldsStore";
-// import { useEffect } from "react";
-
-
-async function post() {
-  console.log("comming to post");
-  try {
-    const response = await axios.post('/api/fields/postFields');
-    console.log("response.data", response.data);
-
-    return response.data;
-  } catch (error) {
-
-    if (error) {
-      return { error };
-    } else {
-      return { error: 'Something went wrong. Please try again.' };
-    }
-  }
-}
-
-
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from "next/link";
+import { useUserStore } from "./store/userStore";
+
+
 
 
 export default function Home() {
+const user=useUserStore(st=>st.user);
 
 
   return (
@@ -39,14 +21,14 @@ export default function Home() {
       {/* תוכן */}
       <div className="relative z-10 text-center px-4">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-          ♥ אני אחר, ואני אח ♥
+           אני אחר, אני אח 
         </h1>
         <p className="mt-4 text-xl md:text-2xl max-w-xl mx-auto">
           כי השינוי מתחיל מאיתנו
         </p>
-
-        {/* כפתורים */}
-        <div className="mt-8 flex justify-center space-x-4">
+{
+      !user&&
+       <div className="mt-8 flex justify-center space-x-4">
           <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold text-lg shadow-lg transition-all flex items-center">
             <span>
               <Link href="/pages/user/login" >
@@ -61,6 +43,7 @@ export default function Home() {
             </Link></span>
           </button>
         </div>
+}
       </div>
     </div>
   );
