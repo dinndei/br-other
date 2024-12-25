@@ -47,7 +47,7 @@ export const findMentors = async (user:Partial<IUser>,request: ILearningRequest)
     }
 }
 
-export const processMentorsApproval = async (mentors: IUser[], request: ILearningRequest) => {
+export const processMentorsApproval = async (mentors: Partial<IUser>[], request: ILearningRequest) => {
     let approved = false;
     const timeout = 10 * 60 * 1000;  // 10 דקות המתנה
 
@@ -78,7 +78,7 @@ export const processMentorsApproval = async (mentors: IUser[], request: ILearnin
 
 }
 
-const notifyUserRequestStatus = async(request:Partial<ILearningRequest>, isApproved:boolean, mentor: IUser | null = null)=>{
+const notifyUserRequestStatus = async(request:Partial<ILearningRequest>, isApproved:boolean, mentor: Partial<IUser> | null = null)=>{
     console.log("notifyUserRequestStatus");
     
     const response: AxiosResponse = await axios.post('/api/findMentorProcess/notify-user-request', {
@@ -89,7 +89,7 @@ const notifyUserRequestStatus = async(request:Partial<ILearningRequest>, isAppro
     return response;
 }
 
-const sendApprovalRequest = async (mentor: IUser, request: Partial<ILearningRequest>) => {
+const sendApprovalRequest = async (mentor: Partial<IUser>, request: Partial<ILearningRequest>) => {
     const response: AxiosResponse = await axios.post('/api/findMentorProcess/sendApprovalRequest', {
         mentor: mentor,
         request: request

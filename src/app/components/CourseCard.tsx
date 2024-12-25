@@ -3,7 +3,7 @@ import { CourseCardProps } from '../types/props/CourseCardProps';
 import { getMentorById } from '../actions/courseAction';
 import Link from 'next/link';
 
-const CourseCard: React.FC<CourseCardProps> = ({ course ,handleCourseClick}) => {
+const CourseCard: React.FC<CourseCardProps> = ({ course, handleCourseClick }) => {
 
     const [mentorName, setMentorName] = useState<string>("");
 
@@ -28,12 +28,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ course ,handleCourseClick}) => 
 
 
     return (
-
         <Link
             href={course.isActiv ? `/pages/user/activCourse/${course._id}` : "#"}
             onClick={handleCourseClick}
-            className={`course-card block bg-gray-800 p-4 rounded-lg shadow-lg flex flex-col gap-2 w-full 
-        ${course.isActiv ? "cursor-pointer hover:bg-gray-700" : "cursor-not-allowed opacity-50"}`}
+            className={`course-card block bg-gray-800 p-4 rounded-lg shadow-lg w-full mb-4 ${course.isActiv ? "cursor-pointer hover:bg-gray-700" : "cursor-not-allowed opacity-50"}`}
         >
             <div className="flex justify-between items-center border-b pb-2 mb-2">
                 <p className="text-white">
@@ -53,6 +51,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course ,handleCourseClick}) => 
                 </p>
             </div>
         </Link>
+
     );
 };
 

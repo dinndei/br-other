@@ -40,7 +40,7 @@ const ResetPassword = () => {
         setUsername(data.username)
         try {
             const response = await findUserByUsername(data.username);
-            const email = response.email
+            const email = response.user.email
             if (response.success) {
                 console.log("response.email", email);
                 setEmailForReset(email);
