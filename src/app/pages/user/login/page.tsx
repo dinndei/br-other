@@ -46,9 +46,14 @@ const LoginPage = () => {
                 console.error(error);
             }
 
-        } else {
-            alert(response.error);
+        } else if(response.status == 404){
+            alert("משתמש לא נמצא");
         }
+    else{
+        //wrong password
+        //אם יש סיסמא לא נכונה נבלבל אותו....
+        alert("נתקלנו בבעיה, נסה שוב מאוחר יותר")
+    }
     };
 
     // שלב שני: אימות קוד

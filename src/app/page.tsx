@@ -29,14 +29,14 @@ const user=useUserStore(st=>st.user);
 {
       !user&&
        <div className="mt-8 flex justify-center space-x-4">
-          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold text-lg shadow-lg transition-all flex items-center">
+          <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 font-semibold text-lg shadow-lg  flex items-center  text-white rounded-md hover:scale-110 hover:shadow-lg transition-transform duration-300">
             <span>
               <Link href="/pages/user/login" >
                 התחברות
               </Link></span>
             <ArrowRightIcon className="h-6 w-6 ml-2" />
           </button>
-          <button className="px-6 py-3 bg-white hover:bg-gray-100 text-blue-600 rounded-full font-semibold text-lg shadow-lg border border-blue-600 transition-all flex items-center">
+          <button className="px-6 py-3 bg-white hover:bg-gray-100 text-blue-500 rounded-md font-semibold text-lg shadow-lg border border-blue-500 hover:scale-110 hover:shadow-lg flex items-center transition-transform duration-300">
             <span>
               <Link href="/pages/user/signup" >
               הרשמה

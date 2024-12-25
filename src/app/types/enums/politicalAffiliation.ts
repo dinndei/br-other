@@ -7,6 +7,7 @@ export enum PoliticalAffiliation {
     HardLeft = "HardLeft"
 }
 
+
 // Map to numeric values
 export const politicalAffiliationValues: Record<PoliticalAffiliation, number> = {
     [PoliticalAffiliation.HardRight]: 1,
@@ -16,6 +17,8 @@ export const politicalAffiliationValues: Record<PoliticalAffiliation, number> = 
     [PoliticalAffiliation.Left]: 5,
     [PoliticalAffiliation.HardLeft]: 6,
 };
+
+
 
 // Function to calculate the gap
 function calculateGap(
@@ -31,4 +34,3 @@ function calculateGap(
 // Example usage
 const gap = calculateGap(PoliticalAffiliation.HardRight, PoliticalAffiliation.HardLeft);
 console.log("Gap:", gap); // Output: Gap: 5
-

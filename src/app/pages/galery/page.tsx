@@ -89,7 +89,7 @@ const UploadAndDisplay = () => {
                             columnClassName="px-2"
                         >
                             {uploadedImages.slice().reverse().map((image, index) => (
-                                <div key={index} className="p-2">
+                                <div key={index} className="p-2 z-0">
                                     <div className="relative w-full h-auto">
                                         <CldImage
                                             src={image}
