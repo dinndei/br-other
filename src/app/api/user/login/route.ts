@@ -20,13 +20,13 @@ export async function POST(req: NextRequest) {
         const user: IUser | null = await User.findOne({ userName });
         console.log(user);
         if (!user) {
-            return NextResponse.json({ message: 'userName not found' }, { status: 400 });
+            return NextResponse.json({ message: 'userName not found' }, { status: 404 });
         }
 
         const isMatch = await verifyPassword(password, user.password);        
 
         if (!isMatch) {
-            return NextResponse.json({ message: 'Invalid password' }, { status: 400 });
+            return NextResponse.json({ message: 'Invalid password' }, { status: 401 });
         }
 
         const token = generateToken(user._id!.toString(), user.role);

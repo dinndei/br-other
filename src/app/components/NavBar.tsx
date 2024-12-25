@@ -94,6 +94,9 @@ const Navbar: React.FC = () => {
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
 
+    const navItemStyle = "text-white px-4 py-2 rounded-md hover:bg-gray-700 hover:scale-110 transition-transform duration-300";
+
+
     const toggleProfile = () => {
         setShowProfile(prev => !prev);
     }
@@ -118,7 +121,7 @@ const Navbar: React.FC = () => {
         }
     };
 
-    const toggleCoursesList = () => {
+    const toggleShowCoursesList = () => {
         setShowCourses(prev => !prev);
     };
 
@@ -127,7 +130,7 @@ const Navbar: React.FC = () => {
     return (
         <>
             {/* נבר עליון */}
-            <nav className="bg-gray-800 p-4">
+            <nav className="bg-black p-4">
                 <div className="flex justify-between items-center">
                     <button
                         onClick={toggleProfile}
@@ -139,56 +142,54 @@ const Navbar: React.FC = () => {
                         <UserProfile openBar={showProfile} setOpenBar={setShowProfile} />
                     }
 
-                    <div className="flex space-x-4 text-white">
-                        {!isAuthenticated ? (
-                            <>
-                                <Link href="/pages/user/login">
-                                    התחברות
-                                </Link>
-                                <button className="text-white">
+                    <div className="flex space-x-4 ">
+
+                       {/* זה מוצג בכל מקרה */}
+                        
+                            
+                                <Link href="/pages/general/about" className={navItemStyle}>
                                     אודות
-                                </button>
-                                <Link href="/pages/galery">
+                                </Link>
+                               
+                                <Link href="/pages/galery" className={navItemStyle}>
                                     גלריה
                                 </Link>
-
-                            </>
-                        ) : (
-                            <>
+                                <Link href="/" className={navItemStyle}>
+                                    בית
+                                </Link>
+                                
+                        
+                         {/* זה מוצג אם יש משתמש רשום */}
+                          {user&&isAuthenticated&& 
+<>
                                 <button
                                     onClick={handleLogout}
-                                    className="text-white"
+                                    className={navItemStyle}
                                 >
                                     התנתקות
                                 </button>
                                 <button
                                     onClick={handleNewLearningClick}
-                                    className="text-white"
+                                    className={navItemStyle}
                                 >
                                     למידה חדשה
                                 </button>
-                                <button className="text-white">
-                                    אודות
-                                </button>
+                               
                                 <button
-                                    className="text-white flex items-center"
-                                    onClick={toggleCoursesList}
-                                >
-                                    {showCourses ? (
-                                       <p>  ▲</p>
-                                    ) : (
-                                       <p>  ▼</p> 
-                                    )}
-                                    רשימת קורסים
+                                   className={navItemStyle}
+                                    onClick={toggleShowCoursesList}
+                                >  רשימת קורסים
+                                  
                                 </button>
-                                <Link href="/pages/galery">
-                                    גלריה
-                                </Link>
-                            </>
-                        )}
+    </>                           
+} 
+                       
                     </div>
                 </div>
             </nav>
+
+
+
 
             {/* תפריט צדדי מתחת לנבר */}
             {showCourses && <CoursesList />}

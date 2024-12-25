@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/NavBar";
 import AuthInitializer from "./components/AuthInitializer";
 import VideoRoom, { UseCallFrameDemo } from "./components/DailyVideo";
+import TmpNavbar from "./components/tmpNav";
 
 
 const geistSans = localFont({
@@ -35,7 +36,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthInitializer/>
-        <Navbar />
+       {/* <TmpNavbar/> */}
+       <Navbar/>
         {children}
         {/* <UseCallFrameDemo/> */}
       </body>
