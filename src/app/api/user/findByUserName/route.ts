@@ -13,14 +13,14 @@ export async function POST(req: NextRequest) {
     try {
         await connectToDB();
 
-        const user = await User.findOne({ userName }).select('email');
+        const user = await User.findOne({ userName })
 
         if (!user) {
             return NextResponse.json({ message: 'userName not found' }, { status: 400 });
         }
         const response = NextResponse.json({
             message: 'Login successful',
-            email: user.email,
+            user: user,
             success: true
         });
         return response;

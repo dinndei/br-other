@@ -105,55 +105,45 @@ const ApproveLearningPage = () => {
         return <p>No request found.</p>;
     }
 
-    return (
 
-        <div style={{ padding: '20px' }}>
-            <h1>Approve or Decline Learning Request</h1>
+
+    return (
+        <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 space-y-6">
+            <h1 className="text-2xl font-semibold text-gray-800">Approve or Decline Learning Request</h1>
             {studentDetails ? (
                 <>
-                    <p>
-                        <strong>Student Name:</strong> {studentDetails!.firstName}  {studentDetails!.lastName}
-                    </p>
-                    <p>
-                        <strong>Main Field:</strong> {requestDetails.mainField}
-                    </p>
-                    <p>
-                        <strong>Sub Field:</strong> {requestDetails.subField}
-                    </p>
-                    <div>
+                    <div className="space-y-4">
+                        <p className="text-lg">
+                            <span className="font-medium text-gray-600">Student Name:</span> {studentDetails.firstName} {studentDetails.lastName}
+                        </p>
+                        <p className="text-lg">
+                            <span className="font-medium text-gray-600">Main Field:</span> {requestDetails.mainField}
+                        </p>
+                        <p className="text-lg">
+                            <span className="font-medium text-gray-600">Sub Field:</span> {requestDetails.subField}
+                        </p>
+                    </div>
+                    <div className="flex space-x-4">
                         <button
                             onClick={() => handleApproval(true)}
-                            style={{
-                                marginRight: '10px',
-                                backgroundColor: 'green',
-                                color: 'white',
-                                padding: '10px 20px',
-                                border: 'none',
-                                borderRadius: '5px',
-                                cursor: 'pointer',
-                            }}
+                            className="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-2 rounded-md shadow"
                         >
                             Approve
                         </button>
                         <button
                             onClick={() => handleApproval(false)}
-                            style={{
-                                backgroundColor: 'red',
-                                color: 'white',
-                                padding: '10px 20px',
-                                border: 'none',
-                                borderRadius: '5px',
-                                cursor: 'pointer',
-                            }}
+                            className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-md shadow"
                         >
                             Decline
                         </button>
                     </div>
-
-                </>) : (
-                <p>Loading student details...</p>)}
+                </>
+            ) : (
+                <p className="text-gray-600 text-lg">Loading student details...</p>
+            )}
         </div>
     );
+    
 }
 
 export default ApproveLearningPage;

@@ -100,14 +100,14 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                                 handleMainFieldSearch(index, e.target.value);
                             }}
                             placeholder="Type to search..."
-                            className="w-full border border-gray-300 p-2 rounded"
+                            className="w-full border border-gray-300 p-2 rounded text-black"
                         />
                         {showMainOptions[index] && filteredMainFields.length > 0 && (
                             <ul className="bg-white border border-gray-300 rounded mt-2 max-h-32 overflow-y-auto">
                                 {filteredMainFields.map((mainField) => (
                                     <li
                                         key={mainField}
-                                        className="p-2 hover:bg-gray-200 cursor-pointer"
+                                        className="p-2 text-black hover:bg-gray-200 cursor-pointer"
                                         onClick={() => handleMainFieldChange(index, mainField)}
                                     >
                                         {mainField}
@@ -128,7 +128,7 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                                 handleSubFieldSearch(index, e.target.value, field.mainField);
                             }}
                             placeholder="Type to search..."
-                            className="w-full border border-gray-300 p-2 rounded"
+                            className="w-full text-black border border-gray-300 p-2 rounded"
                             disabled={!field.mainField}
                         />
                         {showSubOptions[index] && filteredSubFields.length > 0 && (
@@ -136,7 +136,7 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                                 {filteredSubFields.map((subField) => (
                                     <li
                                         key={subField}
-                                        className="p-2 hover:bg-gray-200 cursor-pointer"
+                                        className="p-2 text-black hover:bg-gray-200 cursor-pointer"
                                         onClick={() => handleSubFieldChange(index, subField)}
                                     >
                                         {subField}

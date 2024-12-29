@@ -16,3 +16,22 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
 }
+
+
+
+export async function PUT(req: NextRequest) {
+    try {
+        const { messageId, newText } = await req.json();
+        await connectToDB();
+        const result = await ChatMessage.updateOne({ _id: messageId }, { $set: { text: newText } });
+
+        if (result.matchedCount === 0) {
+            return NextResponse.json({ message: "Message not found" }, { status: 404 });
+        }
+
+        return NextResponse.json({ message: "Message updated successfully" }, { status: 200 });
+    } catch (error) {
+        console.error("Error updating message:", error);
+        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    }
+}

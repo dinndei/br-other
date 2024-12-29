@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import AblyChat from '@/app/components/AblyChat';
-import VideoChat from '@/app/components/VideoChat';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+// import VideoChat from '@/app/components/VideoChat';
+// import Link from 'next/link';
+// import { useRouter } from 'next/router';
 import { useParams } from 'next/navigation';
 import { getCourseByID } from '@/app/actions/courseAction';
 import ICourse from '@/app/types/ICourse';
@@ -28,9 +28,11 @@ const StudyPage = () => {
                 if (response.status != 200) {
                     throw new Error('Failed to fetch course data');
                 }
-                const data = await response.data.course.course;
+                const data = await response.data.course;
                 console.log("data", data.course);
                 setCourseData(data);
+                console.log("course data ",courseData);
+                
             } catch (error) {
                 console.error('Error fetching course data:', error);
             }
@@ -39,27 +41,28 @@ const StudyPage = () => {
         fetchCourseData();
     }, [courseID]);
 
-    useEffect(() => {
-        const getUserMedia = async () => {
-            try {
-                const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                setStream(localStream);
-            } catch (error) {
-                console.error('Error getting media:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const getUserMedia = async () => {
+    //         try {
+    //             const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    //             setStream(localStream);
+    //         } catch (error) {
+    //             console.error('Error getting media:', error);
+    //         }
+    //     };
 
-        getUserMedia();
+    //     getUserMedia();
 
-        // ניקוי ה-`stream` כאשר הקומפוננטה מתנתקת
-        return () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-        };
-    }, []);
+    //     // ניקוי ה-`stream` כאשר הקומפוננטה מתנתקת
+    //     return () => {
+    //         if (stream) {
+    //             stream.getTracks().forEach(track => track.stop());
+    //         }
+    //     };
+    // }, []);
 
-    if (!stream || !courseData) {
+    //if !stream-> loading...
+    if ( !courseData) {
         return <p>Loading...</p>;
     }
 
@@ -129,13 +132,13 @@ const StudyPage = () => {
                                 href={`/upload-files/6763f73f3b12e25ed1e2971d`}
                                 className="text-blue-500 hover:underline"
                             > */}
-                                    <UploadFiles courseId={courseData!._id.toString()} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
-                                    {/* </Link> */}
-                                </div>
-                            )}
-                        </main>
-            </div>
-        </div>
+                            <UploadFiles courseId={courseData!._id.toString()} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
+                            {/* </Link> */}
+                        </div>
+                    )}
+                </main>
+            </div >
+        </div >
     );
 }
 

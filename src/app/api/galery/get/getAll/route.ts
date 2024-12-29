@@ -7,9 +7,8 @@ export async function GET() {
         await connectToDB(); 
 
         const images = await Image.find(); 
-        const imageUrls = images.map(image => image.imageUrl); 
-
-        return NextResponse.json(imageUrls); 
+    
+        return NextResponse.json(images); 
     } catch (error) {
         return NextResponse.json({ error: error+"Error fetching images" }, { status: 500 });
     }

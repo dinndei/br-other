@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import IUser from "../types/IUser";
 import ILearningRequest from "../types/ILearningRequest";
+import { sortByDistance } from "../lib/sortByMatch/sortByDistance";
 
 export const saveLearningRequest = async (requesterId: string, mainField: string, subField: string) => {
     console.log("comming to action with:", requesterId, mainField, subField);
@@ -22,7 +23,7 @@ export const saveLearningRequest = async (requesterId: string, mainField: string
     }
 }
 
-export const findMentors = async (request: ILearningRequest): Promise<IUser[]> => {
+export const findMentors = async (user:Partial<IUser>,request: ILearningRequest): Promise<IUser[]> => {
     console.log("comming to action with:", request);
 
     try {
@@ -32,8 +33,9 @@ export const findMentors = async (request: ILearningRequest): Promise<IUser[]> =
         });
 
         console.log("response in action", response);
+        const sortedMentors = sortByDistance( user, response.data)
 
-        processMentorsApproval(response.data, request);
+        processMentorsApproval(sortedMentors, request);
 
         return response.data
 
@@ -45,7 +47,7 @@ export const findMentors = async (request: ILearningRequest): Promise<IUser[]> =
     }
 }
 
-export const processMentorsApproval = async (mentors: IUser[], request: ILearningRequest) => {
+export const processMentorsApproval = async (mentors: Partial<IUser>[], request: ILearningRequest) => {
     let approved = false;
     const timeout = 10 * 60 * 1000;  // 10 דקות המתנה
 
@@ -76,7 +78,7 @@ export const processMentorsApproval = async (mentors: IUser[], request: ILearnin
 
 }
 
-const notifyUserRequestStatus = async(request:Partial<ILearningRequest>, isApproved:boolean, mentor: IUser | null = null)=>{
+const notifyUserRequestStatus = async(request:Partial<ILearningRequest>, isApproved:boolean, mentor: Partial<IUser> | null = null)=>{
     console.log("notifyUserRequestStatus");
     
     const response: AxiosResponse = await axios.post('/api/findMentorProcess/notify-user-request', {
@@ -87,7 +89,7 @@ const notifyUserRequestStatus = async(request:Partial<ILearningRequest>, isAppro
     return response;
 }
 
-const sendApprovalRequest = async (mentor: IUser, request: Partial<ILearningRequest>) => {
+const sendApprovalRequest = async (mentor: Partial<IUser>, request: Partial<ILearningRequest>) => {
     const response: AxiosResponse = await axios.post('/api/findMentorProcess/sendApprovalRequest', {
         mentor: mentor,
         request: request

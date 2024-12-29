@@ -18,6 +18,8 @@ export const politicalAffiliationValues: Record<PoliticalAffiliation, number> = 
     [PoliticalAffiliation.HardLeft]: 6,
 };
 
+
+
 // Function to calculate the gap
 function calculateGap(
     affiliation1: PoliticalAffiliation,

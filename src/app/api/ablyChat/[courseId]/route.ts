@@ -26,3 +26,4 @@ export async function GET(req: NextRequest, { params }: { params: { courseId: st
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
 }
+
