@@ -108,7 +108,7 @@ const ApproveLearningPage = () => {
 
 
     return (
-        <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 space-y-6">
+        <div className="mt-16 max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 space-y-6">
             <h1 className="text-2xl font-semibold text-gray-800">Approve or Decline Learning Request</h1>
             {studentDetails ? (
                 <>

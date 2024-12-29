@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
     return (
         <>
             {/* נבר עליון */}
-            <nav className="bg-black p-4">
+            <nav className="bg-black p-4 fixed top-0 left-0 right-0 z-10">
                 <div className="flex justify-between items-center">
                     <button
                         onClick={toggleProfile}
@@ -141,25 +141,18 @@ const Navbar: React.FC = () => {
                     }
 
                     <div className="flex space-x-4 ">
+                        <Link href="/pages/general/about" className={navItemStyle}>
+                            אודות
+                        </Link>
 
-                       {/* זה מוצג בכל מקרה */}
-                        
-                            
-                                <Link href="/pages/general/about" className={navItemStyle}>
-                                    אודות
-                                </Link>
-                               
-                                <Link href="/pages/galery" className={navItemStyle}>
-                                    גלריה
-                                </Link>
-                                <Link href="/" className={navItemStyle}>
-                                    בית
-                                </Link>
-                                
-                        
-                         {/* זה מוצג אם יש משתמש רשום */}
-                          {user&&isAuthenticated&& 
-<>
+                        <Link href="/pages/galery" className={navItemStyle}>
+                            גלריה
+                        </Link>
+                        <Link href="/" className={navItemStyle}>
+                            בית
+                        </Link>
+                        {user && isAuthenticated &&
+                            <>
                                 <button
                                     onClick={handleLogout}
                                     className={navItemStyle}
@@ -172,16 +165,16 @@ const Navbar: React.FC = () => {
                                 >
                                     למידה חדשה
                                 </button>
-                               
+
                                 <button
-                                   className={navItemStyle}
+                                    className={navItemStyle}
                                     onClick={toggleShowCoursesList}
                                 >  רשימת קורסים
-                                  
+
                                 </button>
-    </>                           
-} 
-                       
+                            </>
+                        }
+
                     </div>
                 </div>
             </nav>

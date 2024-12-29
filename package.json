@@ -12,7 +12,6 @@
   "dependencies": {
     "@daily-co/daily-js": "^0.73.0",
     "@daily-co/daily-react": "^0.22.0",
-    "@daily-co/daily-js": "^0.73.0",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.9.1",
     "ably": "^2.6.0",
@@ -28,6 +27,7 @@
     "mongoose": "^8.8.2",
     "next": "14.2.17",
     "next-cloudinary": "^6.16.0",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.16",
     "peerjs": "^1.5.4",
     "react": "^18",
@@ -44,6 +44,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jest": "^29.5.14",
     "@types/node": "^20",
+    "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
