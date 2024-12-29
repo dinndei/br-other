@@ -62,3 +62,25 @@ export const downloadImage = async (url: string, fileName: string) => {
 };
 
 
+export const deleteImage=async(imageId:string)=> {
+    try {
+        const response = await fetch(`/api/galery/${imageId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            console.log('Image deleted successfully', data);
+            return true;
+        } else {
+            console.error('Error deleting image', data.error);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error', error);
+        return false;
+    }
+}

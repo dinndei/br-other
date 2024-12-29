@@ -49,11 +49,11 @@ export const isToxic = async (text: string): Promise<boolean> => {
         return true; // ערך סף לזיהוי רעילות (ניתן לשנות בהתאם לצורך)
     } catch (error) {
         if (error.response && error.response.status === 503) {
-            console.log("Model loading, retrying in", error.response.data.estimated_time, "seconds");
+            console.log("Model loading, retrying in a few seconds");
             return new Promise((resolve) => {
                 setTimeout(async () => {
                     resolve(await isToxic(text));
-                }, error.response.data.estimated_time * 1000);
+                },  2000);
             });
         } else {
             console.error("Error:", error);

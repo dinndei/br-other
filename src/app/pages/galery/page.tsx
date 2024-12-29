@@ -1,15 +1,19 @@
 "use client";
-
+import { MdDelete } from "react-icons/md";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Masonry from "react-masonry-css";
 import { CldImage } from "next-cloudinary";
-import { addImages, downloadImage, getImages } from "@/app/actions/galeryAction";
+import { IoMdDownload } from "react-icons/io";
+import { addImages, deleteImage, downloadImage, getImages } from "@/app/actions/galeryAction";
+import { useUserStore } from "@/app/store/userStore";
 
 const UploadAndDisplay = () => {
     const [uploading, setUploading] = useState(false);
-    const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+    const [uploadedImages, setUploadedImages] = useState<{_id:string,imageUrl:string}[]>([]);
     const [loading, setLoading] = useState(false);
+ 
+const {user} =useUserStore();
 
     const uploadImage = async (file: File) => {
         setUploading(true);
@@ -59,7 +63,14 @@ const UploadAndDisplay = () => {
     }, []);
 
 
+const handleDeleteImage=async(imageId:string)=>{
+    const success = await deleteImage(imageId); // מחיקה מהשרת
+    if (success) {
+        setUploadedImages((prev) =>
+            prev.filter((img) => img._id !== imageId)
+        ); // עדכון הסטייט
 
+}
     return (
         <div>
             <input
@@ -92,7 +103,7 @@ const UploadAndDisplay = () => {
                                 <div key={index} className="p-2 z-0">
                                     <div className="relative w-full h-auto">
                                         <CldImage
-                                            src={image}
+                                            src={image.imageUrl}
                                             alt={`Uploaded Image ${index + 1}`}
                                             width={300}
                                             height={300}
@@ -107,12 +118,21 @@ const UploadAndDisplay = () => {
                                             }}
 
                                         />
+                                        <div className="bg-white">
                                         <button
-                                            className="absolute bottom-2 right-2 p-2 rounded-md opacity-70 hover:opacity-100"
-                                            onClick={() => downloadImage(image, `image_${index + 1}.jpg`)}
+                                            className="absolute bottom-2 right-2 p-2 rounded-md text-blue-500 hover:scale-150"
+                                            onClick={() => downloadImage(image.imageUrl, `image_${index + 1}.jpg`)}
                                         >
-                                            ⬇️
+                                          <IoMdDownload/>  
                                         </button>
+                                        {user?.role=="Admin"&&(
+                                        <button
+                                            className="absolute bottom-2 right-7 p-2 rounded-md text-red-500 hover:scale-150"
+                                            onClick={() => handleDeleteImage(image._id)}
+                                        >
+                                             <MdDelete/>
+                                        </button>)}
+                                        </div>
                                     </div>
                                 </div>
                             ))}

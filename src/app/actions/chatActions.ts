@@ -20,3 +20,13 @@ export const fetchMessagesByCourseId = async (courseId: string): Promise<{ usern
         throw new Error("Failed to fetch messages");
     }
 };
+
+// מחיקת הודעה לפי ID
+export const deleteMessage = async (messageId: string): Promise<void> => {
+    try {
+        await axios.delete(`/api/ablyChat/delete/${messageId}`);
+    } catch (error) {
+        console.error("Error deleting message:", error);
+        throw new Error("Failed to delete message");
+    }
+};

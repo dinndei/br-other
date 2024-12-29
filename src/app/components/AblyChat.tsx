@@ -5,13 +5,17 @@ import Types from "ably";
 import { Realtime } from "ably";
 import { useUserStore } from "../store/userStore";
 import axios from "axios";
-import  {  isToxic } from "../actions/textModelActions";
-
+import { isToxic } from "../actions/textModelActions";
+import { deleteMessage } from "../actions/chatActions";
+import { MdModeEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 const ably = new Realtime({ key: "1jLHPA.p9RW9g:MVb0GFzKUviMVC1i5vyIGPqIX4XyGj1Dg_762-7Mw4c" });
 
 const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) => {
-    const [messages, setMessages] = useState<{ username: string; text: string }[]>([]);
+    const [messages, setMessages] = useState<{ _id: string, username: string; text: string }[]>([]);
     const [message, setMessage] = useState("");
+    const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+    const [editingText, setEditingText] = useState("");
     const username = useUserStore((st) => st.user?.userName) || "xxx";
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
     const audio = new Audio("/ding.mp3");
@@ -54,7 +58,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
         if (isSending || !message.trim()) return;
         setIsSending(true);
         try {
-            const isMessageToxic = await isToxic(message) 
+            const isMessageToxic = await isToxic(message)
             console.log("status", isMessageToxic);
             if (isMessageToxic)
                 alert("Your message contains toxic language and cannot be sent.");
@@ -80,9 +84,56 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
 
     };
 
+    const handleDeleteMessage = async (messageId: string) => {
+        try {
+            await deleteMessage(messageId);
+            setMessages((prev) => prev.filter((msg) => msg._id !== messageId)); // עדכון הסטייט
+        } catch (error) {
+            console.error("Error deleting message:", error);
+        }
+    };
+
+    //handle edit functions
+
+    const handleEditMessage = async () => {
+        if (!editingMessageId) {
+            console.log("no message id");
+            return
+        };
+        try {
+            await axios.put("/api/ablyChat", {
+                messageId: editingMessageId,
+                newText: editingText,
+            });
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg._id === editingMessageId ? { ...msg, text: editingText } : msg
+                )
+            );
+            setEditingMessageId(null);
+            setEditingText("");
+        } catch (error) {
+            console.error("Error editing message:", error);
+        }
+    };
+
+    const startEditing = (id: string, text: string) => {
+        setEditingMessageId(id);
+        setEditingText(text);
+    };
+
+    const cancelEditing = () => {
+        setEditingMessageId(null);
+        setEditingText("");
+    };
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            handleSendMessage();
+            if (editingText != "") {
+                handleEditMessage();
+            }
+            else
+                handleSendMessage();
         }
     };
 
@@ -97,54 +148,95 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
 
     return (
         <div className="flex flex-col h-[600px] w-[1000px] mx-auto bg-gray-50 shadow-md rounded-lg">
-        {/* Header */}
-        <div className="bg-blue-200 text-blue-900 py-3 px-4 flex items-center justify-between shadow-sm rounded-t-lg">
-            <h2 className="text-lg font-medium">Chat Room</h2>
-            <span className="text-sm">Course {courseId}</span>
-        </div>
+            {/* Header */}
+            <div className="bg-blue-200 text-blue-900 py-3 px-4 flex items-center justify-between shadow-sm rounded-t-lg">
+                <h2 className="text-lg font-medium">Chat Room</h2>
+                <span className="text-sm">Course {courseId}</span>
+            </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
-            {messages.map((msg, index) => (
-                <div
-                    key={index}
-                    className={`flex ${msg.username === username ? "justify-end" : "justify-start"}`}
-                >
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
+                {messages.map((msg, index) => (
                     <div
-                        className={`max-w-[75%] px-4 py-2 rounded-lg shadow-sm ${msg.username === username
-                            ? "bg-blue-100 text-blue-900"
-                            : "bg-gray-200 text-gray-800"
-                            }`}
+                        key={msg._id}
+                        className={`group flex items-center gap-2 ${msg.username === username ? "justify-end" : "justify-start"}`}
                     >
-                        <span className="text-xs text-gray-500 block">
-                            {msg.username === username ? "You" : msg.username}
-                        </span>
-                        <p className="text-sm mt-1">{msg.text}</p>
-                    </div>
-                </div>
-            ))}
-            <div ref={messagesEndRef} />
-        </div>
+                        <div
+                            className={`relative max-w-[75%] px-4 py-2 rounded-lg shadow-sm ${msg.username === username
+                                ? "bg-blue-100 text-blue-900"
+                                : "bg-gray-200 text-gray-800"
+                                }`}
+                        >
+                            {editingMessageId === msg._id ? (
+                                <div>
+                                    <div>id:{editingMessageId}</div>
+                                    <input
+                                        type="text"
+                                        value={editingText}
+                                        onChange={(e) => setEditingText(e.target.value)}
+                                        className="w-full border rounded p-1"
+                                        onKeyDown={handleKeyDown}
 
-        {/* Input */}
-        <div className="bg-gray-100 p-3 flex items-center gap-2 rounded-b-lg">
-            <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type a message..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-            />
-            <button
-                onClick={handleSendMessage}
-                disabled={isSending}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-400 disabled:opacity-50"
-            >
-                {isSending ? "Sending..." : "Send"}
-            </button>
+                                    />
+                                    <div className="flex justify-end gap-2 mt-1">
+                                        <button onClick={handleEditMessage} className="text-blue-500" >Save</button>
+                                        <button onClick={cancelEditing} className="text-red-500">Cancel</button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <p>{msg.text}</p>
+                                    <div className="absolute top-0 right-0 hidden group-hover:flex gap-1 m-4 ml-36">
+                                        {msg.username === username && (
+                                            <div className="flex gap-2 mr-6">
+                                                <button
+                                                    onClick={() => startEditing(msg._id, msg.text)}
+                                                    className="text-blue-500"
+                                                   
+                                                >
+                                               <MdModeEdit />
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        handleDeleteMessage(msg._id);
+                                                            console.log("msg id", msg._id);
+                                                    }
+                                                    }
+                                                    className="text-red-500"
+                                                >
+                                                    <MdDelete/>
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                ))}
+                <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className="bg-gray-100 p-3 flex items-center gap-2 rounded-b-lg">
+                <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type a message..."
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+                />
+                <button
+                    onClick={handleSendMessage}
+                    disabled={isSending}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-400 disabled:opacity-50"
+                >
+                    {isSending ? "Sending..." : "Send"}
+                </button>
+            </div>
         </div>
-    </div>
     );
 };
 

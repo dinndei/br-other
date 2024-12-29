@@ -41,27 +41,28 @@ const StudyPage = () => {
         fetchCourseData();
     }, [courseID]);
 
-    useEffect(() => {
-        const getUserMedia = async () => {
-            try {
-                const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                setStream(localStream);
-            } catch (error) {
-                console.error('Error getting media:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const getUserMedia = async () => {
+    //         try {
+    //             const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    //             setStream(localStream);
+    //         } catch (error) {
+    //             console.error('Error getting media:', error);
+    //         }
+    //     };
 
-        getUserMedia();
+    //     getUserMedia();
 
-        // ניקוי ה-`stream` כאשר הקומפוננטה מתנתקת
-        return () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-        };
-    }, []);
+    //     // ניקוי ה-`stream` כאשר הקומפוננטה מתנתקת
+    //     return () => {
+    //         if (stream) {
+    //             stream.getTracks().forEach(track => track.stop());
+    //         }
+    //     };
+    // }, []);
 
-    if (!stream || !courseData) {
+    //if !stream-> loading...
+    if ( !courseData) {
         return <p>Loading...</p>;
     }
 
