@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { UploadFilesProps } from '../types/props/UploadFilesProps';
-import { fetchFilesForCourse, saveFile } from '../actions/courseAction';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
+    console.log("storage",supabase.storage);
+    
     const [uploading, setUploading] = useState(false);
     const [fileUrl, setFileUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -18,24 +24,41 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
     const uploadFile = async (file: File) => {
         setUploading(true);
         setError(null);
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
 
         try {
-            const response = await axios.post(
-                `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-                formData
-            );
-            const fileUrl = response.data.secure_url;
+            const fileName = `${userName}_${Date.now()}_${file.name}`;
+        
+            
+            const { data, error: uploadError } = await supabase.storage
+                .from('br-other')
+                .upload(fileName, file);
+
+            if (uploadError) {
+                throw uploadError;
+            }
+
+            const { data: publicUrlData } = supabase.storage
+                .from('br-other')
+                .getPublicUrl(data.path);
+
+            if (!publicUrlData.publicUrl) {
+                throw new Error('Failed to generate public URL.');
+            }
+
+            const fileUrl = publicUrlData.publicUrl;
             setFileUrl(fileUrl);
 
-            const res = await saveFile(fileUrl, courseId, userName);
-            console.log("res savefiles0", res);
+            const { error: insertError } = await supabase
+                .from('files')
+                .insert({ fileUrl, courseId, userName });
 
-        } catch (error) {
-            console.error("Error uploading file:", error);
-            setError("Failed to upload file, please try again.");
+            if (insertError) {
+                throw insertError;
+            }
+
+        } catch (error: any) {
+            console.error('Error uploading file:', error);
+            setError('Failed to upload file, please try again.');
         } finally {
             setUploading(false);
         }
@@ -44,31 +67,34 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
     useEffect(() => {
         const fetchFiles = async () => {
             try {
-                const response = await fetchFilesForCourse(courseId);
-                if (response && Array.isArray(response)) {
-                    const studentFiles = response.filter((file) => file.userName === userName);
-                    const otherFiles = response.filter((file) => file.userName !== userName);
+                const { data, error } = await supabase
+                    .from('br-other')
+                    .select('*')
+                    .eq('courseId', courseId);
+
+                if (error) {
+                    throw error;
+                }
+
+                if (data) {
+                    const studentFiles = data.filter((file) => file.userName === userName);
+                    const otherFiles = data.filter((file) => file.userName !== userName);
 
                     setUploadedFiles({ studentFiles, otherFiles });
-                } else {
-                    console.error('No files found for this course.');
                 }
             } catch (error) {
-                console.error("Error fetching files:", error);
+                console.error('Error fetching files:', error);
             }
         };
 
         fetchFiles();
     }, [courseId, userName]);
 
-   
     return (
         <div className="container mx-auto p-4 grid grid-cols-3 gap-6">
-            {/* צד העלאת קבצים */}
             <div className="col-span-1 p-4 border rounded-md shadow-lg max-w-xs overflow-hidden">
                 <h1 className="text-2xl font-bold mb-4">העלאת קבצים</h1>
                 <div className="relative">
-                    {/* צד העלאת הקובץ */}
                     <input
                         type="file"
                         onChange={(e) => {
@@ -101,13 +127,8 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
                 )}
             </div>
 
-
-
-            {/* צד הצגת הקבצים */}
             <div className="col-span-2 p-1 border rounded-md shadow-lg">
                 <h2 className="text-xl font-semibold mb-1">קבצים שהועלו</h2>
-
-                {/* קבצים שהועלו על ידי המשתמש הנוכחי */}
                 <div className="mb-6">
                     <h3 className="text-lg font-bold text-blue-600">הקבצים שלך:</h3>
                     {uploadedFiles.studentFiles.length > 0 ? (
@@ -130,7 +151,6 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
                     )}
                 </div>
 
-                {/* קבצים שהועלו על ידי משתמשים אחרים */}
                 <div className="mb-6">
                     <h3 className="text-lg font-bold text-green-600">קבצים של אחר:</h3>
                     {uploadedFiles.otherFiles.length > 0 ? (
@@ -155,7 +175,6 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
             </div>
         </div>
     );
-
 };
 
 export default UploadFiles;

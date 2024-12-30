@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import FieldsInputList from '@/app/components/FieldsInputList';
 import { findUserByUsername } from '@/app/actions/userActions';
 import { getCourseByID } from '@/app/actions/courseAction';
+import toast from 'react-hot-toast';
 
 const NewLearningPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(true);
@@ -41,9 +42,9 @@ const NewLearningPage: React.FC = () => {
 
         if (mainField && subField) {
             if (!(await validateLearningEligibility())) {
-                return; 
+                return;
             }
-            
+
             try {
                 const saveRequestResponse = await saveLearningRequest(user!._id as string, mainField, subField);
                 if (saveRequestResponse.status == 201) {
@@ -55,21 +56,21 @@ const NewLearningPage: React.FC = () => {
                     setMentors(response);
                     setIsSearching(true);
                 } else {
-                    alert('אירעה שגיאה בשמירת הבקשה');
+                    toast.error('אירעה שגיאה בשמירת הבקשה');
                 }
             } catch (error) {
                 console.error('שגיאה במהלך שמירת הבקשה או החיפוש:', error);
-                alert('לא נמצאו מורים מתאימים או הייתה שגיאה');
+                toast.error('לא נמצאו מורים מתאימים או הייתה שגיאה');
             }
         } else {
-            alert('בחר תחום ותת-תחום על מנת להמשיך');
+            toast('בחר תחום ותת-תחום על מנת להמשיך',{icon:'📩'});
         }
     };
 
 
     const validateLearningEligibility = async () => {
         if (!user || !user.courses || user.courses.length === 0) {
-            alert('פרטי המשתמש אינם זמינים או שאין קורסים משויכים למשתמש.');
+            toast.error('פרטי המשתמש אינם זמינים או שאין קורסים משויכים למשתמש.');
             return false;
         }
 
@@ -82,8 +83,8 @@ const NewLearningPage: React.FC = () => {
 
             if (course && course.isActiv && course.studentID === userFromDB._id) {
                 console.log("משתמש זה כבר בתהליך למידה פעיל:", course);
-                alert('יש לך כבר למידה פעילה.');
-                return false; 
+                toast('יש לך כבר למידה פעילה.',{icon:'👾'});
+                return false;
             }
         }
 
@@ -102,7 +103,7 @@ const NewLearningPage: React.FC = () => {
         console.log(`Mentor Courses: ${mentorCourseCount}, Rejections: ${refusalCnt}`);
 
         if (refusalCnt > mentorCourseCount) {
-            alert('לא ניתן לאשר למידה חדשה - יותר מדי סירובים.');
+            toast.error('לא ניתן לאשר למידה חדשה - יותר מדי סירובים.');
             return false; // מספר הסירובים גבוה ממספר הקורסים
         }
         return true;
@@ -128,17 +129,18 @@ const NewLearningPage: React.FC = () => {
 
                         <div className="flex justify-between mt-6">
                             <button
-                                onClick={handleCloseModal}
-                                className="bg-red-500 text-white py-2 px-6 rounded-lg w-full mr-2"
+                                onClick={onSubmit}
+                                className="bg-blue-500 text-white py-2 px-6 rounded-lg w-full mr-2"
                             >
-                                סגור
+                                חפשו לי מנטור
                             </button>
                             <button
-                                onClick={onSubmit}
-                                className="bg-green-500 text-white py-2 px-6 rounded-lg w-full ml-2"
+                                onClick={handleCloseModal}
+                                className="bg-red-500 text-white py-2 px-6 rounded-lg w-full ml-2"
                             >
-                                המשך
+                                ביטול
                             </button>
+
                         </div>
                     </div>
                 </div>

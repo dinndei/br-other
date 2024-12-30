@@ -9,6 +9,7 @@ import { isToxic } from "../actions/textModelActions";
 import { deleteMessage } from "../actions/chatActions";
 import { MdModeEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
+import toast from "react-hot-toast";
 const ably = new Realtime({ key: "1jLHPA.p9RW9g:MVb0GFzKUviMVC1i5vyIGPqIX4XyGj1Dg_762-7Mw4c" });
 
 const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) => {
@@ -61,7 +62,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
             const isMessageToxic = await isToxic(message)
             console.log("status", isMessageToxic);
             if (isMessageToxic)
-                alert("Your message contains toxic language and cannot be sent.");
+                toast.error("הודעתך מכילה תוכן רעיל ועל כן לא תישלח, נסח מילותיך בעידון");
             else {
                 // Send message to the server
                 await axios.post("/api/ablyChat", {
@@ -156,7 +157,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
-                {messages.map((msg, index) => (
+                {messages.map((msg,_index) => (
                     <div
                         key={msg._id}
                         className={`group flex items-center gap-2 ${msg.username === username ? "justify-end" : "justify-start"}`}

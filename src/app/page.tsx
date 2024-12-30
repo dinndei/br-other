@@ -3,6 +3,7 @@
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from "next/link";
 import { useUserStore } from "./store/userStore";
+import toast from 'react-hot-toast';
 
 
 
@@ -31,7 +32,9 @@ const user=useUserStore(st=>st.user);
        <div className="mt-8 flex justify-center space-x-4">
           <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 font-semibold text-lg shadow-lg  flex items-center  text-white rounded-md hover:scale-110 hover:shadow-lg transition-transform duration-300">
             <span>
-              <Link href="/pages/user/login" >
+              <Link 
+              href="/pages/user/login"
+              >
                 התחברות
               </Link></span>
             <ArrowRightIcon className="h-6 w-6 ml-2" />
@@ -41,7 +44,9 @@ const user=useUserStore(st=>st.user);
               <Link href="/pages/user/signup" >
               הרשמה
             </Link></span>
+        
           </button>
+          
         </div>
 }
       </div>

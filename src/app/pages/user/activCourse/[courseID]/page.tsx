@@ -128,11 +128,7 @@ const StudyPage = () => {
                             {activeTab === 'upload' && (
                                 <div>
                                     <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Files</h2>
-                                    {/* <Link
-                                href={`/upload-files/6763f73f3b12e25ed1e2971d`}
-                                className="text-blue-500 hover:underline"
-                            > */}
-                            <UploadFiles courseId={courseData!._id.toString()} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
+                            <UploadFiles courseId={courseID} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
                             {/* </Link> */}
                         </div>
                     )}

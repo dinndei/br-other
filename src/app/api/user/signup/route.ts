@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
         if (userWithoutPassword.typeUser) {
             userWithoutPassword.typeUser = { religionLevel: decryptedTypeReligion, politicalAffiliation: decryptedTypePolitical };
         }
-        const token = generateToken(userWithoutPassword._id!.toString(), userWithoutPassword.role);
+        const token = generateToken(userWithoutPassword);
 
         const response = NextResponse.json({
             message: "User created successfully",

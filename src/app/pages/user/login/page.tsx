@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useUserStore } from '@/app/store/userStore';
 import { resetActiveRequest } from '@/app/actions/findMentorAction';
 import IUser from '@/app/types/IUser';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
     const router = useRouter();
@@ -47,12 +48,12 @@ const LoginPage = () => {
             }
 
         } else if(response.status == 404){
-            alert("משתמש לא נמצא");
+            toast.error("משתמש לא נמצא");
         }
     else{
         //wrong password
         //אם יש סיסמא לא נכונה נבלבל אותו....
-        alert("נתקלנו בבעיה, נסה שוב מאוחר יותר")
+        toast.error("נתקלנו בבעיה, נסה שוב מאוחר יותר")
     }
     };
 
@@ -66,11 +67,13 @@ const LoginPage = () => {
                 console.log("this is the user", user);
                              
                 if (tempUser!.learningApprovalPending!== null) {
-                    alert("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.");
+                    toast("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.",
+                       { icon:'✏'}
+                    );
                     router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
                 } else {
                     if (tempUser!.activeLearningRequestPending !== null) {
-                        alert("יש לך למידה שאושרה, מעבירים אותך לקורס");
+                        toast.success("יש לך למידה שאושרה, מעבירים אותך לקורס");
                         await resetActiveRequest((tempUser!._id) as string)
 
                         router.push(`/pages/user/activCourse/${tempUser!.activeLearningRequestPending}`) // ניתוב לקורס
@@ -80,7 +83,7 @@ const LoginPage = () => {
                 }
             }
             else {
-                alert("קוד ה-OTP שגוי. אנא נסה שוב.");
+                toast.error("קוד ה-OTP שגוי. אנא נסה שוב.");
             }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

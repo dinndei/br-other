@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import IUser from "@/app/types/IUser";
 import axios from "axios";
 import ProfileImage from "@/app/components/ProfileImage";
+import toast from "react-hot-toast";
 
 
 
@@ -88,15 +89,16 @@ const EditUserForm = () => {
                 setUser(newUser);
                 router.push('/')
                 console.log("user", user);
-
-                alert("User updated successfully!\n" + data);
-            }
+                toast.success("הפרטים עודכנו בהצלחה")
+}
             else {
-                alert("no user to update")
+                toast('משתמש לא נמצא', {
+                    icon: '😔',
+                  });
             }
         } catch (error) {
             console.error("Error updating user:", error);
-            alert("Failed to update user");
+         toast.error("לצערנו העדכון נכשל")
         }
     };
 

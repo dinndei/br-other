@@ -2,7 +2,6 @@
 import { useEffect } from 'react';
 import { useUserStore } from '../store/userStore';
 import { verifyToken } from '../lib/tokenConfig/verifyToken';
-import { getUserById } from '../actions/userActions';
 
 const AuthInitializer: React.FC = () => {
   const setIsAuthenticated = useUserStore(state => state.setIsAuthenticated);
@@ -28,10 +27,8 @@ const AuthInitializer: React.FC = () => {
           console.log("verifyToken response:", res);
 
           if (res.isValid) {
-            const user = await getUserById(res.decoded.userId);
-            console.log("Fetched user:", user);
-
-            setUser(user);
+            
+            setUser(res.decoded.user);
             setIsAuthenticated(true);
           } else {
             setUser(null);

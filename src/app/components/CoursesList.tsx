@@ -4,6 +4,7 @@ import ICourse from '@/app/types/ICourse';
 import { useUserStore } from '@/app/store/userStore';
 import { getCoursesByIds } from '../actions/courseAction';
 import mongoose from 'mongoose';
+import toast from 'react-hot-toast';
 
 
 const CoursesList: React.FC = () => {
@@ -48,13 +49,13 @@ const CoursesList: React.FC = () => {
     }, [user]);
 
     if (loading) {
-        console.log(isCourseListVisible);
-
-        return <p>טוען קורסים...</p>;
+        toast('טוען קורסים', {
+            icon: '⏳',
+          });
     }
 
     if (!courses.length) {
-        return <p>אין קורסים להצגה.</p>;
+       toast.error("אין קורסים להצגה")
     }
 
 

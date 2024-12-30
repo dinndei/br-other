@@ -70,7 +70,7 @@ const handleDeleteImage=async(imageId:string)=>{
             prev.filter((img) => img._id !== imageId)
         ); // עדכון הסטייט
 
-}
+}}
     return (
         <div>
             <input
@@ -101,7 +101,7 @@ const handleDeleteImage=async(imageId:string)=>{
                         >
                             {uploadedImages.slice().reverse().map((image, index) => (
                                 <div key={index} className="p-2 z-0">
-                                    <div className="relative w-full h-auto">
+                                    <div className="relative w-full h-auto z-0">
                                         <CldImage
                                             src={image.imageUrl}
                                             alt={`Uploaded Image ${index + 1}`}
