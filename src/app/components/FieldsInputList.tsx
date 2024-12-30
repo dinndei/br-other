@@ -82,15 +82,15 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
         }
     };
 
-   
+
     return (
-        <div className="max-w-md mx-auto p-4 space-y-0"> 
-            <label className="block font-medium">הכנס תחומי עניין</label>
+        <div className="max-w-md mx-auto p-4 space-y-0">
+            <label className="block font-medium text-right">הכנס תחומי עניין</label>
             {fields.map((field, index) => (
-                <div key={index} className="flex flex-col space-y-0 mb-0"> 
-                    <div className="mb-2"> 
-                        <label htmlFor={`mainField-${index}`} className="block font-medium">
-                            Main Field
+                <div key={index} className="flex flex-col space-y-0 mb-0">
+                    <div className="mb-2">
+                        <label htmlFor={`mainField-${index}`} className="block font-medium text-right">
+                            תחום
                         </label>
                         <input
                             id={`mainField-${index}`}
@@ -99,8 +99,8 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                                 handleMainFieldChange(index, e.target.value);
                                 handleMainFieldSearch(index, e.target.value);
                             }}
-                            placeholder="Type to search..."
-                            className="w-full border border-gray-300 p-2 rounded text-black"
+                            placeholder="...הקלד לחיפוש"
+                            className="w-full border border-gray-300 p-2 rounded text-black text-right"
                         />
                         {showMainOptions[index] && filteredMainFields.length > 0 && (
                             <ul className="bg-white border border-gray-300 rounded mt-2 max-h-32 overflow-y-auto">
@@ -116,9 +116,9 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                             </ul>
                         )}
                     </div>
-                    <div className="mb-2"> 
-                        <label htmlFor={`subField-${index}`} className="block font-medium">
-                            Sub Field
+                    <div className="mb-2">
+                        <label htmlFor={`subField-${index}`} className="block font-medium text-right">
+                            תת תחום
                         </label>
                         <input
                             id={`subField-${index}`}
@@ -127,8 +127,8 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                                 handleSubFieldChange(index, e.target.value);
                                 handleSubFieldSearch(index, e.target.value, field.mainField);
                             }}
-                            placeholder="Type to search..."
-                            className="w-full text-black border border-gray-300 p-2 rounded"
+                            placeholder="...הקלד לחיפוש"
+                            className="w-full text-black border border-gray-300 p-2 rounded text-right"
                             disabled={!field.mainField}
                         />
                         {showSubOptions[index] && filteredSubFields.length > 0 && (
@@ -146,7 +146,7 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                         )}
                     </div>
 
-                    {showEditButtons && (
+                    {/* {showEditButtons && (
                         <button
                             type="button"
                             onClick={() => removeField(index)}
@@ -154,18 +154,29 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                         >
                             <FiTrash className="mr-2" />
                         </button>
+                    )} */}
+
+                    {showEditButtons && (
+                        <div className="flex space-x-2 mt-3 justify-start">
+                            <button
+                                type="button"
+                                onClick={() => removeField(index)}
+                                className="bg-gray-500 text-white px-3 py-1 rounded "
+                            >
+                                <FiTrash className="mr-2" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={addField}
+                                className="bg-gray-400 text-white px-3 py-1 rounded"
+                            >
+                                +
+                            </button>
+                        </div>
+
                     )}
                 </div>
             ))}
-            {showEditButtons && (
-                <button
-                    type="button"
-                    onClick={addField}
-                    className="bg-gray-400 text-white px-3 py-1 rounded"
-                >
-                    +
-                </button>
-            )}
         </div>
     );
 
