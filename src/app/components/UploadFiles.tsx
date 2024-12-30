@@ -68,7 +68,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
         const fetchFiles = async () => {
             try {
                 const { data, error } = await supabase
-                    .from('br-other')
+                    .from('files')
                     .select('*')
                     .eq('courseId', courseId);
 
