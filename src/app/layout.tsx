@@ -1,5 +1,4 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+'use client'
 import "./globals.css";
 import Navbar from "./components/NavBar";
 import AuthInitializer from "./components/AuthInitializer";
@@ -35,12 +34,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+       
       >
         <AuthInitializer/>
         <Toaster/>
        <Navbar/>
         {children}
+        <Script
+        strategy="afterInteractive"
+        src="https://cdn.enable.co.il/licenses/enable-L353865821g3r7h0-1224-66930/init.js"
+        onLoad={() => {
+          console.log('ENABLE script loaded');
+        }}
+      />
         {/* <UseCallFrameDemo/> */}
       </body>
     </html>

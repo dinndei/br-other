@@ -18,7 +18,7 @@ const StudyPage = () => {
     const params = useParams();
     const courseID = Array.isArray(params?.courseID) ? params.courseID[0] : params.courseID;
     const [courseData, setCourseData] = useState<ICourse | null>(null);
-    const [stream, setStream] = useState<MediaStream | null>(null);
+    // const [stream, setStream] = useState<MediaStream | null>(null);
     const user = useUserStore(state => state.user)
 
     useEffect(() => {
@@ -69,7 +69,7 @@ const StudyPage = () => {
 
 
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="mt-20 flex h-screen bg-gray-100">
             {/* Sidebar */}
             <div className="w-20 bg-white shadow-md flex flex-col items-center py-6 space-y-4 fixed right-0 h-full">
                 <button
