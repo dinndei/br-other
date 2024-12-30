@@ -1,5 +1,5 @@
 import React from "react";
-import VideoChat from "@/app/components/Video"
+import VideoChat from "@/app/components/VideoCall"
 
 const ChatPage = () => {
   const myPeerId = "user1"; // המזהה של המשתמש הנוכחי

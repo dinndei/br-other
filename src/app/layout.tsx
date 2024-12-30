@@ -4,6 +4,7 @@ import Navbar from "./components/NavBar";
 import AuthInitializer from "./components/AuthInitializer";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
+import VideoCall from "./components/VideoCall";
 
 
 // const geistSans = localFont({
@@ -38,7 +39,7 @@ export default function RootLayout({
        
       >
         <AuthInitializer/>
-        <Toaster/>
+        {/* <Toaster/>
        <Navbar/>
         {children}
         <Script
@@ -47,8 +48,8 @@ export default function RootLayout({
         onLoad={() => {
           console.log('ENABLE script loaded');
         }}
-      />
-        {/* <UseCallFrameDemo/> */}
+      /> */}
+        <VideoCall teacherID="6756e3cd880448d29fc4a78f" studentID="6761478a0a93b67d9901a805" roomId="6761666723beecc2d11d5f45"/>
       </body>
     </html>
   );
