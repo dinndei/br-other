@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import { IoPower } from "react-icons/io5";
+
 import AblyChat from '@/app/components/AblyChat';
 // import VideoChat from '@/app/components/VideoChat';
 // import Link from 'next/link';
@@ -31,8 +33,8 @@ const StudyPage = () => {
                 const data = await response.data.course;
                 console.log("data", data.course);
                 setCourseData(data);
-                console.log("course data ",courseData);
-                
+                console.log("course data ", courseData);
+
             } catch (error) {
                 console.error('Error fetching course data:', error);
             }
@@ -62,7 +64,7 @@ const StudyPage = () => {
     // }, []);
 
     //if !stream-> loading...
-    if ( !courseData) {
+    if (!courseData) {
         return <p>Loading...</p>;
     }
 
@@ -93,6 +95,14 @@ const StudyPage = () => {
                 >
                     <ArrowUpTrayIcon className="h-8 w-8" />
                 </button>
+                <button
+                    onClick={() => setActiveTab('upload')}
+                    className={`p-3 rounded-lg ${activeTab === 'upload' ? 'bg-blue-100 text-blue-500' : 'text-gray-600 hover:bg-gray-200'
+                        }`}
+                >
+                    <IoPower className="h-8 w-8" />
+                </button>
+
             </div>
 
             {/* Main Content */}
@@ -124,10 +134,10 @@ const StudyPage = () => {
                             {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
                             {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
                             {/* <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>)} */}
-</div>)}
-                            {activeTab === 'upload' && (
-                                <div>
-                                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Files</h2>
+                        </div>)}
+                    {activeTab === 'upload' && (
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Files</h2>
                             <UploadFiles courseId={courseID} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
                             {/* </Link> */}
                         </div>

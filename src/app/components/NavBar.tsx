@@ -91,13 +91,15 @@ const Navbar: React.FC = () => {
                         <Link href="/" className={navItemStyle}>
                             בית
                         </Link>
+                        {!user && !isAuthenticated &&
+                            <Link
+                                href="/pages/user/login"
+                                className={navItemStyle}
+                            >
+                                התחברות
+                            </Link>
+                        }
 
-                        <Link
-                            href="/pages/user/login"
-                            className={navItemStyle}
-                        >
-                            התחברות
-                        </Link>
 
                         {/* זה מוצג אם יש משתמש רשום */}
                         {user && isAuthenticated &&
@@ -127,9 +129,6 @@ const Navbar: React.FC = () => {
                     </div>
                 </div>
             </nav>
-
-
-
 
             {/* תפריט צדדי מתחת לנבר */}
             {showCourses && <CoursesList />}
