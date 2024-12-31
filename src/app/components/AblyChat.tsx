@@ -148,7 +148,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
     }, [messages]);
 
     return (
-        <div className="flex flex-col h-[600px] w-[1000px] mx-auto bg-gray-50 shadow-md rounded-lg">
+        <div className="flex flex-col h-[400px] w-[750px] mx-auto bg-gray-50 shadow-md rounded-lg mt-16">
             {/* Header */}
             <div className="bg-blue-200 text-blue-900 py-3 px-4 flex items-center justify-between shadow-sm rounded-t-lg">
                 <h2 className="text-lg font-medium">Chat Room</h2>
@@ -158,6 +158,8 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
             {/* Messages */}
             <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
                 {messages.map((msg,_index) => (
+            <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3 flex flex-col-reverse">
+                {messages.map((msg, index) => (
                     <div
                         key={msg._id}
                         className={`group flex items-center gap-2 ${msg.username === username ? "justify-end" : "justify-start"}`}

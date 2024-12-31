@@ -68,10 +68,10 @@ const CoursesList: React.FC = () => {
 
 
     return (
-        <div>
+        <div >
             {
                 isCourseListVisible && (
-                    <div className="fixed top-0 right-0 mt-20 w-full md:w-1/3 h-full bg-gray-800 bg-opacity-90 p-4 transform transition-all duration-300 ease-in-out z-50 mt-24">
+                    <div className=" fixed top-0 right-0 mt-24 w-full md:w-1/3 h-full bg-gray-800 bg-opacity-90 p-4 transform transition-all duration-300 ease-in-out z-50">
                         <h2 className="text-2xl font-bold text-white mb-4">רשימת קורסים</h2>
                         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
                             {courses.map((course: ICourse) => (
