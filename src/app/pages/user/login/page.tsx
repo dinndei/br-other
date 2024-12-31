@@ -47,14 +47,14 @@ const LoginPage = () => {
                 console.error(error);
             }
 
-        } else if(response.status == 404){
+        } else if (response.status == 404) {
             toast.error("משתמש לא נמצא");
         }
-    else{
-        //wrong password
-        //אם יש סיסמא לא נכונה נבלבל אותו....
-        toast.error("נתקלנו בבעיה, נסה שוב מאוחר יותר")
-    }
+        else {
+            //wrong password
+            //אם יש סיסמא לא נכונה נבלבל אותו....
+            toast.error("נתקלנו בבעיה, נסה שוב מאוחר יותר")
+        }
     };
 
     // שלב שני: אימות קוד
@@ -62,13 +62,13 @@ const LoginPage = () => {
         try {
             const response = await verifyOTP(tempUser!.email!, data.otp)
             if (response.success) {
-                setUser(tempUser)                
-                login(tempUser!, tempToken)   
+                setUser(tempUser)
+                login(tempUser!, tempToken)
                 console.log("this is the user", user);
-                             
-                if (tempUser!.learningApprovalPending!== null) {
+
+                if (tempUser!.learningApprovalPending !== null) {
                     toast("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.",
-                       { icon:'✏'}
+                        { icon: '✏' }
                     );
                     router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
                 } else {
@@ -93,8 +93,12 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+        <div className="relative w-full h-full min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-white to-blue-300 text-gray-800">
+            {/* רקע */}
+            <div className="absolute inset-0 bg-opacity-30 pointer-events-none z-0">
+                <div className="absolute inset-0 blur-3xl opacity-60 bg-gradient-to-t from-blue-200 via-white to-blue-100 rounded-full mix-blend-multiply" />
+            </div>
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-xs z-10 mt-20">
                 <h2 className="text-2xl font-bold text-center mb-6">התחברות</h2>
                 {step === 1 && (
                     <form onSubmit={handleSubmitUserForm(handleLoginSubmit)} className="space-y-4">

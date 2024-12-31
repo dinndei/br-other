@@ -13,7 +13,8 @@ const CoursesList: React.FC = () => {
     const [courses, setCourses] = useState<ICourse[]>([]);
     const [loading, setLoading] = useState(true);
     const [isCourseListVisible, setIsCourseListVisible] = useState(true);
-
+    const [errorDisplayed, setErrorDisplayed] = useState(false);
+    const [loadingToastDisplayed, setLoadingToastDisplayed] = useState(false); 
 
     const handleCourseClick = () => {
         setIsCourseListVisible(false);
@@ -48,23 +49,29 @@ const CoursesList: React.FC = () => {
         fetchCourses();
     }, [user]);
 
-    if (loading) {
-        toast('טוען קורסים', {
-            icon: '⏳',
-          });
-    }
+    useEffect(() => {
+        if (loading && !loadingToastDisplayed) {
+            toast('טוען קורסים', {
+                icon: '⏳',
+            });
+            setLoadingToastDisplayed(true); 
+        }
+    }, [loading, loadingToastDisplayed]);
 
-    if (!courses.length) {
-       toast.error("אין קורסים להצגה")
-    }
-
+    
+    useEffect(() => {
+        if (!loading && !courses.length && !errorDisplayed) {
+            toast.error("אין קורסים להצגה");
+            setErrorDisplayed(true); 
+        }
+    }, [loading, courses, errorDisplayed]);
 
 
     return (
         <div>
             {
                 isCourseListVisible && (
-                    <div className="fixed top-0 right-0 mt-20 w-full md:w-1/3 h-full bg-gray-800 bg-opacity-90 p-4 transform transition-all duration-300 ease-in-out z-50">
+                    <div className="fixed top-0 right-0 mt-20 w-full md:w-1/3 h-full bg-gray-800 bg-opacity-90 p-4 transform transition-all duration-300 ease-in-out z-50 mt-24">
                         <h2 className="text-2xl font-bold text-white mb-4">רשימת קורסים</h2>
                         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
                             {courses.map((course: ICourse) => (
