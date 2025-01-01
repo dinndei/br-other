@@ -1,5 +1,6 @@
 'use client';
-
+import { PiPhoneDisconnect } from "react-icons/pi";
+import { IoCallOutline } from "react-icons/io5";
 import { useEffect, useRef, useState } from 'react';
 import Peer from 'peerjs';
 
@@ -9,7 +10,7 @@ interface VideoChatProps {
   studentId: string;
 }
 
-const VideoChat: React.FC<VideoChatProps> = ({teacher=false, teacherId = "1234", studentId = "5678" }) => {
+const VideoChat: React.FC<VideoChatProps> = ({ teacher, teacherId, studentId }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<Peer | null>(null);
@@ -24,10 +25,10 @@ const VideoChat: React.FC<VideoChatProps> = ({teacher=false, teacherId = "1234",
   }, []);
 
   const startCall = async () => {
-    const isTeacher:boolean = teacher;
-    const peerId = isTeacher ? teacherId:studentId;
-    const remotePeerId =isTeacher ?studentId:teacherId;
-  
+    const isTeacher: boolean = teacher;
+    const peerId = isTeacher ? teacherId : studentId;
+    const remotePeerId = isTeacher ? studentId : teacherId;
+
     // יצירת Peer
     const peer = new Peer(peerId);
     peerRef.current = peer;
@@ -89,34 +90,48 @@ const VideoChat: React.FC<VideoChatProps> = ({teacher=false, teacherId = "1234",
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
-      <h2 className="text-xl font-bold">Video Chat</h2>
-      <div className="flex space-x-4">
-        <div>
-          <h3 className="text-sm font-semibold">Your Video</h3>
-          <video ref={localVideoRef} autoPlay muted playsInline className="border rounded w-60 h-40" />
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="rounded-lg p-1 w-full max-w-3xl space-y-6">
+
+        <div className="flex flex-col md:flex-row justify-center items-center md:space-x-6 space-y-4 md:space-y-0 w-full">
+          <div className="space-y-2 text-center w-full ml-10">
+            <h3 className="text-sm font-semibold text-gray-600">Your Video</h3>
+            <video
+              ref={localVideoRef}
+              autoPlay
+              muted
+              playsInline
+              className="border rounded-lg w-full h-full object-cover shadow-md bg-white"
+            />
+          </div>
+          <div className="space-y-2 text-center w-full">
+            <h3 className="text-sm font-semibold text-gray-600">Remote Video</h3>
+            <video
+              ref={remoteVideoRef}
+              autoPlay
+              playsInline
+              className="border rounded-lg w-full h-full object-cover shadow-md bg-white"
+            />
+          </div>
         </div>
-        <div>
-          <h3 className="text-sm font-semibold">Remote Video</h3>
-          <video ref={remoteVideoRef} autoPlay playsInline className="border rounded w-60 h-40" />
+
+        <div className="flex justify-center space-x-4 mt-4">
+          {!isConnected ? (
+            <button
+              onClick={startCall}
+              className="px-6 py-2 bg-green-500 text-white rounded-lg shadow  hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300"
+            >
+              <IoCallOutline />
+            </button>
+          ) : (
+            <button
+              onClick={endCall}
+              className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300"
+            >
+              <PiPhoneDisconnect />
+            </button>
+          )}
         </div>
-      </div>
-      <div className="flex space-x-4 mt-4">
-        {!isConnected ? (
-          <button
-            onClick={startCall}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
-            Join Call
-          </button>
-        ) : (
-          <button
-            onClick={endCall}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Leave Call
-          </button>
-        )}
       </div>
     </div>
   );

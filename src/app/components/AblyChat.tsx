@@ -148,96 +148,93 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
     }, [messages]);
 
     return (
-        <div className="flex flex-col h-[600px] w-[1000px] mx-auto bg-gray-50 shadow-md rounded-lg">
-            {/* Header */}
-            <div className="bg-blue-200 text-blue-900 py-3 px-4 flex items-center justify-between shadow-sm rounded-t-lg">
-                <h2 className="text-lg font-medium">Chat Room</h2>
-                <span className="text-sm">Course {courseId}</span>
-            </div>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
-                {messages.map((msg,_index) => (
-                    <div
-                        key={msg._id}
-                        className={`group flex items-center gap-2 ${msg.username === username ? "justify-end" : "justify-start"}`}
-                    >
-                        <div
-                            className={`relative max-w-[75%] px-4 py-2 rounded-lg shadow-sm ${msg.username === username
-                                ? "bg-blue-100 text-blue-900"
-                                : "bg-gray-200 text-gray-800"
-                                }`}
-                        >
-                            {editingMessageId === msg._id ? (
-                                <div>
-                                    <div>id:{editingMessageId}</div>
-                                    <input
-                                        type="text"
-                                        value={editingText}
-                                        onChange={(e) => setEditingText(e.target.value)}
-                                        className="w-full border rounded p-1"
-                                        onKeyDown={handleKeyDown}
-
-                                    />
-                                    <div className="flex justify-end gap-2 mt-1">
-                                        <button onClick={handleEditMessage} className="text-blue-500" >Save</button>
-                                        <button onClick={cancelEditing} className="text-red-500">Cancel</button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <>
-                                    <p>{msg.text}</p>
-                                    <div className="absolute top-0 right-0 hidden group-hover:flex gap-1 m-4 ml-36">
-                                        {msg.username === username && (
-                                            <div className="flex gap-2 mr-6">
-                                                <button
-                                                    onClick={() => startEditing(msg._id, msg.text)}
-                                                    className="text-blue-500"
-                                                   
-                                                >
-                                               <MdModeEdit />
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        handleDeleteMessage(msg._id);
-                                                            console.log("msg id", msg._id);
-                                                    }
-                                                    }
-                                                    className="text-red-500"
-                                                >
-                                                    <MdDelete/>
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                ))}
-                <div ref={messagesEndRef} />
-            </div>
-
-            {/* Input */}
-            <div className="bg-gray-100 p-3 flex items-center gap-2 rounded-b-lg">
-                <input
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Type a message..."
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                />
-                <button
-                    onClick={handleSendMessage}
-                    disabled={isSending}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-400 disabled:opacity-50"
-                >
-                    {isSending ? "Sending..." : "Send"}
-                </button>
-            </div>
+        <div className="flex flex-col h-[520px] w-full md:w-[1000px] mx-auto bg-gray-50 shadow-md rounded-lg">
+        {/* Header */}
+        <div className="bg-blue-200 text-blue-900 py-3 px-4 flex items-center justify-between shadow-sm rounded-t-lg">
+            <h2 className="text-lg font-medium">Chat Room</h2>
+            <span className="text-sm">Course {courseId}</span>
         </div>
+    
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
+            {messages.map((msg, _index) => (
+                <div
+                    key={msg._id}
+                    className={`group flex items-center gap-2 ${msg.username === username ? "justify-end" : "justify-start"}`}
+                >
+                    <div
+                        className={`relative max-w-[75%] px-4 py-2 rounded-lg shadow-sm ${msg.username === username
+                            ? "bg-blue-100 text-blue-900"
+                            : "bg-gray-200 text-gray-800"
+                            }`}
+                    >
+                        {editingMessageId === msg._id ? (
+                            <div>
+                                <div>id:{editingMessageId}</div>
+                                <input
+                                    type="text"
+                                    value={editingText}
+                                    onChange={(e) => setEditingText(e.target.value)}
+                                    className="w-full border rounded p-1"
+                                    onKeyDown={handleKeyDown}
+                                />
+                                <div className="flex justify-end gap-2 mt-1">
+                                    <button onClick={handleEditMessage} className="text-blue-500">Save</button>
+                                    <button onClick={cancelEditing} className="text-red-500">Cancel</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <p>{msg.text}</p>
+                                <div className="absolute top-0 right-0 hidden group-hover:flex gap-1 m-4 ml-36">
+                                    {msg.username === username && (
+                                        <div className="flex gap-2 mr-6">
+                                            <button
+                                                onClick={() => startEditing(msg._id, msg.text)}
+                                                className="text-blue-500"
+                                            >
+                                                <MdModeEdit />
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    handleDeleteMessage(msg._id);
+                                                    console.log("msg id", msg._id);
+                                                }}
+                                                className="text-red-500"
+                                            >
+                                                <MdDelete />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            ))}
+            <div ref={messagesEndRef} />
+        </div>
+    
+        {/* Input */}
+        <div className="bg-gray-100 p-3 flex items-center gap-2 rounded-b-lg">
+            <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type a message..."
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+            />
+            <button
+                onClick={handleSendMessage}
+                disabled={isSending}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-400 disabled:opacity-50"
+            >
+                {isSending ? "Sending..." : "Send"}
+            </button>
+        </div>
+    </div>
+    
     );
 };
 
