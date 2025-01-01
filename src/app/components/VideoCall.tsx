@@ -9,7 +9,7 @@ interface VideoChatProps {
   studentId: string;
 }
 
-const VideoChat: React.FC<VideoChatProps> = ({teacher=false, teacherId = "1234", studentId = "5678" }) => {
+const VideoChat: React.FC<VideoChatProps> = ({ teacher = false, teacherId = "1234", studentId = "5678" }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<Peer | null>(null);
@@ -24,10 +24,19 @@ const VideoChat: React.FC<VideoChatProps> = ({teacher=false, teacherId = "1234",
   }, []);
 
   const startCall = async () => {
-    const isTeacher:boolean = teacher;
-    const peerId = isTeacher ? teacherId:studentId;
-    const remotePeerId =isTeacher ?studentId:teacherId;
-  
+    console.log("comming");
+
+    const isTeacher: boolean = teacher;
+    console.log("isTeacher", isTeacher);
+
+    const peerId = isTeacher ? teacherId : studentId;
+
+    console.log("peerId", peerId);
+
+    const remotePeerId = isTeacher ? studentId : teacherId;
+    console.log("remotePeerId", remotePeerId);
+
+
     // יצירת Peer
     const peer = new Peer(peerId);
     peerRef.current = peer;
@@ -35,6 +44,8 @@ const VideoChat: React.FC<VideoChatProps> = ({teacher=false, teacherId = "1234",
     // קבלת הזרם המקומי
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     if (localVideoRef.current) {
+      console.log("if (localVideoRef.current)");
+      
       localVideoRef.current.srcObject = stream;
     }
 
