@@ -56,9 +56,9 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
                 throw insertError;
             }
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Error uploading file:', error);
-            setError('Failed to upload file, please try again.');
+            setError('שגיאה בהעלאת הקובץ, נסה שוב');
         } finally {
             setUploading(false);
         }

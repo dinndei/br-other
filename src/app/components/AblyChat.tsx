@@ -157,7 +157,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
     
         {/* Messages */}
         <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3">
-            {messages.map((msg, _index) => (
+            {messages.map((msg) => (
                 <div
                     key={msg._id}
                     className={`group flex items-center gap-2 ${msg.username === username ? "justify-end" : "justify-start"}`}
