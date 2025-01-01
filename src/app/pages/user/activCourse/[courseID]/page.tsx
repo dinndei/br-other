@@ -3,22 +3,18 @@
 import { useEffect, useState } from 'react';
 import { ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import AblyChat from '@/app/components/AblyChat';
-// import VideoChat from '@/app/components/VideoChat';
-// import Link from 'next/link';
-// import { useRouter } from 'next/router';
 import { useParams } from 'next/navigation';
 import { getCourseByID } from '@/app/actions/courseAction';
 import ICourse from '@/app/types/ICourse';
 import UploadFiles from '@/app/components/UploadFiles';
 import { useUserStore } from '@/app/store/userStore';
+import VideoChat from '@/app/components/VideoCall';
 
 const StudyPage = () => {
     const [activeTab, setActiveTab] = useState<'chat' | 'video' | 'upload' | 'none'>('none');
-    // const router = useRouter();
     const params = useParams();
     const courseID = Array.isArray(params?.courseID) ? params.courseID[0] : params.courseID;
     const [courseData, setCourseData] = useState<ICourse | null>(null);
-    const [stream, setStream] = useState<MediaStream | null>(null);
     const user = useUserStore(state => state.user)
 
     useEffect(() => {
@@ -31,8 +27,8 @@ const StudyPage = () => {
                 const data = await response.data.course;
                 console.log("data", data.course);
                 setCourseData(data);
-                console.log("course data ",courseData);
-                
+                console.log("course data ", courseData);
+
             } catch (error) {
                 console.error('Error fetching course data:', error);
             }
@@ -41,35 +37,14 @@ const StudyPage = () => {
         fetchCourseData();
     }, [courseID]);
 
-    // useEffect(() => {
-    //     const getUserMedia = async () => {
-    //         try {
-    //             const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    //             setStream(localStream);
-    //         } catch (error) {
-    //             console.error('Error getting media:', error);
-    //         }
-    //     };
-
-    //     getUserMedia();
-
-    //     // ניקוי ה-`stream` כאשר הקומפוננטה מתנתקת
-    //     return () => {
-    //         if (stream) {
-    //             stream.getTracks().forEach(track => track.stop());
-    //         }
-    //     };
-    // }, []);
-
-    //if !stream-> loading...
-    if ( !courseData) {
+    if (!courseData) {
         return <p>Loading...</p>;
     }
 
 
 
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div dir='rtl' className="flex h-screen bg-gray-100  w-full md:w-[900px] mx-auto shadow-md rounded-lg mt-28">
             {/* Sidebar */}
             <div className="w-20 bg-white shadow-md flex flex-col items-center py-6 space-y-4 fixed right-0 h-full">
                 <button
@@ -95,50 +70,48 @@ const StudyPage = () => {
                 </button>
             </div>
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col">
-                {/* Header */}
-                <header className="bg-white shadow-md py-2 px-6 pr-40  flex flex-col items-end">
-                    <h1 className="text-3xl font-semibold text-gray-800 pt-2 leading-snug tracking-tight font-sans">
-                        תא ידע
-                    </h1>
-                    <p className="text-lg text-gray-600 mt-2">
-                        {courseData?.feild?.mainField}    &nbsp;
-                        {courseData?.feild?.subField}
-                    </p>
-
-                </header>
-
-                {/* Content */}
-                <main className="flex-1 p-6 bg-gray-50 ">
-                    {activeTab === 'chat' && (
-                        <div>
-                            <h3 className="text-xl font-medium text-gray-700">Chat with Mentor</h3>
-                            <AblyChat courseId={courseID} />
+            {/* Content */}
+            <main className="flex-1 p-6 bg-gray-50 w-full">
+                {activeTab === 'none' && (
+                    <div className="relative bg-cover bg-center h-[400px] flex items-center justify-center text-center" style={{ backgroundImage: 'url(https://www.hrus.co.il/wp-content/uploads/%D7%94%D7%9B%D7%A9%D7%A8%D7%94-%D7%9C%D7%9E%D7%99%D7%93%D7%94-%D7%94%D7%9B%D7%A9%D7%A8%D7%94-%D7%95%D7%A7%D7%95%D7%A8%D7%A1%D7%99%D7%9D-%D7%9C%D7%A2%D7%95%D7%91%D7%93%D7%99%D7%9D-1-1000x580.jpg)' }}>
+                        <div className="absolute inset-0 bg-black opacity-70"></div> {/* מסך שקוף על התמונה */}
+                        <div className="relative z-10 text-white">
+                            <h1 className="text-4xl font-bold mb-4">ברוך הבא לתא ידע</h1>
+                            <p className="text-2xl mt-2">
+                                בתחום &nbsp;
+                                {courseData?.feild?.mainField}  -  &nbsp;
+                                {courseData?.feild?.subField}
+                            </p>
+                            <p>לרשותך חדר למידה המצויד בשלל אפשרויות לתקשורת עם הפרטנר שהותאם לך על ידי האלגוריתם שלנו,<br/> לרבות צ'אט לשליחת הודעות טקסט, שיחת וידאו וכן אפשרות להעלאת קבצים <br/>כל זאת על מנת לאפשר לכם את מירב התנאים ללמידה יעילה ופוריה <br/>חשוב לזכור את המטרה של כולנו-הגברת האחווה והשלום בעם ישראל. <br/>לכן חשוב מאוד לשמור על שפה הולמת*, כבוד, הבנה והכלת השונות</p>
+                            <p>*במערכת קיימת בקרה אוטומטית על תוכן ההודעות הנשלחות, הודעות אלימות או רעילות תחסמנה לשליחה</p>
+                            <p className="mt-6 text-xl font-semibold">בהצלחה!</p>
                         </div>
-                    )}
+                    </div>
+                )}
+                {activeTab === 'chat' && (
+                    <div>
 
-                    {activeTab === 'video' && (
-                        <div>
-                            <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
-                            {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
-                            {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
-                            {/* <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>)} */}
-</div>)}
-                            {activeTab === 'upload' && (
-                                <div>
-                                    <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Files</h2>
-                                    {/* <Link
-                                href={`/upload-files/6763f73f3b12e25ed1e2971d`}
-                                className="text-blue-500 hover:underline"
-                            > */}
-                            <UploadFiles courseId={courseData!._id.toString()} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
-                            {/* </Link> */}
-                        </div>
-                    )}
-                </main>
-            </div >
+                        <AblyChat courseId={courseID} />
+                    </div>
+                )}
+
+                {activeTab === 'video' && (
+                    <div>
+
+                        {/* <VideoChat teacher={user?._id==courseData.teacherID} teacherId={String(courseData.teacherID)} studentId={String(courseData.studentID)}/> */}
+                        <VideoChat teacher={true} teacherId="6756e3cd880448d29fc4a78f" studentId="6761478a0a93b67d9901a805" />
+
+                    </div>)}
+                {activeTab === 'upload' && (
+                    <div>
+
+                        <UploadFiles courseId={courseID} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
+                        {/* </Link> */}
+                    </div>
+                )}
+            </main>
         </div >
+
     );
 }
 

@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
 
   if (!token) {
     return NextResponse.json({ message: 'Token is required' }, { status: 400 });
-  }
+  }  
 
   try {
     // אימות הטוקן
