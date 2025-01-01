@@ -1,153 +1,124 @@
-'use client'
-import { useState, useEffect, useRef } from 'react';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
 import Peer from 'peerjs';
 
-interface VideoCallProps {
-    teacherID: string;
-    studentID: string;
-    roomId: string;
+interface VideoChatProps {
+  teacher: boolean;
+  teacherId: string;
+  studentId: string;
 }
 
-const VideoCall: React.FC<VideoCallProps> = ({ teacherID, studentID, roomId }) => {
-    const [peer, setPeer] = useState<Peer | null>(null);
-    const [myPeerID, setMyPeerID] = useState<string | null>(null);
-    // const [isCallActive, setIsCallActive] = useState(false);
-    const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-    // const [isStreamReady, setIsStreamReady] = useState(false); // Track when stream is ready
-    const localVideoRef = useRef<HTMLVideoElement | null>(null);
-    const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+const VideoChat: React.FC<VideoChatProps> = ({teacher=true, teacherId = "1234", studentId = "5678" }) => {
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const peerRef = useRef<Peer | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-    useEffect(() => {
-        const getLocalStream = async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                if (localVideoRef.current) {
-                    localVideoRef.current.srcObject = stream;
-                }
-                setLocalStream(stream);
-                setIsStreamReady(true);
-            } catch (error) {
-                if (error instanceof DOMException) {
-                    if (error.name === 'NotAllowedError') {
-                        console.error("Permission denied: User has denied access to the camera or microphone.");
-                        alert("Please allow access to the camera and microphone.");
-                    } else if (error.name === 'NotFoundError') {
-                        console.error("No camera or microphone found.");
-                        alert("No camera or microphone found. Please ensure your device has them available.");
-                    } else if (error.name === 'NotReadableError') {
-                        console.error("Could not start video source: The device may already be in use.");
-                        alert("The camera or microphone is already in use. Please close other applications that might be using them.");
-                    } else {
-                        console.error("Unknown error:", error);
-                    }
-                } else {
-                    console.error("Error:", error);
-                }
-            }
-        };
+  useEffect(() => {
+    return () => {
+      if (peerRef.current) {
+        peerRef.current.destroy();
+      }
+    };
+  }, []);
 
-        getLocalStream(); // Fetch local stream
+  const startCall = async () => {
+    const isTeacher:boolean = teacher;
+    const peerId = isTeacher ? teacherId:studentId;
+    const remotePeerId =isTeacher ?studentId:teacherId;
+  
+    // יצירת Peer
+    const peer = new Peer(peerId);
+    peerRef.current = peer;
 
-        const newPeer = new Peer();
-        setPeer(newPeer);
+    // קבלת הזרם המקומי
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = stream;
+    }
 
-       
-     
-        newPeer.on('error', (err) => console.error(err));
-
-        newPeer.on('disconnected', () => {
-            console.log('Peer disconnected');
+    // אירוע פתיחה של Peer
+    peer.on('open', () => {
+      console.log(`Peer connected with ID: ${peerId}`);
+      setIsConnected(true);
+      if (isTeacher) {
+        // יצירת שיחה
+        const call = peer.call(remotePeerId, stream);
+        call.on('stream', (remoteStream) => {
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.srcObject = remoteStream;
+          }
         });
-    
-        newPeer.on('close', () => {
-            console.log('Peer connection closed');
-        });
-        // Handle incoming calls
-        newPeer.on('call', (call) => {
-            if (localStream) {
-                call.answer(localStream); // Answer the call with the local stream
-            }
+      }
+    });
 
-            call.on('stream', (remoteStream) => {
-                if (remoteVideoRef.current) {
-                    remoteVideoRef.current.srcObject = remoteStream; // Show remote stream
-                }
-            });
-        });
+    // אירוע קבלת שיחה
+    peer.on('call', (call) => {
+      call.answer(stream); // השב לשיחה עם הזרם המקומי
+      call.on('stream', (remoteStream) => {
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = remoteStream;
+        }
+      });
+    });
 
-        return () => {
-            newPeer.destroy(); // Clean up the connection when component unmounts
-        };
-    }, []);
+    // ניהול שגיאות
+    peer.on('error', (err) => {
+      console.error('Peer error:', err);
+    });
+  };
 
-    // const startCall = () => {
-    //     if (peer && myPeerID && localStream && isStreamReady && teacherID) {
-    //         // Try to make the call
-    //         const call = peer.call(teacherID, localStream);
-    
-    //         if (call) {
-    //             call.on('stream', (remoteStream) => {
-    //                 if (remoteVideoRef.current) {
-    //                     remoteVideoRef.current.srcObject = remoteStream;
-    //                 }
-    //             });
-    
-    //             call.on('error', (error) => {
-    //                 console.error('Call error:', error);
-    //             });
-    
-    //             setIsCallActive(true);
-    //         } else {
-    //             console.error('Failed to make the call');
-    //         }
-    //     } else {
-    //         console.error('Cannot start call, missing necessary data');
-    //     }
-    // };
-    
+  const endCall = () => {
+    if (peerRef.current) {
+      peerRef.current.destroy();
+      peerRef.current = null;
+      setIsConnected(false);
+    }
 
-    // const endCall = () => {
-    //     if (peer) {
-    //         peer.disconnect(); // Disconnect from the call
-    //     }
+    if (localVideoRef.current && localVideoRef.current.srcObject) {
+      (localVideoRef.current.srcObject as MediaStream).getTracks().forEach((track) => track.stop());
+      localVideoRef.current.srcObject = null;
+    }
 
-    //     // Stop the local stream tracks to release the camera and microphone
-    //     if (localStream) {
-    //         localStream.getTracks().forEach(track => track.stop());
-    //     }
+    if (remoteVideoRef.current && remoteVideoRef.current.srcObject) {
+      (remoteVideoRef.current.srcObject as MediaStream).getTracks().forEach((track) => track.stop());
+      remoteVideoRef.current.srcObject = null;
+    }
+  };
 
-    //     setIsCallActive(false);
-    // };
-
-    return (
+  return (
+    <div className="flex flex-col items-center space-y-4">
+      <h2 className="text-xl font-bold">Video Chat</h2>
+      <div className="flex space-x-4">
         <div>
-            <h2>Video Call - Classroom {roomId}</h2>
-
-            {/* Local video */}
-            <div>
-                <video ref={localVideoRef} autoPlay muted></video>
-            </div>
-
-            {/* Remote video */}
-            <div>
-                <video ref={remoteVideoRef} autoPlay></video>
-            </div>
- 
-            {/* Start call button */}
-            {/* {!isCallActive && isStreamReady && (
-                <button onClick={startCall} className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Join Call
-                </button>
-            )} */}
-
-            {/* End call button */}
-            {/* {isCallActive && (
-                <button onClick={endCall} className="bg-red-500 text-white px-4 py-2 rounded">
-                    End Call
-                </button>
-            )}  */}
+          <h3 className="text-sm font-semibold">Your Video</h3>
+          <video ref={localVideoRef} autoPlay muted playsInline className="border rounded w-60 h-40" />
         </div>
-    );
+        <div>
+          <h3 className="text-sm font-semibold">Remote Video</h3>
+          <video ref={remoteVideoRef} autoPlay playsInline className="border rounded w-60 h-40" />
+        </div>
+      </div>
+      <div className="flex space-x-4 mt-4">
+        {!isConnected ? (
+          <button
+            onClick={startCall}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            Join Call
+          </button>
+        ) : (
+          <button
+            onClick={endCall}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Leave Call
+          </button>
+        )}
+      </div>
+    </div>
+  );
 };
 
-export default VideoCall;
+export default VideoChat;
