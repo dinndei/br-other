@@ -40,6 +40,7 @@
     "socket.io-client": "^4.8.1",
     "stream-chat": "^8.47.0",
     "stream-chat-react": "^12.8.0",
+    "uuid": "^11.0.3",
     "zod": "^3.23.8",
     "zustand": "^5.0.2"
   },

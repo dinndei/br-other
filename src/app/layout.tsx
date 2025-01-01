@@ -50,7 +50,7 @@ export default function RootLayout({
         }}
       /> */}
         {/* <VideoCall teacherID="6756e3cd880448d29fc4a78f" studentID="6761478a0a93b67d9901a805" roomId="6761666723beecc2d11d5f45"/> */}
-     <VideoChat teacher={true} teacherId="0533134925" studentId="2323284148"/>
+     <VideoChat teacher={false} teacherId="6756e3cd880448d29fc4a78f" studentId="6761478a0a93b67d9901a805"/>
       </body>
     </html>
   );
