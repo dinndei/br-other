@@ -4,7 +4,7 @@ import Navbar from "./components/NavBar";
 import AuthInitializer from "./components/AuthInitializer";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
-import VideoChat from "./components/VideoCall";
+
 
 
 // const geistSans = localFont({
