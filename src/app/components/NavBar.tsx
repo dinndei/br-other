@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
 
         <>
             {/* נבר עליון */}
-            <nav className="bg-black p-4 fixed top-0 left-0 right-0 z-10 w-full max-w-full">
+            <nav className="bg-black py-4 px-4 fixed top-0 left-0 right-0 z-10 w-full max-w-full min-h-[64px] lg:min-h-[64px]">
                 <div className="flex justify-between items-center lg:flex-row-reverse">
                     {user && !isMenuOpen && (
                         <button onClick={toggleProfile} className="text-white lg:absolute lg:left-4 lg:top-4 hidden lg:block">
@@ -118,10 +118,12 @@ const Navbar: React.FC = () => {
             </nav>
 
             {/* תפריט צד רספונסיבי */}
-            <div
+            {/* <div
                 className={`fixed top-8 right-0 h-full bg-black text-white flex flex-col space-y-4 p-4 z-20 transform ${isMenuOpen ? "translate-x-0" : "translate-x-full text-right"
                     } transition-transform duration-300 lg:hidden`}
-            >
+            > */}
+                <div className="fixed top-8 right-0 h-full bg-black text-white flex flex-col space-y-4 p-4 z-20 transform lg:hidden">
+
                 <div className="flex flex-col flex-grow space-y-4 text-right">
                     <NavigationLinks />
                     {user && (
