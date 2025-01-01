@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         user.password = hashedPassword;
         await user.save();
 
-        const token = generateToken(user._id!.toString(), user.role);
+        const token = generateToken(user);
 
         const response = NextResponse.json({
             message: 'Password reset successfully',
