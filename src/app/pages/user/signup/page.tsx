@@ -153,8 +153,7 @@ const SignupForm = () => {
 
             <div className="relative z-50 py-8 px-4 mt-16 w-full flex justify-center items-start">
                 <div
-                    className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 overflow-y-auto"
-                    style={{ maxHeight: "calc(100vh - 4rem)", zIndex: 10 }} // **שינוי כאן**
+                    className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 overflow-y-auto relative max-h-[calc(100vh-4rem)]"
                 >
                     <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6">
                         <h2 className="text-center text-xl font-semibold mb-6 text-right">...כמה פרטים ונתחיל</h2>

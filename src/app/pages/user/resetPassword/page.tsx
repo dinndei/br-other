@@ -116,8 +116,14 @@ const ResetPassword = () => {
 
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <div className="relative flex justify-center items-center min-h-screen bg-gray-100">
+            {/* רקע מותאם */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-white to-blue-300 z-0">
+                <div className="absolute inset-0 bg-opacity-30">
+                    <div className="absolute inset-0 blur-3xl opacity-60 bg-gradient-to-t from-blue-200 via-white to-blue-100 rounded-full mix-blend-multiply"></div>
+                </div>
+            </div>
+            <div className="relative z-10 w-full max-w-md p-8 bg-white rounded-lg shadow-lg" >
                 <h2 className="text-2xl font-bold mb-6 text-center">Reset Password</h2>
                 {error && <div className="text-red-500 mb-4">{error}</div>}
                 {step === 1 && (

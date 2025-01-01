@@ -118,13 +118,11 @@ const Navbar: React.FC = () => {
             </nav>
 
             {/* תפריט צד רספונסיבי */}
-            {/* <div
-                className={`fixed top-8 right-0 h-full bg-black text-white flex flex-col space-y-4 p-4 z-20 transform ${isMenuOpen ? "translate-x-0" : "translate-x-full text-right"
-                    } transition-transform duration-300 lg:hidden`}
-            > */}
-                <div className="fixed top-8 right-0 h-full bg-black text-white flex flex-col space-y-4 p-4 z-20 transform lg:hidden">
+          
+            <div className={`fixed top-8 right-0 h-full bg-black text-white flex flex-col space-y-4 p-4 z-20 transform  ${isMenuOpen ? "translate-x-0" : "translate-x-full text-right"
+                } transition-transform duration-300 lg:hidden`}>
 
-                <div className="flex flex-col flex-grow space-y-4 text-right">
+                <div className="flex flex-col flex-grow space-y-4 text-right mt-6">
                     <NavigationLinks />
                     {user && (
                         <button onClick={toggleProfile} className="text-white mt-auto">
@@ -136,11 +134,12 @@ const Navbar: React.FC = () => {
                         </button>
                     )}
                 </div>
-            </div>
+            </div >
 
             {showProfile && (
                 <UserProfile openBar={showProfile} setOpenBar={setShowProfile} />
-            )}
+            )
+            }
 
             {showCourses && <CoursesList />}
         </>
