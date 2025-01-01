@@ -9,7 +9,7 @@ interface VideoChatProps {
   studentId: string;
 }
 
-const VideoChat: React.FC<VideoChatProps> = ({teacher=true, teacherId = "1234", studentId = "5678" }) => {
+const VideoChat: React.FC<VideoChatProps> = ({teacher=false, teacherId = "1234", studentId = "5678" }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<Peer | null>(null);
@@ -45,6 +45,7 @@ const VideoChat: React.FC<VideoChatProps> = ({teacher=true, teacherId = "1234", 
       if (isTeacher) {
         // יצירת שיחה
         const call = peer.call(remotePeerId, stream);
+        console.log(call);
         call.on('stream', (remoteStream) => {
           if (remoteVideoRef.current) {
             remoteVideoRef.current.srcObject = remoteStream;
