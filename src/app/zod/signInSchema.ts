@@ -20,6 +20,9 @@ export const signupSchema = z.object({
         religionLevel: z.nativeEnum(ReligionLevel),
         politicalAffiliation: z.nativeEnum(PoliticalAffiliation),
     }),
+    acceptTerms: z.boolean().refine((value) => value === true, {
+        message: "You must accept the terms and conditions",
+    }),
 });
 
 export type SignupFormData = z.infer<typeof signupSchema>;
