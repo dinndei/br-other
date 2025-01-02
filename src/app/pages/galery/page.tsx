@@ -85,7 +85,8 @@ const UploadAndDisplay = () => {
         }
     }
     return (
-        <div className="relative bg-[#f5f5f5] min-h-screen py-12"> 
+        <div className="relative bg-[#f5f5f5] min-h-screen py-12 bg-gradient-to-br from-blue-400 via-white to-blue-200"> {/* רקע בהיר לכל הדף */}
+            {/* כותרת מעוצבת */}
             <h1 className="mt-6 text-center text-4xl font-lora font-bold text-[#1A237E] animate__animated animate__fadeInDown animate__delay-1s">
                 ---בואו תוסיפו לנו השראה
             </h1>

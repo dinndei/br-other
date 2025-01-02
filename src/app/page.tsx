@@ -3,11 +3,6 @@
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from "next/link";
 import { useUserStore } from "./store/userStore";
-import toast from 'react-hot-toast';
-
-
-
-
 export default function Home() {
 const user=useUserStore(st=>st.user);
 

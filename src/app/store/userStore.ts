@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import IUser from '@/app/types/IUser';
 import { UserStore } from '../types/storeTypes/userStore';
 import { verifyToken } from '../lib/tokenConfig/verifyToken';
-import { getUserById } from '../actions/userActions';
 
 export const useUserStore = create<UserStore>((set) => ({
   user: null,
