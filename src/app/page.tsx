@@ -27,28 +27,7 @@ const user=useUserStore(st=>st.user);
         <p className="mt-4 text-xl md:text-2xl max-w-xl mx-auto">
           כי השינוי מתחיל מאיתנו
         </p>
-{
-      !user&&
-       <div className="mt-8 flex justify-center space-x-4">
-          <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 font-semibold text-lg shadow-lg  flex items-center  text-white rounded-md hover:scale-110 hover:shadow-lg transition-transform duration-300">
-            <span>
-              <Link 
-              href="/pages/user/login"
-              >
-                התחברות
-              </Link></span>
-            <ArrowRightIcon className="h-6 w-6 ml-2" />
-          </button>
-          <button className="px-6 py-3 bg-white hover:bg-gray-100 text-blue-500 rounded-md font-semibold text-lg shadow-lg border border-blue-500 hover:scale-110 hover:shadow-lg flex items-center transition-transform duration-300">
-            <span>
-              <Link href="/pages/user/signup" >
-              הרשמה
-            </Link></span>
-        
-          </button>
-          
-        </div>
-}
+
       </div>
     </div>
   );

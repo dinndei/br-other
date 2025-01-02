@@ -38,8 +38,8 @@ const EditUserForm = () => {
             gender: user?.gender || Gender.Other,
             fields: fields,
             typeUser: user?.typeUser || {
-                politicalAffiliation: PoliticalAffiliation.HardRight,
-                religionLevel: ReligionLevel.Other,
+                politicalAffiliation: undefined,
+                religionLevel: undefined,
             },
             profileImage: "@/profile.png"
         },
@@ -74,7 +74,7 @@ const EditUserForm = () => {
         if (file) {
             const imageUrl = await uploadImage(file);
             if (imageUrl) {
-                setValue("profileImage", imageUrl); // שמור את ה-URL של התמונה בטופס
+                setValue("profileImage", imageUrl);
             }
         }
     };
@@ -105,133 +105,140 @@ const EditUserForm = () => {
 
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto p-4 space-y-4">
+        
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 mt-20" dir="rtl">
             <div className="flex items-center space-x-4 mb-6">
-                <ProfileImage url={user?.profileImage} firstName={user?.firstName}  size="large"  />
+                <ProfileImage url={user?.profileImage} firstName={user?.firstName} size="large" />
                 <div>
                     <h2 className="text-lg font-bold">שלום, {user?.firstName}</h2>
                     <p className="text-sm text-gray-600">ערוך את פרטי החשבון שלך כאן</p>
                 </div>
             </div>
-            
-            <div>
-                <label htmlFor="firstName" className="block font-medium">First Name</label>
-                <input
-                    id="firstName"
-                    {...register("firstName")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                />
-                {errors.firstName && <p className="text-red-500">{errors.firstName.message}</p>}
-            </div>
+            <div className="space-y-4">
+                <div>
+                    <label htmlFor="firstName" className="block text-right font-medium">שם פרטי</label>
+                    <input
+                        id="firstName"
+                        {...register("firstName")}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 "
+                    />
+                    {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
+                </div>
 
-            <div>
-                <label htmlFor="lastName" className="block font-medium">Last Name</label>
-                <input
-                    id="lastName"
-                    {...register("lastName")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                />
-                {errors.lastName && <p className="text-red-500">{errors.lastName.message}</p>}
-            </div>
+                <div>
+                    <label htmlFor="lastName" className="block text-right font-medium">שם משפחה</label>
+                    <input
+                        id="lastName"
+                        {...register("lastName")}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
+                </div>
 
-            <div>
-                <label htmlFor="userName" className="block font-medium">Username</label>
-                <input
-                    id="userName"
-                    {...register("userName")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                />
-                {errors.userName && <p className="text-red-500">{errors.userName.message}</p>}
-            </div>
+                <div>
+                    <label htmlFor="userName" className="block text-right font-medium">שם משתמש</label>
+                    <input
+                        id="userName"
+                        {...register("userName")}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.userName && <p className="text-red-500 text-sm">{errors.userName.message}</p>}
+                </div>
 
-            <div>
-                <label htmlFor="profileImage">Profile Image</label>
-                <input
-                    id="profileImage"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange} // פונקציה נפרדת להעלאת התמונה
-                />
-                {uploading && <p>Uploading image...</p>}
-            </div>
+                <div dir="rtl">
+                    <label htmlFor="profileImage" className="block text-right font-medium">תמונת פרופיל</label>
+                    <input
+                        id="profileImage"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 text-right"
+                    />
+                    {uploading && <p className="text-blue-500 text-sm text-right">Uploading image...</p>}
+                </div>
 
-            <div>
-                <label htmlFor="age" className="block font-medium">Age</label>
-                <input
-                    id="age"
-                    type="number"
-                    {...register("age", { valueAsNumber: true })}
-                    className="w-full border border-gray-300 p-2 rounded"
-                />
-                {errors.age && <p className="text-red-500">{errors.age.message}</p>}
-            </div>
+                <div>
+                    <label htmlFor="age" className="block text-right font-medium">גיל</label>
+                    <input
+                        id="age"
+                        type="number"
+                        {...register("age", { valueAsNumber: true })}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+                    />
+                    {errors.age && <p className="text-red-500 text-sm">{errors.age.message}</p>}
+                </div>
 
-            <div>
-                <label htmlFor="email" className="block font-medium">Email</label>
-                <input
-                    id="email"
-                    {...register("email")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                />
-                {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-            </div>
+                <div>
+                    <label htmlFor="email" className="block text-right font-medium">אימייל</label>
+                    <input
+                        id="email"
+                        {...register("email")}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+                </div>
 
+                <div>
+                    <label htmlFor="gender" className="block text-right font-medium">מין</label>
+                    <select
+                        id="gender"
+                        {...register("gender")}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+                    >
+                        <option value="">בחר מין</option>
+                        {Object.values(Gender).map((g) => (
+                            <option key={g} value={g}>{g}</option>
+                        ))}
+                    </select>
+                    {errors.gender && <p className="text-red-500 text-sm">{errors.gender.message}</p>}
+                </div>
 
-            <div>
-                <label htmlFor="gender" className="block font-medium">Gender</label>
-                <select
-                    id="gender"
-                    {...register("gender")}
-                    className="w-full border border-gray-300 p-2 rounded"
+                <div>
+                    <FieldsInputList fields={fields} setFields={setFields} showEditButtons={true} />
+                    {errors.fields && <p className="text-red-500 text-sm">{errors.fields.message}</p>}
+                </div>
+
+                <div>
+                    <label htmlFor="religionLevel" className="block text-right font-medium">זיקה דתית</label>
+                    <select
+                        id="religionLevel"
+                        {...register("typeUser.religionLevel")}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+                    >
+                        <option value="">בחר זיקה דתית</option>
+                        {Object.values(ReligionLevel).map((rl) => (
+                            <option key={rl} value={rl}>{rl}</option>
+                        ))}
+                    </select>
+                    {errors.typeUser?.religionLevel && <p className="text-red-500 text-sm">{errors.typeUser.religionLevel.message}</p>}
+                </div>
+
+                <div>
+                    <label htmlFor="politicalAffiliation" className="block text-right font-medium">נטייה פוליטית</label>
+                    <select
+                        id="politicalAffiliation"
+                        {...register("typeUser.politicalAffiliation")}
+                        className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+                    >
+                        <option value="">בחר נטייה פוליטית</option>
+                        {Object.values(PoliticalAffiliation).map((pa) => (
+                            <option key={pa} value={pa}>{pa}</option>
+                        ))}
+                    </select>
+                    {errors.typeUser?.politicalAffiliation && <p className="text-red-500 text-sm">{errors.typeUser.politicalAffiliation.message}</p>}
+                </div>
+
+                <Button
+                    type="submit"
+                    className="w-full bg-blue-500 hover:bg-blue-600 font-bold py-3 px-6 rounded-lg"
+
                 >
-                    <option value="">Select Gender</option>
-                    {Object.values(Gender).map((g) => (
-                        <option key={g} value={g}>{g}</option>
-                    ))}
-                </select>
-                {errors.gender && <p className="text-red-500">{errors.gender.message}</p>}
+                    🤗 סיימתי
+                </Button>
             </div>
-            <div>
-                <FieldsInputList fields={fields} setFields={setFields} showEditButtons={true}/>
-                {errors.fields && <p className="text-red-500">{errors.fields.message}</p>}
-
-            </div>
-
-            <div>
-                <label htmlFor="religionLevel" className="block font-medium">Religion Level</label>
-                <select
-                    id="religionLevel"
-                    {...register("typeUser.religionLevel")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                >
-                    <option value="">Select Religion Level</option>
-                    {Object.values(ReligionLevel).map((rl) => (
-                        <option key={rl} value={rl}>{rl}</option>
-                    ))}
-                </select>
-                {errors.typeUser?.religionLevel && <p className="text-red-500">{errors.typeUser.religionLevel.message}</p>}
-            </div>
-
-            <div>
-                <label htmlFor="politicalAffiliation" className="block font-medium">Political Affiliation</label>
-                <select
-                    id="politicalAffiliation"
-                    {...register("typeUser.politicalAffiliation")}
-                    className="w-full border border-gray-300 p-2 rounded"
-                >
-                    <option value="">Select Political Affiliation</option>
-                    {Object.values(PoliticalAffiliation).map((pa) => (
-                        <option key={pa} value={pa}>{pa}</option>
-                    ))}
-                </select>
-                {errors.typeUser?.politicalAffiliation && <p className="text-red-500">{errors.typeUser.politicalAffiliation.message}</p>}
-            </div>
-
-            <Button type="submit" className="w-full"
-            >
-                Save Changes
-            </Button>
         </form>
+
+
     );
 };
 

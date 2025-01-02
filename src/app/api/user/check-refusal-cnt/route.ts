@@ -14,24 +14,22 @@ export async function POST(req: NextRequest) {
     try {
         await connectToDB();
 
-        const activeCourse = await Course.findOne({ studentID: user._id, isActiv: true });
-        console.log("activeCourse", activeCourse);
+        const studies = await Course.find({ studentID: user._id });
+        console.log("studies", studies);
         
-
-        if (activeCourse) {
+        if (studies.length<user.refusalCnt) {
             return NextResponse.json({
-                hasActiveCourse: true,
-                message: "User has an active course",
-                courseId: activeCourse._id,
+                refusalCnt: true,
+                message: "User has more studies",
             });
         }
 
         return NextResponse.json({
-            hasActiveCourse: false,
-            message: "User does not have any active courses",
+            refusalCnt: false,
+            message: "User does not have more studies",
         });
     } catch (error) {
-        console.error("Error checking active courses:", error);
+        console.error("Error checking refusal cnt:", error);
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
 }

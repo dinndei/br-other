@@ -68,3 +68,17 @@ export const fetchFilesForCourse = async (courseId: string) => {
       throw new Error('Error fetching files');
   }
 };
+
+export const deleteCourse = async (courseId: string) => {
+  try {
+      const response = await axios.delete(`/api/course/delete/${courseId}`);
+      console.log("response.data", response.data);
+      
+      return response;
+  } catch (error) {
+      console.error('Error delete  course:', error);
+      throw new Error('Error delete course');
+  }
+};
+
+

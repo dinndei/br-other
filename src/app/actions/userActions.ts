@@ -5,7 +5,7 @@ export const loginUser = async (userName: string, password: string) => {
     console.log("comming to action", { userName, password });
 
     try {
-        const response = await axios.post('/api/user/login',{userName, password});
+        const response = await axios.post('/api/user/login', { userName, password });
         console.log("response.status", response.data);
 
         return response.data;
@@ -22,8 +22,8 @@ export const loginUser = async (userName: string, password: string) => {
 export const signupUser = async (user: Partial<IUser>): Promise<Partial<IUser>> => {
     try {
         const response: AxiosResponse<Partial<IUser>> = await axios.post('/api/user/signup', { user });
-        console.log("res.data",response.data);
-        
+        console.log("res.data", response.data);
+
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -116,15 +116,16 @@ export const editUser = async (userId: string, user: Partial<IUser>): Promise<Pa
     }
 };
 
-export const checkActivCourse = async (user: Partial<IUser>) :Promise<boolean>=> {
+export const checkActivCourse = async (user: Partial<IUser>): Promise<boolean> => {
     console.log("in action", user);
 
     try {
         const response: AxiosResponse = await axios.post('/api/user/check-activ-course',
             { user });
+        console.log("response in action", response);
 
         return response.data.hasActiveCourse
-        ;
+            ;
     } catch (error) {
         if (axios.isAxiosError(error)) {
             throw new Error(error.response?.data?.message || "Failed to check activ course");
@@ -133,8 +134,25 @@ export const checkActivCourse = async (user: Partial<IUser>) :Promise<boolean>=>
     }
 };
 
+export const checkRefusalCnt = async (user: Partial<IUser>): Promise<boolean> => {
+    console.log("in action", user);
+
+    try {
+        const response: AxiosResponse = await axios.post('/api/user/check-refusal-cnt',
+            { user });
+        console.log("response in action", response);
+
+        return response.data.refusalCnt;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || "Failed to check refusal cnt");
+        }
+        throw new Error("Unexpected error occurred during check refusal cnt");
+    }
+};
+
 export const getUserById = async (id: string): Promise<Partial<IUser>> => {
-    console.log("comming to action", id );
+    console.log("comming to action", id);
     try {
         const response = await axios.get(`/api/user/get/${id}`);
         console.log("Response:", response);
