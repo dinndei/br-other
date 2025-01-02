@@ -3,7 +3,6 @@
 import { findMentors, saveLearningRequest } from '@/app/actions/findMentorAction';
 import useDataStore from '@/app/store/fieldsStore';
 import { useUserStore } from '@/app/store/userStore';
-import IUser from '@/app/types/IUser';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import FieldsInputList from '@/app/components/FieldsInputList';
