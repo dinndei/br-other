@@ -163,7 +163,7 @@ const Navbar: React.FC = () => {
             )
             }
 
-            {showCourses && <CoursesList />}
+            {showCourses && <CoursesList setShowCourses={setShowCourses}/>}
         </>
     );
 }
