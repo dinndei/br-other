@@ -49,7 +49,7 @@ const SignupForm = () => {
                 religionLevel: undefined,
                 politicalAffiliation: undefined,
             },
-            acceptTerms: false
+             acceptTerms: false
         },
     });
 
@@ -288,6 +288,7 @@ const SignupForm = () => {
                                     id="acceptTerms"
                                     type="checkbox"
                                     className="w-5 h-5"
+                                    {...register("acceptTerms", { required: "עליך לקרוא ולהסכים לכללי האתר" })}
                                 />
                                 <label htmlFor="acceptTerms" className="text-sm text-right">קראתי והבנתי את</label>
                                 <button

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useUserStore } from '../store/userStore';
 import { usePathname, useRouter } from 'next/navigation';
-import { checkActivCourse } from '../actions/userActions';
+import { checkActivCourse, checkRefusalCnt } from '../actions/userActions';
 import UserProfile from './UserProfile';
 import ProfileImage from './ProfileImage';
 import CoursesList from './CoursesList';
@@ -11,12 +11,13 @@ import toast from 'react-hot-toast';
 import { RiHome4Line } from "react-icons/ri";
 
 
+
 const Navbar: React.FC = () => {
     const [showProfile, setShowProfile] = useState(false);
     const [showCourses, setShowCourses] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false); // מצב של התפריט
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    const pathname = usePathname(); // מקבל את הנתיב הנוכחי
+    const pathname = usePathname();
 
     const { user, logout, isAuthenticated } = useUserStore();
     const router = useRouter();
@@ -35,10 +36,22 @@ const Navbar: React.FC = () => {
     const handleNewLearningClick = async () => {
         try {
             const response = await checkActivCourse(user!)
+            console.log("respomse isActiv", response);
+
             if (response) {
+                toast.error("יש לך למידה פעילה, תאלץ להמתין לסיומה")
                 router.push("/");
-            } else {
-                router.push("/pages/user/newLearning");
+            }
+            else {
+               const response = await checkRefusalCnt(user!)
+                if (response) {
+                    toast.error("על פי בדיקתנו, סירבת לבקשות הלמידה שנשלחו אליך, במידה ותאשר הצעת למידה שתופנה אליך תוכל להמשיך וללמוד")
+                    router.push("/");
+                }
+                else {
+                    router.push("/pages/user/newLearning");
+                }
+
             }
         } catch (error) {
             console.error("שגיאה במהלך בדיקת הקורס הפעיל:", error);
@@ -48,29 +61,36 @@ const Navbar: React.FC = () => {
 
     const toggleShowCoursesList = () => {
         setShowCourses(prev => !prev);
+        closeMenu()
     };
 
     const toggleMenu = () => {
-        setIsMenuOpen(prev => !prev); // משנה את מצב התפריט
+        setIsMenuOpen(prev => !prev);
+    };
+
+    const closeMenu = () => {
+        setIsMenuOpen(false);
     };
 
     useEffect(() => {
         setShowCourses(false);
         setShowProfile(false);
-    }, [pathname]); // מפעיל את ה-useEffect בכל פעם שהנתיב משתנה
+        closeMenu()
+    }, [pathname]);
 
     useEffect(() => {
         setShowProfile(false);
-    }, [showCourses]); // מפעיל את ה-useEffect בכל פעם שהנתיב משתנה
+    }, [showCourses]);
 
 
     const NavigationLinks = () => (
         <>
-            <Link href="/" className={`${navItemStyle} ml-auto`}>
+            <Link href="/" className={`${navItemStyle} ml-auto`} >
                 <RiHome4Line className="text-white text-2xl" />
             </Link>
-            <Link href="/pages/general/about" className={navItemStyle}>אודות</Link>
-            <Link href="/pages/galery" className={navItemStyle}>גלריה</Link>
+
+            <Link href="/pages/general/about" className={navItemStyle} >אודות</Link>
+            <Link href="/pages/galery" className={navItemStyle} >גלריה</Link>
 
             {!user && !isAuthenticated && (
                 <Link href="/pages/user/login" className={navItemStyle}>התחברות</Link>
@@ -79,8 +99,10 @@ const Navbar: React.FC = () => {
             {user && isAuthenticated && (
                 <>
                     <button onClick={handleNewLearningClick} className={navItemStyle}>למידה חדשה</button>
-                    <button onClick={toggleShowCoursesList} className={navItemStyle}>רשימת קורסים</button>
-                    <button onClick={handleLogout} className={`${navItemStyle} text-red-500`}>יציאה</button>
+                    <button onClick={toggleShowCoursesList} className={navItemStyle} >רשימת קורסים</button>
+                    <button onClick={handleLogout} className={`${navItemStyle} text-red-500`}>
+                        יציאה
+                    </button>
                 </>
             )}
         </>
@@ -118,7 +140,7 @@ const Navbar: React.FC = () => {
             </nav>
 
             {/* תפריט צד רספונסיבי */}
-          
+
             <div className={`fixed top-8 right-0 h-full bg-black text-white flex flex-col space-y-4 p-4 z-20 transform  ${isMenuOpen ? "translate-x-0" : "translate-x-full text-right"
                 } transition-transform duration-300 lg:hidden`}>
 

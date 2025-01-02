@@ -11,6 +11,7 @@ import { UserNameFormData, OtpFormData, ResetPasswordFormData } from '@/app/zod/
 import { useRouter } from 'next/navigation';
 import { useUserForResetStore } from '@/app/store/resetPasswordStore';
 import { maskEmail } from '@/app/lib/dataEncryption/encryptEmail';
+import toast from 'react-hot-toast';
 
 const ResetPassword = () => {
     const [step, setStep] = useState(1); // Step 1: Enter OTP, Step 2: Enter new password
@@ -103,7 +104,8 @@ const ResetPassword = () => {
 
             if (response.data) {
                 console.log("Password reset successful");
-                router.push('/'); // ניתוב לדף הבית
+                toast.success("סיסמה שונתה בהצלחה")
+                router.push('/pages/user/login'); 
             }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -132,25 +134,28 @@ const ResetPassword = () => {
                             type="text"
                             placeholder="שם משתמש"
                             {...registerUserName('username', { required: "הכנס שם משתמש" })}
+                            className="w-full px-4 py-2 mt-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                         {userNameErrors.username && <p className="text-red-500">{userNameErrors.username.message}</p>}
-                        <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">
-                            send OTP code
+                        <button type="submit"
+                            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            שלח לי קוד OTP
                         </button>
                     </form>
                 )}
 
                 {step === 2 && (
                     <form onSubmit={handleSubmitOtpForm(handleVerifyOtp)}>
-                        <label> נשלח אלייך קוד חד פעמי למייל {maskedEmail}</label>
+                        <label>{maskedEmail} נשלח אלייך קוד חד פעמי למייל </label>
                         <input
                             type="text"
                             placeholder="הכנס את ה-OTP"
                             {...registerOtp('otp')}
+                            className="w-full px-4 py-2 mt-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                         {otpErrors.otp && <p className="text-red-500">{otpErrors.otp.message}</p>}
-                        <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">
-                            אמת OTP
+                        <button type="submit"
+                            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" >                            אמת OTP
                         </button>
                     </form>
                 )}
@@ -173,7 +178,8 @@ const ResetPassword = () => {
 
                         {resetErrors.confirmPassword && <p className="text-red-500">{resetErrors.confirmPassword.message}</p>}
                         {resetErrors.newPassword && <p className="text-red-500">{resetErrors.newPassword.message}</p>}
-                        <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">
+                        <button type="submit"
+                            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"                        >
                             אפס סיסמה
                         </button>
                     </form>

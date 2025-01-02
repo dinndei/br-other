@@ -113,6 +113,7 @@ const LoginPage = () => {
                                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 placeholder="הכנס שם משתמש"
                             />
+
                             {userErrors.username && <p className="text-red-500 text-sm">{userErrors.username.message}</p>}
                         </div>
                         <PasswordInput<UserFormData>
@@ -125,7 +126,7 @@ const LoginPage = () => {
                         <div className="flex justify-between items-center">
                             <button
                                 type="submit"
-                                className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             >
                                 התחבר
                             </button>
@@ -135,14 +136,14 @@ const LoginPage = () => {
                             <button
                                 type="button"
                                 onClick={() => router.push('/pages/user/signup')}
-                                className="text-indigo-500 underline"
+                                className="text-indigo-400 hover:text-indigo-300 underline"
                             >
                                 צור חשבון חדש
                             </button>
                             <button
                                 type="button"
                                 onClick={() => router.push('/pages/user/resetPassword')}
-                                className="text-indigo-500 underline"
+                                className="text-indigo-400 hover:text-indigo-300 underline"
                             >
                                 שכחתי סיסמה
                             </button>
@@ -157,10 +158,12 @@ const LoginPage = () => {
                             type="text"
                             placeholder="הכנס את ה-OTP"
                             {...registerOtp('otp')}
+                            className="w-full px-4 py-2 mt-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                         {otpErrors.otp && <p className="text-red-500">{otpErrors.otp.message}</p>}
-                        <button type="submit" className="w-full bg-blue-500 text-white rounded py-2">
-                            אמת OTP
+                        <button type="submit"
+                            className="w-full bg-blue-600 text-white rounded py-2 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            OTP אמת 
                         </button>
                     </form>
                 )}
