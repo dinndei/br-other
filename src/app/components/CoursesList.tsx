@@ -6,15 +6,17 @@ import { getCoursesByIds } from '../actions/courseAction';
 import mongoose from 'mongoose';
 import toast from 'react-hot-toast';
 
+interface CoursesListProps {
+    setShowCourses: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const CoursesList: React.FC = ({setShowCourses}) => {
+const CoursesList: React.FC<CoursesListProps> = ({ setShowCourses }) => {
     const user = useUserStore(state => state.user);
 
     const [courses, setCourses] = useState<ICourse[]>([]);
     const [loading, setLoading] = useState(true);
     const [isCourseListVisible, setIsCourseListVisible] = useState(true);
     const [errorDisplayed, setErrorDisplayed] = useState(false);
-    const [loadingToastDisplayed, setLoadingToastDisplayed] = useState(false); 
 
     const handleCourseClick = () => {
         setIsCourseListVisible(false);
@@ -32,7 +34,7 @@ const CoursesList: React.FC = ({setShowCourses}) => {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            if (user && user.courses) {               
+            if (user && user.courses) {
                 try {
                     const courses = convertObjectIdsToStrings(user.courses as mongoose.Types.ObjectId[]);
                     console.log("courses", courses);
@@ -49,12 +51,12 @@ const CoursesList: React.FC = ({setShowCourses}) => {
         fetchCourses();
     }, [user]);
 
- 
-    
+
+
     useEffect(() => {
         if (!loading && !courses.length && !errorDisplayed) {
             toast.error("אין קורסים להצגה");
-            setErrorDisplayed(true); 
+            setErrorDisplayed(true);
             setShowCourses(false);
         }
     }, [loading, courses, errorDisplayed]);

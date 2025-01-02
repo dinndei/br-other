@@ -43,8 +43,8 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
             }
 
             if (data?.path) {
-                // קבלת ה-URL הציבורי
-                const { data: publicUrlData } = await supabase.storage
+
+                const { data: publicUrlData } = supabase.storage
                     .from("brOther")
                     .getPublicUrl(data.path);
 

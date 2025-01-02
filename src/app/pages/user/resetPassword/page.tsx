@@ -10,7 +10,7 @@ import { UserNameFormData, OtpFormData, ResetPasswordFormData } from '@/app/zod/
 
 import { useRouter } from 'next/navigation';
 import { useUserForResetStore } from '@/app/store/resetPasswordStore';
-import { maskEmail } from '@/app/lib/dataEncryption/encryptEmail';
+import { maskEmail } from '@/app/lib/maskEmail/maskEmail';
 import toast from 'react-hot-toast';
 
 const ResetPassword = () => {

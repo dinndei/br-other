@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -7,7 +8,6 @@ import { SignupFormData, signupSchema } from "@/app/zod/signInSchema";
 import { Gender } from "@/app/types/enums/gender";
 import { ReligionLevel } from "../../../types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
-import Button from "@/app/components/Button";
 import { signupUser } from "@/app/actions/userActions";
 import { useUserStore } from "@/app/store/userStore";
 import IUser from "@/app/types/IUser";
@@ -16,23 +16,16 @@ import IField from "@/app/types/IField";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-
-// import FieldsInputList from "@/app/components/FieldsInputList";
-
 const SignupForm = () => {
 
     const [uploading, setUploading] = useState(false);
-
-    const router = useRouter();
-    const storeUser = useUserStore((st) => st.user);
-
-    const login = useUserStore((state) => state.login);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const [fields, setFields] = React.useState<IField[]>([{ mainField: "", subField: "" }]);
+    const router = useRouter();
+    const login = useUserStore((state) => state.login);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
-
-    const [fields, setFields] = React.useState<IField[]>([{ mainField: "", subField: "" }]);
+    const inputStyle = "w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
     const { register, setValue, handleSubmit, formState: { errors, isValid } } = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
@@ -50,7 +43,7 @@ const SignupForm = () => {
                 religionLevel: undefined,
                 politicalAffiliation: undefined,
             },
-             acceptTerms: false
+            acceptTerms: false
         },
     });
 
@@ -58,35 +51,6 @@ const SignupForm = () => {
     useEffect(() => {
         setValue("fields", fields);
     }, [fields, setValue]);
-
-    useEffect(() => {
-        console.log("Updated user in store EFFECT:", storeUser);
-    }, [storeUser]);
-
-    // const uploadImage = async (file: File) => {
-    //     setUploading(true);
-    //     const formData = new FormData();
-    //     formData.append('file', file);
-    //     formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
-
-    //     try {
-    //         // העלאת התמונה ל-Cloudinary
-    //         const response = await axios.post(
-    //             `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-    //             formData
-    //         );
-
-    //         // קבלת ה-URL של התמונה
-    //         const uploadedImageUrl = response.data.secure_url;
-
-    //         return uploadedImageUrl; // מחזיר את ה-URL של התמונה
-    //     } catch (error) {
-    //         console.error("Error uploading image:", error);
-    //         return null;
-    //     } finally {
-    //         setUploading(false);
-    //     }
-    // };
 
     const uploadImage = async (file: File): Promise<string | undefined> => {
         const formData = new FormData();
@@ -123,45 +87,35 @@ const SignupForm = () => {
 
         try {
             const userData = await signupUser(data);
-            console.log("user data on submit", userData);
-
-            if (userData){
-                console.log('User signed up successfully:', userData);
+            if (userData) {
                 toast.success("נרשמת בהצלחה")
-
             }
             const user = (userData as { user: IUser }).user;
             const token = (userData as { user: IUser, token: string }).token;
-
-            console.log("user before store", user);
-
             // שולח ללוגין במקום setUser
             login(user, token);
-
-            console.log("user after store", storeUser);
             router.push('/')
 
         } catch (error) {
             console.error('Error signing up:', error);
         }
-
     };
 
     return (
-        <div className="relative w-full h-screen bg-gradient-to-br from-blue-500 via-white to-blue-300">
+        <div className="relative w-full h-screen bg-gradient-to-br from-blue-500 via-white to-blue-300" dir="rtl">
             <div className="relative z-50 py-8 px-4 mt-16 w-full flex justify-center items-start">
                 <div
                     className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 overflow-y-auto relative max-h-[calc(100vh-4rem)]"
                 >
                     <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6">
-                        <h2 className="text-center text-xl font-semibold mb-6 text-right">...כמה פרטים ונתחיל</h2>
+                        <h2 className="text-xl font-semibold mb-6 text-right">...כמה פרטים ונתחיל</h2>
                         <div className="space-y-4">
                             <div>
                                 <label htmlFor="firstName" className="block text-right font-medium">שם פרטי</label>
                                 <input
                                     id="firstName"
                                     {...register("firstName")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className={inputStyle}
                                 />
                                 {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
                             </div>
@@ -171,8 +125,7 @@ const SignupForm = () => {
                                 <input
                                     id="lastName"
                                     {...register("lastName")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
+                                    className={inputStyle} />
                                 {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
                             </div>
 
@@ -181,8 +134,7 @@ const SignupForm = () => {
                                 <input
                                     id="userName"
                                     {...register("userName")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
+                                    className={inputStyle} />
                                 {errors.userName && <p className="text-red-500 text-sm">{errors.userName.message}</p>}
                             </div>
 
@@ -204,8 +156,7 @@ const SignupForm = () => {
                                     id="age"
                                     type="number"
                                     {...register("age", { valueAsNumber: true })}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
-                                />
+                                    className={inputStyle} />
                                 {errors.age && <p className="text-red-500 text-sm">{errors.age.message}</p>}
                             </div>
 
@@ -214,8 +165,7 @@ const SignupForm = () => {
                                 <input
                                     id="email"
                                     {...register("email")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
+                                    className={inputStyle} />
                                 {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                             </div>
 
@@ -225,8 +175,7 @@ const SignupForm = () => {
                                     id="password"
                                     type="password"
                                     {...register("password")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
+                                    className={inputStyle} />
                                 {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                             </div>
 
@@ -235,8 +184,7 @@ const SignupForm = () => {
                                 <select
                                     id="gender"
                                     {...register("gender")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
-                                >
+                                    className={inputStyle}                                >
                                     <option value="">Select Gender</option>
                                     {Object.values(Gender).map((g) => (
                                         <option key={g} value={g}>{g}</option>
@@ -255,8 +203,7 @@ const SignupForm = () => {
                                 <select
                                     id="religionLevel"
                                     {...register("typeUser.religionLevel")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
-                                >
+                                    className={inputStyle}                                >
                                     <option value="">בחר זיקה דתית</option>
                                     {Object.values(ReligionLevel).map((rl) => (
                                         <option key={rl} value={rl}>{rl}</option>
@@ -270,8 +217,7 @@ const SignupForm = () => {
                                 <select
                                     id="politicalAffiliation"
                                     {...register("typeUser.politicalAffiliation")}
-                                    className="w-full border border-gray-300 p-3 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
-                                >
+                                    className={inputStyle}                                >
                                     <option value="">בחר נטייה פוליטית</option>
                                     {Object.values(PoliticalAffiliation).map((pa) => (
                                         <option key={pa} value={pa}>{pa}</option>
@@ -298,13 +244,13 @@ const SignupForm = () => {
                                 </button>
                             </div>
 
-                            <Button
+                            <button
                                 type="submit"
                                 className={`w-full ${!isValid ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"} text-white font-bold py-3 px-6 rounded-lg`}
                                 disabled={!isValid}
                             >
                                 🤗 סיימתי
-                            </Button>
+                            </button>
                         </div>
                     </form>
 

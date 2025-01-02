@@ -10,7 +10,7 @@ import { useUserStore } from '@/app/store/userStore';
 import { resetActiveRequest } from '@/app/actions/findMentorAction';
 import IUser from '@/app/types/IUser';
 import toast from 'react-hot-toast';
-import { maskEmail } from '@/app/lib/dataEncryption/encryptEmail';
+import { maskEmail } from '@/app/lib/maskEmail/maskEmail';
 
 const LoginPage = () => {
     const router = useRouter();

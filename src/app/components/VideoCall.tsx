@@ -4,17 +4,12 @@ import { IoCallOutline } from "react-icons/io5";
 import { useEffect, useRef, useState } from 'react';
 import Peer from 'peerjs';
 
-interface VideoChatProps {
-  teacher: boolean;
-  teacherId: string;
-  studentId: string;
-}
 
 const VideoChat: React.FC<VideoChatProps> = ({ teacher, teacherId, studentId }) => {
+  const [isConnected, setIsConnected] = useState(false);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<Peer | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -37,7 +32,7 @@ const VideoChat: React.FC<VideoChatProps> = ({ teacher, teacherId, studentId }) 
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     if (localVideoRef.current) {
       console.log("if (localVideoRef.current)");
-      
+
       localVideoRef.current.srcObject = stream;
     }
 
@@ -73,6 +68,7 @@ const VideoChat: React.FC<VideoChatProps> = ({ teacher, teacherId, studentId }) 
     });
   };
 
+  //סיום שיחה
   const endCall = () => {
     if (peerRef.current) {
       peerRef.current.destroy();
@@ -121,14 +117,14 @@ const VideoChat: React.FC<VideoChatProps> = ({ teacher, teacherId, studentId }) 
           {!isConnected ? (
             <button
               onClick={startCall}
-              className="px-6 py-2 bg-green-500 text-white rounded-lg shadow  hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300"
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow  hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300"
             >
               <IoCallOutline />
             </button>
           ) : (
             <button
               onClick={endCall}
-              className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300"
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300"
             >
               <PiPhoneDisconnect />
             </button>

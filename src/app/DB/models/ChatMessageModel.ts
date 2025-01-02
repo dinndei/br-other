@@ -1,9 +1,9 @@
-import  { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const ChatMessageSchema = new Schema({
     username: { type: String, required: true },
     text: { type: String, required: true },
-    courseId:{type:String},
+    courseId: { type: String },
     timestamp: { type: Date, default: Date.now },
 });
 
