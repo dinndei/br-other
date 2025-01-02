@@ -140,8 +140,15 @@ const StudyPage = () => {
 
                 {activeTab === 'video' && (
                     <div>
-                        <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
-                        <VideoChat teacher={true} teacherId="6756e3cd880448d29fc4a78f" studentId="6761478a0a93b67d9901a805" />‏
+
+                        <VideoChat teacher={user?._id==courseData.teacherID} teacherId={String(courseData.teacherID)} studentId={String(courseData.studentID)}/>
+
+                    </div>)}
+                {activeTab === 'upload' && (
+                    <div>
+
+                        <UploadFiles courseId={courseID} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
+                        {/* </Link> */}
                     </div>
                 )}
                 {
