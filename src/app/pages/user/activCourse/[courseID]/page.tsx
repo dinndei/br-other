@@ -19,7 +19,7 @@ const StudyPage = () => {
     const [activeTab, setActiveTab] = useState<'chat' | 'video' | 'upload' | 'close' | 'none'>('none');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const params = useParams();
-    const route=useRouter()
+    const route = useRouter()
     const courseID = Array.isArray(params?.courseID) ? params.courseID[0] : params.courseID;
     const [courseData, setCourseData] = useState<ICourse | null>(null);
     const user = useUserStore(state => state.user)
@@ -47,14 +47,14 @@ const StudyPage = () => {
     const handleCloseCourse = async () => {
         console.log('סגירת קורס');
         console.log("courseID", courseID);
-        
+
         const response = await deleteCourse(courseID)
         if (response.status == 200) {
             setIsModalOpen(false);
             alert('הקורס נמחק בהצלחה.');
             route.push('/')
         }
-        else{
+        else {
             alert("שגיאה במחיקת הקורס, נסה שוב מאוחר יותר")
         }
     };
@@ -69,10 +69,9 @@ const StudyPage = () => {
         return daysLeft;
     };
 
-    const daysLeft = useMemo(() => calculateDaysLeft(new Date(courseData?.beginingDate!)), [courseData]);
+    const daysLeft = useMemo(() => calculateDaysLeft(new Date(courseData!.beginingDate!)), [courseData]);
 
 
-    if (!courseData) {
     if (!courseData) {
         return <p>Loading...</p>;
     }
@@ -126,7 +125,7 @@ const StudyPage = () => {
                                 {courseData?.feild?.mainField}  -  &nbsp;
                                 {courseData?.feild?.subField}
                             </p>
-                            <p>לרשותך חדר למידה המצויד בשלל אפשרויות לתקשורת עם הפרטנר שהותאם לך על ידי האלגוריתם שלנו,<br/> לרבות צ&apos;אט לשליחת הודעות טקסט, שיחת וידאו וכן אפשרות להעלאת קבצים <br/>כל זאת על מנת לאפשר לכם את מירב התנאים ללמידה יעילה ופוריה <br/>חשוב לזכור את המטרה של כולנו-הגברת האחווה והשלום בעם ישראל. <br/>לכן חשוב מאוד לשמור על שפה הולמת*, כבוד, הבנה והכלת השונות</p>
+                            <p>לרשותך חדר למידה המצויד בשלל אפשרויות לתקשורת עם הפרטנר שהותאם לך על ידי האלגוריתם שלנו,<br /> לרבות צ&apos;אט לשליחת הודעות טקסט, שיחת וידאו וכן אפשרות להעלאת קבצים <br />כל זאת על מנת לאפשר לכם את מירב התנאים ללמידה יעילה ופוריה <br />חשוב לזכור את המטרה של כולנו-הגברת האחווה והשלום בעם ישראל. <br />לכן חשוב מאוד לשמור על שפה הולמת*, כבוד, הבנה והכלת השונות</p>
                             <p>*במערכת קיימת בקרה אוטומטית על תוכן ההודעות הנשלחות, הודעות אלימות או רעילות תחסמנה לשליחה</p>
                             <p className="mt-6 text-xl font-semibold">בהצלחה!</p>
                         </div>
@@ -139,49 +138,52 @@ const StudyPage = () => {
                     </div>
                 )}
 
-                    {activeTab === 'video' && (
-                        <div>
-                            <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
-                            {/* <VideoChat userId={courseData!.teacherID.toString() } otherUserId={courseData!.studentID.toString()}  /> */}
-                            {/* <VideoChat userId={"6761666723beecc2d11d5f45"} otherUserId={"6761666723beecc2d11d5f45"} /> */}
-                            {/* <VideoChat userId={courseData.teacherID.toString()} stream={stream} />                    </div>)} */}
-                        </div>)}
-                    {activeTab === 'upload' && (
+                {activeTab === 'video' && (
+                    <div>
+                        <h3 className="text-xl font-medium text-gray-700">Video Call</h3>
+                        <VideoChat teacher={true} teacherId="6756e3cd880448d29fc4a78f" studentId="6761478a0a93b67d9901a805" />‏
+                    </div>
+                )}
+                {
+                    activeTab === 'upload' && (
                         <div>
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">העלאת קבצים</h2>
                             <UploadFiles courseId={courseID} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
                             {/* </Link> */}
                         </div>
-                    )}
+                    )
+                }
 
-                </main>
-            </div >
+            </main >
 
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" dir="rtl">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-xl font-bold text-gray-800 mb-4">האם ברצונך לסיים את הקורס?</h2>
-                        <p className="text-gray-600 mb-4">
-                            שים לב כי לאחר סגירת הקורס לא יהיה לך גישה לקבצים או להיסטוריית הצ'אט.
-                        </p>
-                        <p> הקורס יסתיים בכל מקרה בעוד {daysLeft > 0 ? daysLeft : 0} ימים.</p>
-                        <div className="flex justify-end space-x-4">
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
-                            >
-                                ביטול
-                            </button>
-                            <button
-                                onClick={handleCloseCourse}
-                                className="px-4 py-2 bg-red-500 text-white rounded-lg"
-                            >
-                                אישור
-                            </button>
+
+            {
+                isModalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" dir="rtl">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 className="text-xl font-bold text-gray-800 mb-4">האם ברצונך לסיים את הקורס?</h2>
+                            <p className="text-gray-600 mb-4">
+                                שים לב כי לאחר סגירת הקורס לא יהיה לך גישה לקבצים או להיסטוריית הצאט.
+                            </p>
+                            <p> הקורס יסתיים בכל מקרה בעוד {daysLeft > 0 ? daysLeft : 0} ימים.</p>
+                            <div className="flex justify-end space-x-4">
+                                <button
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                                >
+                                    ביטול
+                                </button>
+                                <button
+                                    onClick={handleCloseCourse}
+                                    className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                                >
+                                    אישור
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
         </div >
     );
 }
