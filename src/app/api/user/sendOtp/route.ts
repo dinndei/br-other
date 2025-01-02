@@ -91,9 +91,9 @@ export async function POST(req: Request) {
         const mailOptions = {
             from: process.env.GMAIL_USER, 
             to: email, 
-            subject: 'Your OTP Code',
-            text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
-            html: `<p>Your OTP code is <strong>${otp}</strong>. It will expire in 10 minutes.</p>`, 
+            subject: 'קוד חד פעמי',
+            text: `הקוד החד פעמי שך למערכת הוא ${otp} תוקף הקוד הוא לעשר דקות`,
+            html: `<p>הקוד החד פעמי שך למערכת הוא ${otp}</strong>. תוקף הקוד הוא לעשר דקות</p>`, 
         };
 
         await transporter.sendMail(mailOptions);

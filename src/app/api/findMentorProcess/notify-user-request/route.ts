@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
 import User from '@/app/DB/models/UserModel';
+import LearningRequestModel from '@/app/DB/models/LearningRequestModel';
 
 export async function POST(req: Request) {
     const { request, isApproved, mentor } = await req.json();
@@ -59,10 +60,13 @@ export async function POST(req: Request) {
                     <p>Thank you for your understanding.</p>
                 `,
             };
+
         }
 
         await transporter.sendMail(mailOptions);
         console.log('Notification email sent successfully');
+        await LearningRequestModel.findByIdAndDelete(request._id);
+
 
         return NextResponse.json({ success: true, message: 'Notification email sent successfully' }, { status: 200 });
     } catch (error) {
