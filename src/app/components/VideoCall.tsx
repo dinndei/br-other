@@ -36,6 +36,8 @@ const VideoChat: React.FC<VideoChatProps> = ({ teacher, teacherId, studentId }) 
     // קבלת הזרם המקומי
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     if (localVideoRef.current) {
+      console.log("if (localVideoRef.current)");
+      
       localVideoRef.current.srcObject = stream;
     }
 

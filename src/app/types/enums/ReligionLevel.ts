@@ -1,8 +1,8 @@
 export enum ReligionLevel {
-    Secular = "Secular",
-    Religious = "Religious",
-    Orthodox = "Orthodox",
-    Other = "Other"
+    Secular = "חילוני",
+    Religious = "דתי",
+    Orthodox = "חרדי",
+    Other = "אחר"
 }
 
 // Map to numeric values
