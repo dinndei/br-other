@@ -11,8 +11,10 @@ export async function verifyToken(token: string) {
     });
 
     if (response.data.isValid) {
+      console.log("res verify token",response);
+      
       console.log('Token is valid');
-      return response.data;
+      return response.data.decoded;
     } else {
       console.log('Token is invalid');
       return response.data;

@@ -188,17 +188,17 @@ export const approveCourse = async (student: IUser, mentor: Partial<IUser>, requ
     }
 }
 
-export const declineCourse = async (request: Partial<ILearningRequest>) => {
-    console.log("comming to action with:", request);
+export const declineCourse = async (mentor: Partial<IUser>) => {
+    console.log("comming to action with:", mentor);
 
     try {
         const response: AxiosResponse = await axios.post('/api/findMentorProcess/update-decline', {
-            requestId: request._id
+            mentorId: mentor._id
         });
         console.log("Response:", response.data);
         return response.data;
     } catch (error) {
-        console.error("Error fetching student :", error);
+        console.error("Error fetching mentor :", error);
         throw error;
     }
 }

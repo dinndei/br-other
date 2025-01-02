@@ -14,6 +14,7 @@ import IUser from "@/app/types/IUser";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 
 // import FieldsInputList from "@/app/components/FieldsInputList";
@@ -124,8 +125,11 @@ const SignupForm = () => {
             const userData = await signupUser(data);
             console.log("user data on submit", userData);
 
-            if (userData)
+            if (userData){
                 console.log('User signed up successfully:', userData);
+                toast.success("נרשמת בהצלחה")
+
+            }
             const user = (userData as { user: IUser }).user;
             const token = (userData as { user: IUser, token: string }).token;
 
@@ -144,13 +148,7 @@ const SignupForm = () => {
     };
 
     return (
-
-
         <div className="relative w-full h-screen bg-gradient-to-br from-blue-500 via-white to-blue-300">
-            <div className="absolute inset-0 bg-opacity-30 z-0">
-                <div className="absolute inset-0 blur-3xl opacity-60 bg-gradient-to-t from-blue-200 via-white to-blue-100 rounded-full mix-blend-multiply"></div>
-            </div>
-
             <div className="relative z-50 py-8 px-4 mt-16 w-full flex justify-center items-start">
                 <div
                     className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 overflow-y-auto relative max-h-[calc(100vh-4rem)]"

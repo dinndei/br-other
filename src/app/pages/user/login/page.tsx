@@ -10,12 +10,15 @@ import { useUserStore } from '@/app/store/userStore';
 import { resetActiveRequest } from '@/app/actions/findMentorAction';
 import IUser from '@/app/types/IUser';
 import toast from 'react-hot-toast';
+import { maskEmail } from '@/app/lib/dataEncryption/encryptEmail';
 
 const LoginPage = () => {
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [tempUser, setTempUser] = useState<Partial<IUser>>({});
     const [tempToken, setTempToken] = useState("")
+    const [maskedEmail, setMaskEmail] = useState('');
+
     // const [tempEmail, setTempEmail] = useState("")
     const login = useUserStore((state) => state.login);
     const setUser = useUserStore((state) => state.setUser);
@@ -46,6 +49,8 @@ const LoginPage = () => {
             catch (error) {
                 console.error(error);
             }
+            const tempMask = maskEmail(response.user.email);
+            setMaskEmail(tempMask)
 
         } else if (response.status == 404) {
             toast.error("משתמש לא נמצא");
@@ -154,6 +159,7 @@ const LoginPage = () => {
 
                 {step === 2 && (
                     <form onSubmit={handleSubmitOtpForm(handleOtpSubmit)}>
+                        <label>{maskedEmail} נשלח אלייך קוד חד פעמי למייל </label>
                         <input
                             type="text"
                             placeholder="הכנס את ה-OTP"
@@ -163,7 +169,7 @@ const LoginPage = () => {
                         {otpErrors.otp && <p className="text-red-500">{otpErrors.otp.message}</p>}
                         <button type="submit"
                             className="w-full bg-blue-600 text-white rounded py-2 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            OTP אמת 
+                            OTP אמת
                         </button>
                     </form>
                 )}

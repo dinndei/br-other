@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import toast from 'react-hot-toast';
 
 
-const CoursesList: React.FC = () => {
+const CoursesList: React.FC = ({setShowCourses}) => {
     const user = useUserStore(state => state.user);
 
     const [courses, setCourses] = useState<ICourse[]>([]);
@@ -32,7 +32,7 @@ const CoursesList: React.FC = () => {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            if (user && user.courses) {
+            if (user && user.courses) {               
                 try {
                     const courses = convertObjectIdsToStrings(user.courses as mongoose.Types.ObjectId[]);
                     console.log("courses", courses);
@@ -49,20 +49,13 @@ const CoursesList: React.FC = () => {
         fetchCourses();
     }, [user]);
 
-    useEffect(() => {
-        if (loading && !loadingToastDisplayed) {
-            toast('טוען קורסים', {
-                icon: '⏳',
-            });
-            setLoadingToastDisplayed(true); 
-        }
-    }, [loading, loadingToastDisplayed]);
-
+ 
     
     useEffect(() => {
         if (!loading && !courses.length && !errorDisplayed) {
             toast.error("אין קורסים להצגה");
             setErrorDisplayed(true); 
+            setShowCourses(false);
         }
     }, [loading, courses, errorDisplayed]);
 
@@ -75,7 +68,7 @@ const CoursesList: React.FC = () => {
                         <h2 className="text-2xl font-bold text-white mb-4 ">רשימת קורסים</h2>
                         <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1">
                             {courses.map((course: ICourse) => (
-                                <CourseCard key={course.id} course={course} handleCourseClick={handleCourseClick} />
+                                <CourseCard key={String(course._id)} course={course} handleCourseClick={handleCourseClick} />
                             ))}
                         </div>
                     </div>

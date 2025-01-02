@@ -18,10 +18,9 @@ const ApproveLearningPage = () => {
     const route = useRouter();
 
     const mentor = useUserStore((state) => state.user);
-    // setRequestId(mentor!.learningApprovalPending!)
 
-    console.log("mentor", mentor);
-    console.log("requestId", requestId);
+    const { user, setUser } = useUserStore()
+
 
     useEffect(() => {
         if (mentor?.learningApprovalPending) {
@@ -59,7 +58,7 @@ const ApproveLearningPage = () => {
         } finally {
             setLoading(false);
             console.log(loading);
-            
+
         }
     };
 
@@ -82,20 +81,25 @@ const ApproveLearningPage = () => {
 
     const handleApproval = async (approved: boolean) => {
         if (approved) {
-            const response = await approveCourse(studentDetails! ,mentor!, requestDetails!)
+            const response = await approveCourse(studentDetails!, mentor!, requestDetails!)
             console.log(response);
+
+            const updatedUser = {
+                ...user,
+                courses: [...(user?.courses || []), response.course._id]
+            };
+
+            setUser(updatedUser);
+
             route.push(`/pages/user/activCourse/${response.course._id}`)
 
         }
-        else{
-            await declineCourse(requestDetails!)
+        else {
+            await declineCourse(mentor!)
             route.push('/')
         }
     };
 
-    // if (loading) {
-    //     return <p>Loading request details...</p>;
-    // }
 
     if (error) {
         return <p>Error: {error}</p>;
@@ -108,42 +112,66 @@ const ApproveLearningPage = () => {
 
 
     return (
-        <div className="mt-16 max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 space-y-6">
-            <h1 className="text-2xl font-semibold text-gray-800">Approve or Decline Learning Request</h1>
-            {studentDetails ? (
-                <>
-                    <div className="space-y-4">
-                        <p className="text-lg">
-                            <span className="font-medium text-gray-600">Student Name:</span> {studentDetails.firstName} {studentDetails.lastName}
+        <div className="relative w-full h-screen bg-gradient-to-br from-blue-500 via-white to-blue-300" dir="rtl">
+            <div className="absolute inset-0 bg-opacity-30 z-0">
+                <div className="absolute inset-0 blur-3xl opacity-60 bg-gradient-to-t from-blue-200 via-white to-blue-100 rounded-full mix-blend-multiply"></div>
+            </div>
+
+            <div className="relative z-10 flex items-center justify-center h-full">
+                <div className="mt-16 max-w-lg mx-auto bg-white shadow-xl rounded-2xl p-8 space-y-8 border border-gray-200">
+                    <h1 className="text-3xl font-bold text-gray-800 text-center">
+                        אישור או דחייה של בקשת למידה
+                    </h1>
+
+                    {studentDetails ? (
+                        <>
+                            <div className="space-y-4">
+                                <p className="text-lg">
+                                    <span className="font-medium text-gray-600">שם הסטודנט:</span>{" "}
+                                    <span className="font-semibold text-gray-800">
+                                        {studentDetails.firstName} {studentDetails.lastName}
+                                    </span>
+                                </p>
+                                <p className="text-lg">
+                                    <span className="font-medium text-gray-600">תחום ראשי:</span>{" "}
+                                    <span className="font-semibold text-gray-800">
+                                        {requestDetails.mainField}
+                                    </span>
+                                </p>
+                                <p className="text-lg">
+                                    <span className="font-medium text-gray-600">תחום משנה:</span>{" "}
+                                    <span className="font-semibold text-gray-800">
+                                        {requestDetails.subField}
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div className="flex gap-4 justify-center">
+                                <button
+                                    onClick={() => handleApproval(true)}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow-lg transform transition duration-300 hover:scale-105"
+                                >
+                                    אישור
+                                </button>
+                                <button
+                                    onClick={() => handleApproval(false)}
+                                    className="bg-blue-300 hover:bg-blue-400 text-blue-800 font-medium px-6 py-2 rounded-lg shadow-lg transform transition duration-300 hover:scale-105"
+                                >
+                                    דחייה
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <p className="text-gray-600 text-lg text-center">
+                            טוען פרטי הסטודנט...
                         </p>
-                        <p className="text-lg">
-                            <span className="font-medium text-gray-600">Main Field:</span> {requestDetails.mainField}
-                        </p>
-                        <p className="text-lg">
-                            <span className="font-medium text-gray-600">Sub Field:</span> {requestDetails.subField}
-                        </p>
-                    </div>
-                    <div className="flex space-x-4">
-                        <button
-                            onClick={() => handleApproval(true)}
-                            className="bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-2 rounded-md shadow"
-                        >
-                            Approve
-                        </button>
-                        <button
-                            onClick={() => handleApproval(false)}
-                            className="bg-red-500 hover:bg-red-600 text-white font-medium px-6 py-2 rounded-md shadow"
-                        >
-                            Decline
-                        </button>
-                    </div>
-                </>
-            ) : (
-                <p className="text-gray-600 text-lg">Loading student details...</p>
-            )}
+                    )}
+                </div>
+            </div>
         </div>
+
     );
-    
+
 }
 
 export default ApproveLearningPage;
