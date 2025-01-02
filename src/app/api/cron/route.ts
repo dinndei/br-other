@@ -17,7 +17,6 @@ export async function GET() {
         });
 
         if (coursesToUpdate.length === 0) {
-            console.log('No courses to update');
             return NextResponse.json({ message: 'No courses to update' }, { status: 200 });
         }
 
@@ -27,7 +26,6 @@ export async function GET() {
             { $set: { isActive: false } }
         );
 
-        console.log(`Updated ${coursesToUpdate.length} courses to inactive`);
         return NextResponse.json({ message: `Updated ${coursesToUpdate.length} courses to inactive` }, { status: 200 });
 
     } catch (error) {

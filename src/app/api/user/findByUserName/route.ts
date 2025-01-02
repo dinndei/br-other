@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     const { userName } = await req.json();
 
-
     if (!userName ) {
         return NextResponse.json({ message: 'Username are required' }, { status: 400 });
     }

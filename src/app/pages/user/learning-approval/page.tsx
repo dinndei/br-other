@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react';
 import { useUserStore } from '@/app/store/userStore';
 import { approveCourse, declineCourse, getRequestByID, getStudentByID } from '@/app/actions/findMentorAction';
@@ -11,7 +12,6 @@ const ApproveLearningPage = () => {
     const [requestId, setRequestId] = useState<string>('');
     const [requesterId, setRequesterId] = useState<string>('');
     const [studentDetails, setStudentDetails] = useState<IUser>();
-
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -21,7 +21,6 @@ const ApproveLearningPage = () => {
 
     const { user, setUser } = useUserStore()
 
-
     useEffect(() => {
         if (mentor?.learningApprovalPending) {
             setRequestId(mentor.learningApprovalPending);
@@ -29,16 +28,12 @@ const ApproveLearningPage = () => {
     }, [mentor]);
 
     useEffect(() => {
-        console.log("comming request");
-
         if (requestId) {
             fetchRequestDetails();
         }
     }, [requestId]);
 
     useEffect(() => {
-        console.log("comming student");
-
         if (requesterId) {
             fetchStudentDetails();
         }
@@ -47,8 +42,6 @@ const ApproveLearningPage = () => {
     const fetchRequestDetails = async () => {
         try {
             const response = await getRequestByID(requestId)
-            console.log("getRequestByID response.data", response);
-
             setRequestDetails(response);
             setRequesterId(response.requesterId)
         }
@@ -57,8 +50,6 @@ const ApproveLearningPage = () => {
             setError('Failed to load request details.');
         } finally {
             setLoading(false);
-            console.log(loading);
-
         }
     };
 
@@ -66,8 +57,6 @@ const ApproveLearningPage = () => {
     const fetchStudentDetails = async () => {
         try {
             const response = await getStudentByID(requestDetails!.requesterId)
-            console.log("getStudentByID ", response);
-
             setStudentDetails(response);
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -78,19 +67,15 @@ const ApproveLearningPage = () => {
         }
     };
 
-
     const handleApproval = async (approved: boolean) => {
         if (approved) {
             const response = await approveCourse(studentDetails!, mentor!, requestDetails!)
-            console.log(response);
-
             const updatedUser = {
                 ...user,
                 courses: [...(user?.courses || []), response.course._id]
             };
 
             setUser(updatedUser);
-
             route.push(`/pages/user/activCourse/${response.course._id}`)
 
         }
@@ -100,7 +85,6 @@ const ApproveLearningPage = () => {
         }
     };
 
-
     if (error) {
         return <p>Error: {error}</p>;
     }
@@ -108,8 +92,6 @@ const ApproveLearningPage = () => {
     if (!requestDetails) {
         return <p>No request found.</p>;
     }
-
-
 
     return (
         <div className="relative w-full h-screen bg-gradient-to-br from-blue-500 via-white to-blue-300" dir="rtl">

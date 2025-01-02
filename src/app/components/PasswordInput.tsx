@@ -3,11 +3,11 @@ import { FiEye, FiEyeOff } from 'react-icons/fi';
 import PasswordInputProps from '../types/IPasswordInputProps';
 import { FieldValues } from 'react-hook-form';
 
-const PasswordInput  = <T extends FieldValues>({ register, name, placeholder, error }: PasswordInputProps<T>) => {
-  const [showPassword, setShowPassword] = useState(false); 
+const PasswordInput = <T extends FieldValues>({ register, name, placeholder, error }: PasswordInputProps<T>) => {
+  const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // הופך בין true ל-false
+    setShowPassword(!showPassword);
   };
 
   return (

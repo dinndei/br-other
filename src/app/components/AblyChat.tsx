@@ -10,17 +10,17 @@ import { deleteMessage } from "../actions/chatActions";
 import { MdModeEdit } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import toast from "react-hot-toast";
-const ably = new Realtime({ key: "1jLHPA.p9RW9g:MVb0GFzKUviMVC1i5vyIGPqIX4XyGj1Dg_762-7Mw4c" });
 
 const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) => {
+    const ably = new Realtime({ key: process.env.ABLY_API_KEY });
     const [messages, setMessages] = useState<{ _id: string, username: string; text: string }[]>([]);
     const [message, setMessage] = useState("");
     const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
     const [editingText, setEditingText] = useState("");
+    const [isSending, setIsSending] = useState(false);
     const username = useUserStore((st) => st.user?.userName) || "xxx";
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
     const audio = new Audio("/ding.mp3");
-    const [isSending, setIsSending] = useState(false);
 
     useEffect(() => {
         const channel = ably.channels.get(courseId);
@@ -38,6 +38,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
             }
         }
         )
+
         // Fetch initial messages from the server
         const fetchMessages = async () => {
             try {
@@ -53,6 +54,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
         return () => {
             channel.unsubscribe();
         };
+
     }, [courseId]);
 
     const handleSendMessage = async () => {
@@ -94,7 +96,6 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
         }
     };
 
-    //handle edit functions
 
     const handleEditMessage = async () => {
         if (!editingMessageId) {
@@ -147,6 +148,7 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
         }
     }, [messages]);
 
+
     return (
         <div className="flex flex-col h-[400px] w-[750px] mx-auto bg-gray-50 shadow-md rounded-lg mt-16">
             {/* Header */}
@@ -156,11 +158,9 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
             </div>
 
             {/* Messages */}
-            
+
             <div className="flex-1 overflow-y-auto bg-white p-4 space-y-3 flex flex-col-reverse">
-                {messages.map((msg, 
-                // index
-            ) => (
+                {messages.map((msg) => (
                     <div
                         key={msg._id}
                         className={`group flex items-center gap-2 ${msg.username === username ? "justify-end" : "justify-start"}`}
@@ -196,19 +196,19 @@ const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) =
                                                 <button
                                                     onClick={() => startEditing(msg._id, msg.text)}
                                                     className="text-blue-500"
-                                                   
+
                                                 >
-                                               <MdModeEdit />
+                                                    <MdModeEdit />
                                                 </button>
                                                 <button
                                                     onClick={() => {
                                                         handleDeleteMessage(msg._id);
-                                                            console.log("msg id", msg._id);
+                                                        console.log("msg id", msg._id);
                                                     }
                                                     }
                                                     className="text-red-500"
                                                 >
-                                                    <MdDelete/>
+                                                    <MdDelete />
                                                 </button>
                                             </div>
                                         )}

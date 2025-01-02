@@ -1,4 +1,5 @@
 'use client'
+
 import React from 'react';
 import Link from 'next/link'; // For navigation to the edit page
 import { FaPen } from 'react-icons/fa'; // Pencil icon
@@ -7,18 +8,17 @@ import IProfileComponentProps from '../types/IProfileComponentProps';
 import ProfileImage from './ProfileImage';
 
 const UserProfile: React.FC<IProfileComponentProps> = ({ openBar, setOpenBar }) => {
-    const { user} = useUserStore();
+
+    const { user } = useUserStore();
 
     return (
-
         <div>
             {openBar && user &&
                 <div className="fixed top-5 left-5 p-4 bg-white rounded-lg shadow-lg w-64 z-50">
                     <button onClick={() => { setOpenBar(false) }}>X</button>
-
                     <div className="flex flex-col">
                         {/* Profile Image */}
-                        <ProfileImage url={user?.profileImage} firstName={user?.firstName}/>
+                        <ProfileImage url={user?.profileImage} firstName={user?.firstName} />
                         {/* User Info */}
                         <h3 className="font-semibold text-lg">{user.firstName} {user.lastName}</h3>
                         <p className="text-sm">Email: {user.email}</p>

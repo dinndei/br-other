@@ -146,16 +146,6 @@ const FieldsInputList: React.FC<FieldsInputListProps> = ({ fields, setFields, sh
                         )}
                     </div>
 
-                    {/* {showEditButtons && (
-                        <button
-                            type="button"
-                            onClick={() => removeField(index)}
-                            className="bg-gray-500 text-white px-3 py-1 rounded self-start"
-                        >
-                            <FiTrash className="mr-2" />
-                        </button>
-                    )} */}
-
                     {showEditButtons && (
                         <div className="flex space-x-2 mt-3 justify-start">
                             <button

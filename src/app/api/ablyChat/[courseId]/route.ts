@@ -2,7 +2,6 @@ import { connectToDB } from "@/app/DB/connection/connectToDB";
 import ChatMessage from "@/app/DB/models/ChatMessageModel";
 import { NextRequest, NextResponse } from "next/server";
 
-// טיפול בבקשת GET: שליפת כל ההודעות
 export async function GET(req: NextRequest, { params }: { params: { courseId: string } }) {
     const { courseId } = params;
     

@@ -8,26 +8,15 @@ const AuthInitializer: React.FC = () => {
   const setUser = useUserStore(state => state.setUser)
 
   useEffect(() => {
-    console.log("AuthInitializer rendered!");
-  }, []);
-
-  useEffect(() => {
     const initializeAuth = async () => {
-      console.log("All cookies:", document.cookie);
-
       try {
         const tokenFromCookie = document.cookie
           .split('; ')
           .find((row) => row.startsWith('token='))?.split('=')[1];
 
-        console.log("Token from cookie:", tokenFromCookie);
-
         if (tokenFromCookie) {
           const res = await verifyToken(tokenFromCookie);
-          console.log("verifyToken response:", res);
-
           if (res.isValid) {
-            
             setUser(res.decoded.user);
             setIsAuthenticated(true);
           } else {
@@ -42,6 +31,7 @@ const AuthInitializer: React.FC = () => {
         console.error("Error during auth initialization:", error);
         setUser(null);
         setIsAuthenticated(false);
+        throw new Error;
       }
     };
 

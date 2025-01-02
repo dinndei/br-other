@@ -1,4 +1,5 @@
 "use client";
+
 import { MdDelete } from "react-icons/md";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -14,7 +15,6 @@ const UploadAndDisplay = () => {
     const [loading, setLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
 
     const { user } = useUserStore();
 
@@ -47,7 +47,6 @@ const UploadAndDisplay = () => {
         try {
             setLoading(true);
             const response = await getImages();
-            console.log("in gallery page", response);
 
             if (response && Array.isArray(response)) {
                 setUploadedImages(response);
@@ -76,21 +75,21 @@ const UploadAndDisplay = () => {
     };
 
     const handleDeleteImage = async (imageId: string) => {
-        const success = await deleteImage(imageId); 
+        const success = await deleteImage(imageId);
         if (success) {
             setUploadedImages((prev) =>
                 prev.filter((img) => img._id !== imageId)
-            ); 
+            );
 
         }
     }
+
+
     return (
         <div className="relative bg-[#f5f5f5] min-h-screen py-12 bg-gradient-to-br from-blue-400 via-white to-blue-200"> {/* רקע בהיר לכל הדף */}
-            {/* כותרת מעוצבת */}
             <h1 className="mt-6 text-center text-4xl font-lora font-bold text-[#1A237E] animate__animated animate__fadeInDown animate__delay-1s">
                 ---בואו תוסיפו לנו השראה
             </h1>
-            
 
             <div className="fixed bottom-10 left-10 sm:left-4 group z-10">
                 <label htmlFor="file-upload" className="bg-blue-400 text-white rounded-full w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center cursor-pointer hover:bg-blue-500 transition-all duration-300 group-hover:w-32 group-hover:h-32 group-hover:text-lg group-hover:bg-blue-600">
@@ -128,7 +127,7 @@ const UploadAndDisplay = () => {
                                 700: 2,     // 2 עמודות במסכים קטנים
                                 500: 1      // 1 עמודה במסכים מאוד קטנים
                             }}
-                            className="flex flex-wrap justify-center -mx-2 gap-4" 
+                            className="flex flex-wrap justify-center -mx-2 gap-4"
                             columnClassName="px-2"
                         >
                             {uploadedImages.slice().reverse().map((image, index) => (
@@ -200,8 +199,6 @@ const UploadAndDisplay = () => {
         </div>
     );
 };
-
-
 
 export default UploadAndDisplay;
 

@@ -26,7 +26,6 @@ export async function DELETE(request: Request, { params }: { params: { courseId:
             return NextResponse.json({ error: 'Course not found' }, { status: 404 });
         }
 
-        console.log('Chat messages deleted and course updated successfully');
         return NextResponse.json(
             {
                 message: 'Chat messages deleted and course updated successfully',

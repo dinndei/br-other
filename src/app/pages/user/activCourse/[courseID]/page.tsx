@@ -5,8 +5,6 @@ import { ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, ArrowUpTrayIcon } from
 import { IoPower } from "react-icons/io5";
 
 import AblyChat from '@/app/components/AblyChat';
-// import VideoChat from '@/app/components/VideoChat';
-// import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useParams } from 'next/navigation';
 import { deleteCourse, getCourseByID } from '@/app/actions/courseAction';
@@ -14,6 +12,7 @@ import ICourse from '@/app/types/ICourse';
 import UploadFiles from '@/app/components/UploadFiles';
 import { useUserStore } from '@/app/store/userStore';
 import VideoChat from '@/app/components/VideoCall';
+import toast from 'react-hot-toast';
 
 const StudyPage = () => {
     const [activeTab, setActiveTab] = useState<'chat' | 'video' | 'upload' | 'close' | 'none'>('none');
@@ -26,12 +25,7 @@ const StudyPage = () => {
 
     const user = useUserStore(state => state.user)
 
-
-    console.log("courseId", courseID);
-
     useEffect(() => {
-        console.log("comming to useEffect");
-
         const fetchCourseData = async () => {
             try {
                 const response = await getCourseByID(courseID)
@@ -39,7 +33,6 @@ const StudyPage = () => {
                     throw new Error('Failed to fetch course data');
                 }
                 const data = await response.data.course;
-                console.log("data", data);
                 setCourseData(data);
 
             } catch (error) {
@@ -51,17 +44,14 @@ const StudyPage = () => {
     }, [courseID]);
 
     const handleCloseCourse = async () => {
-        console.log('סגירת קורס');
-        console.log("courseID", courseID);
-
         const response = await deleteCourse(courseID)
         if (response.status == 200) {
             setIsModalOpen(false);
-            alert('הקורס נמחק בהצלחה.');
+            toast.success('הקורס נמחק בהצלחה.');
             route.push('/')
         }
         else {
-            alert("שגיאה במחיקת הקורס, נסה שוב מאוחר יותר")
+            toast.error("שגיאה במחיקת הקורס, נסה שוב מאוחר יותר")
         }
     };
 
@@ -87,8 +77,6 @@ const StudyPage = () => {
     if (!courseData) {
         return <p>Loading...</p>;
     }
-
-
 
     return (
         <div dir='rtl' className="flex h-screen bg-gray-100 w-full mx-auto shadow-md rounded-lg mt-28">
@@ -145,56 +133,48 @@ const StudyPage = () => {
                 )}
                 {activeTab === 'chat' && (
                     <div>
-
                         <AblyChat courseId={courseID} />
                     </div>
                 )}
 
                 {activeTab === 'video' && (
                     <div>
-
                         <VideoChat teacher={user?._id == courseData.teacherID} teacherId={String(courseData.teacherID)} studentId={String(courseData.studentID)} />
-
                     </div>)}
                 {activeTab === 'upload' && (
                     <div>
-
                         <UploadFiles courseId={courseID} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
-                        {/* </Link> */}
                     </div>
                 )}
-               
+
 
             </main >
-
-
-            {
-                isModalOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" dir="rtl">
-                        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                            <h2 className="text-xl font-bold text-gray-800 mb-4">האם ברצונך לסיים את הקורס?</h2>
-                            <p className="text-gray-600 mb-4">
-                                שים לב כי לאחר סגירת הקורס לא יהיה לך גישה לקבצים או להיסטוריית הצאט.
-                            </p>
-                            <p> הקורס יסתיים בכל מקרה בעוד {daysLeft != null ? daysLeft : 0} ימים.</p>
-                            <div className="flex justify-end space-x-4">
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
-                                >
-                                    ביטול
-                                </button>
-                                <button
-                                    onClick={handleCloseCourse}
-                                    className="px-4 py-2 bg-red-500 text-white rounded-lg"
-                                >
-                                    אישור
-                                </button>
-                            </div>
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" dir="rtl">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                        <h2 className="text-xl font-bold text-gray-800 mb-4">האם ברצונך לסיים את הקורס?</h2>
+                        <p className="text-gray-600 mb-4">
+                            שים לב כי לאחר סגירת הקורס לא יהיה לך גישה לקבצים או להיסטוריית הצאט.
+                        </p>
+                        <p> הקורס יסתיים בכל מקרה בעוד {daysLeft != null ? daysLeft : 0} ימים.</p>
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                            >
+                                ביטול
+                            </button>
+                            <button
+                                onClick={handleCloseCourse}
+                                className="px-4 py-2 bg-red-500 text-white rounded-lg"
+                            >
+                                אישור
+                            </button>
                         </div>
                     </div>
-                )
-            }
+                </div>
+            )}
+
         </div >
     );
 }

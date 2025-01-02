@@ -1,4 +1,3 @@
-
 import { create } from 'zustand';
 import axios from 'axios';
 import { DataStore } from '../types/storeTypes/fieldsStore';
@@ -9,9 +8,9 @@ const useFieldsDataStore = create<DataStore>((set, get) => {
     fieldsData: [],
     loading: false,
 
-    setFieldsData: (fieldsData:IFieldToDB[]) => {
+    setFieldsData: (fieldsData: IFieldToDB[]) => {
       set({ fieldsData });
-      localStorage.setItem('fields', JSON.stringify(fieldsData)); 
+      localStorage.setItem('fields', JSON.stringify(fieldsData));
     },
 
     setLoading: (loading) => set({ loading }),

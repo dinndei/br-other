@@ -1,15 +1,5 @@
 import React from 'react';
 
-interface InputProps {
-    type: string;
-    placeholder?: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    className?: string;
-    disabled?: boolean;
-    name?: string;
-}
-
 const Input: React.FC<InputProps> = ({
     type,
     placeholder,
@@ -19,8 +9,6 @@ const Input: React.FC<InputProps> = ({
     disabled = false,
     name,
 }) => {
-
-    
     return (
         <input
             type={type}

@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
-const IV_LENGTH=16;
-const ENCRYPTION_KEY=process.env.ENCRYPTION_KEY!;
+const IV_LENGTH = 16;
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY!;
 
 
 if (!ENCRYPTION_KEY || Buffer.from(ENCRYPTION_KEY, 'hex').length !== 32) {
@@ -12,12 +12,12 @@ if (!ENCRYPTION_KEY || Buffer.from(ENCRYPTION_KEY, 'hex').length !== 32) {
 export function encryptData(data: string,): string {
     const iv = crypto.randomBytes(IV_LENGTH);
 
-console.log("key",ENCRYPTION_KEY);
-console.log("IV details:", {
-    ivLength: iv.length,
-    ivBuffer: iv,
-    ivType: typeof iv
-});
+    console.log("key", ENCRYPTION_KEY);
+    console.log("IV details:", {
+        ivLength: iv.length,
+        ivBuffer: iv,
+        ivType: typeof iv
+    });
     const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
     let encrypted = cipher.update(data, 'utf8', 'hex');
     encrypted += cipher.final('hex');

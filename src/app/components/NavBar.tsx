@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useUserStore } from '../store/userStore';
@@ -9,8 +10,6 @@ import ProfileImage from './ProfileImage';
 import CoursesList from './CoursesList';
 import toast from 'react-hot-toast';
 import { RiHome4Line } from "react-icons/ri";
-
-
 
 const Navbar: React.FC = () => {
     const [showProfile, setShowProfile] = useState(false);
@@ -36,14 +35,13 @@ const Navbar: React.FC = () => {
     const handleNewLearningClick = async () => {
         try {
             const response = await checkActivCourse(user!)
-            console.log("respomse isActiv", response);
 
             if (response) {
                 toast.error("יש לך למידה פעילה, תאלץ להמתין לסיומה")
                 router.push("/");
             }
             else {
-               const response = await checkRefusalCnt(user!)
+                const response = await checkRefusalCnt(user!)
                 if (response) {
                     toast.error("על פי בדיקתנו, סירבת לבקשות הלמידה שנשלחו אליך, במידה ותאשר הצעת למידה שתופנה אליך תוכל להמשיך וללמוד")
                     router.push("/");
@@ -90,7 +88,7 @@ const Navbar: React.FC = () => {
             </Link>
 
             <Link href="/pages/general/about" className={navItemStyle} >אודות</Link>
-            <Link href="/pages/galery" className={navItemStyle} >גלריה</Link>
+            <Link href="/pages/general/gallery" className={navItemStyle} >גלריה</Link>
 
             {!user && !isAuthenticated && (
                 <Link href="/pages/user/login" className={navItemStyle}>התחברות</Link>
@@ -112,7 +110,7 @@ const Navbar: React.FC = () => {
     return (
 
         <>
-            {/* נבר עליון */}
+            {/* עליון */}
             <nav className="bg-black py-4 px-4 fixed top-0 left-0 right-0 z-10 w-full max-w-full min-h-[64px] lg:min-h-[64px]">
                 <div className="flex justify-between items-center lg:flex-row-reverse">
                     {user && !isMenuOpen && (
@@ -125,14 +123,14 @@ const Navbar: React.FC = () => {
                         </button>
                     )}
 
-                    {/* כפתור המבורגר - יופיע רק בנייד */}
+                    {/* כפתור המבורגר - יופיע רק במובייך */}
                     <button onClick={toggleMenu} className="text-white lg:hidden absolute right-4 ">
                         <span className="block w-6 h-1 bg-white mb-1"></span>
                         <span className="block w-6 h-1 bg-white mb-1"></span>
                         <span className="block w-6 h-1 bg-white"></span>
                     </button>
 
-                    {/* נבר רגיל - יופיע במסכים גדולים */}
+                    {/* נאו בר רגיל - יופיע במסכים גדולים */}
                     <div className="hidden lg:flex space-x-4 flex-row-reverse">
                         <NavigationLinks />
                     </div>
@@ -163,7 +161,7 @@ const Navbar: React.FC = () => {
             )
             }
 
-            {showCourses && <CoursesList setShowCourses={setShowCourses}/>}
+            {showCourses && <CoursesList setShowCourses={setShowCourses} />}
         </>
     );
 }

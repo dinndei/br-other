@@ -2,11 +2,8 @@ import axios from "axios";
 import ICourse from "../types/ICourse";
 
 export const getCourseByID = async (courseId: string) => {
-  console.log("comming to action with:", courseId);
-
   try {
     const response = await axios.get(`/api/course/getCourse/${courseId}`);
-    console.log("Response:", response);
     return response;
   } catch (error) {
     console.error("Error fetching course:", error);
@@ -16,7 +13,6 @@ export const getCourseByID = async (courseId: string) => {
 
 export async function getCoursesByIds(ids: string[]): Promise<ICourse[]> {
   const courses: ICourse[] = [];
-
   for (const id of ids) {
     try {
       const course = await getCourseByID(id);
@@ -40,7 +36,6 @@ export async function getMentorById(id: string) {
 }
 
 export async function saveFile(fileUrl: string, courseId: string, userName: string) {
-  console.log("comming to saveFiles with:", fileUrl, courseId, userName);
 
   try {
     const response = await axios.post('/api/course/files/post', {
@@ -49,7 +44,6 @@ export async function saveFile(fileUrl: string, courseId: string, userName: stri
       userName
     });
 
-    console.log('File saved to database:', response.data);
     return response.data;
   } catch (error) {
     console.error("Error saving file to database:", error);
@@ -60,7 +54,6 @@ export async function saveFile(fileUrl: string, courseId: string, userName: stri
 export const fetchFilesForCourse = async (courseId: string) => {
   try {
       const response = await axios.get(`/api/course/files/get?courseId=${courseId}`);
-      console.log("response.data", response.data);
       
       return response.data;
   } catch (error) {
@@ -71,9 +64,7 @@ export const fetchFilesForCourse = async (courseId: string) => {
 
 export const deleteCourse = async (courseId: string) => {
   try {
-      const response = await axios.delete(`/api/course/delete/${courseId}`);
-      console.log("response.data", response.data);
-      
+      const response = await axios.delete(`/api/course/delete/${courseId}`);      
       return response;
   } catch (error) {
       console.error('Error delete  course:', error);

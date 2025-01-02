@@ -11,13 +11,12 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, handleCourseClick }) =>
         const fetchMentorName = async () => {
             try {
                 const response = await getMentorById(course.teacherID.toString())
-
-                console.log("response in component", response);
                 const name = response.mentor.firstName + " " + response.mentor.lastName
                 setMentorName(name)
 
             } catch (error) {
                 console.error("Error fetching mentor name:", error);
+                throw new Error;
             }
         };
 
@@ -38,7 +37,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, handleCourseClick }) =>
                     <span className="font-semibold text-gray-300">תחום:</span>{" "}
                     {course.feild.mainField} {course.feild.subField}
                 </p>
-                {/* עיגול קטן שמציין את המצב */}
+                {/*עיגול סטטוס*/}
                 <span
                     className={`w-4 h-4 rounded-full ${statusStyle}`}
                     title={course.isActiv ? "קורס פעיל" : "קורס לא פעיל"}

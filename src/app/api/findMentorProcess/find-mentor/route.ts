@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
 
     try {
         await connectToDB();
-
         const mentors = await User.find({
             fields: {
                 $elemMatch: {
@@ -24,10 +23,6 @@ export async function POST(req: NextRequest) {
         if (mentors.length === 0) {
             return NextResponse.json({ message: 'No mentors found for the selected fields' }, { status: 404 });
         }
-
-        console.log("mentors in API", mentors);
-
-
         return NextResponse.json(mentors);
 
     } catch (error) {

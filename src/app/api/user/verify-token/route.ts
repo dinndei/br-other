@@ -4,11 +4,10 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function GET(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.replace('Bearer ', '');
-
+  const token = req.headers.get('token');
   if (!token) {
     return NextResponse.json({ message: 'Token is required' }, { status: 400 });
-  }  
+  }
 
   try {
     // אימות הטוקן

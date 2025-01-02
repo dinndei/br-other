@@ -1,4 +1,5 @@
 'use client'
+
 import { useState } from 'react';
 import { findUserByUsername, resetPassword, sendOtpCode } from '@/app/actions/userActions';
 import PasswordInput from '@/app/components/PasswordInput';
@@ -7,20 +8,17 @@ import { userNameSchema, otpSchema, resetPasswordSchema } from '@/app/zod/resetP
 import { useForm } from 'react-hook-form';
 import { verifyOTP } from '@/app/actions/userActions';
 import { UserNameFormData, OtpFormData, ResetPasswordFormData } from '@/app/zod/resetPaasword';
-
 import { useRouter } from 'next/navigation';
 import { useUserForResetStore } from '@/app/store/resetPasswordStore';
-import { maskEmail } from '@/app/lib/dataEncryption/encryptEmail';
+import { maskEmail } from '@/app/lib/maskEmail/maskEmail';
 import toast from 'react-hot-toast';
 
 const ResetPassword = () => {
-    const [step, setStep] = useState(1); // Step 1: Enter OTP, Step 2: Enter new password
+    const [step, setStep] = useState(1);
     const [error, setError] = useState('');
     const [maskedEmail, setMaskEmail] = useState('');
-    const setUsername = useUserForResetStore((state) => state.setUsernameForReset);
-    const nameForReset = useUserForResetStore((state) => state.usernameForReset);
-    const setEmailForReset = useUserForResetStore((state) => state.setEmailForReset);
-    const emailForReset = useUserForResetStore((state) => state.emailForReset);
+
+    const { setUsernameForReset, usernameForReset, setEmailForReset, emailForReset } = useUserForResetStore();
 
 
     const { register: registerUserName, handleSubmit: handleSubmitUserNameForm, formState: { errors: userNameErrors } } = useForm<UserNameFormData>({
@@ -38,26 +36,16 @@ const ResetPassword = () => {
     const router = useRouter();
 
     const handleSubmitUserName = async (data: UserNameFormData) => {
-        setUsername(data.username)
+        setUsernameForReset(data.username)
         try {
             const response = await findUserByUsername(data.username);
             const email = response.user.email
             if (response.success) {
-                console.log("response.email", email);
                 setEmailForReset(email);
-                console.log("Store email state:", useUserForResetStore.getState().emailForReset);
                 const tempMask = maskEmail(email!);
                 setMaskEmail(tempMask)
                 try {
-
-
-                    const response = await sendOtpCode(email);
-                    if (response.success) {
-                        console.log('נמצא מייל');
-                    }
-                    else {
-                        setError(response.message);
-                    }
+                    await sendOtpCode(email);
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 catch (error) {
@@ -75,9 +63,6 @@ const ResetPassword = () => {
     };
 
     const handleVerifyOtp = async (data: OtpFormData) => {
-        console.log("data.otp", data.otp);
-        console.log("EmailForReset!", emailForReset!);
-
         try {
             const response = await verifyOTP(emailForReset!, data.otp)
             if (response.success) {
@@ -99,13 +84,10 @@ const ResetPassword = () => {
             return;
         }
         try {
-            const response = await resetPassword(nameForReset!, data.newPassword);
-            console.log("page response", response);
-
+            const response = await resetPassword(usernameForReset!, data.newPassword);
             if (response.data) {
-                console.log("Password reset successful");
                 toast.success("סיסמה שונתה בהצלחה")
-                router.push('/pages/user/login'); 
+                router.push('/pages/user/login');
             }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
