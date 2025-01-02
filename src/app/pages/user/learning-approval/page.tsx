@@ -18,8 +18,7 @@ const ApproveLearningPage = () => {
     const route = useRouter();
 
     const mentor = useUserStore((state) => state.user);
-    // setRequestId(mentor!.learningApprovalPending!)
-
+    
     console.log("mentor", mentor);
     console.log("requestId", requestId);
 
@@ -93,9 +92,6 @@ const ApproveLearningPage = () => {
         }
     };
 
-    // if (loading) {
-    //     return <p>Loading request details...</p>;
-    // }
 
     if (error) {
         return <p>Error: {error}</p>;
@@ -139,7 +135,7 @@ const ApproveLearningPage = () => {
                     </div>
                 </>
             ) : (
-                <p className="text-gray-600 text-lg">Loading student details...</p>
+                <p className="text-gray-600 text-lg mt-32">Loading student details...</p>
             )}
         </div>
     );

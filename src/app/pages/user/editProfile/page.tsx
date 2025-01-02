@@ -105,10 +105,10 @@ const EditUserForm = () => {
 
 
     return (
-        
-        <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 mt-20" dir="rtl">
+        <div className="bg-gradient-to-br from-blue-500 via-white to-blue-300 mt-0 mb-20">
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 mt-16" dir="rtl">
             <div className="flex items-center space-x-4 mb-6">
-                <ProfileImage url={user?.profileImage} firstName={user?.firstName} size="large" />
+            
                 <div>
                     <h2 className="text-lg font-bold">שלום, {user?.firstName}</h2>
                     <p className="text-sm text-gray-600">ערוך את פרטי החשבון שלך כאן</p>
@@ -238,7 +238,7 @@ const EditUserForm = () => {
             </div>
         </form>
 
-
+</div>
     );
 };
 
