@@ -33,6 +33,3 @@ const updateInactiveCourses = async () => {
         console.error('Error updating courses:', error);
     }
 };
-
-// הגדרת ה-cron job להפעיל את הפונקציה כל 24 שעות
-cron.schedule('0 0 * * *', updateInactiveCourses); // כל יום ב-12 בלילה

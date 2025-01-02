@@ -32,7 +32,7 @@ const CoursesList: React.FC = () => {
 
     useEffect(() => {
         const fetchCourses = async () => {
-            if (user && user.courses) {
+            if (user && user.courses) {               
                 try {
                     const courses = convertObjectIdsToStrings(user.courses as mongoose.Types.ObjectId[]);
                     console.log("courses", courses);

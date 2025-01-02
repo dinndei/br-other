@@ -43,14 +43,14 @@ export async function POST(req: Request) {
     const mailOptions = {
         from: process.env.GMAIL_USER,
         to: email,
-        subject: 'Learning Request Approval',
-        text: `Hello ${mentor.firstName},\n\nYou have received a new learning request in the field of ${mainField} (${subField}).\nPlease click the link below to approve or decline the request.\n\nApproval link: ${approvalLink}\n\nThe request will expire after 24 hours.`,
+        subject: 'בקשה לאישור למידה',
+        text: `שלום ${mentor.firstName},\n\nקיבלת בקשה חדשה ללמידה בתחום ${mainField} (${subField}).\nאנא לחץ על הקישור למטה כדי לאשר או לדחות את הבקשה.\n\nקישור לאישור: ${approvalLink}\n\nהבקשה תתפוגג לאחר 24 שעות.`,
         html: `
-            <p>Hello ${mentor.firstName},</p>
-            <p>You have received a new learning request in the field of <strong>${mainField}</strong> (<strong>${subField}</strong>).</p>
-            <p>Please click the link below to approve or decline the request.</p>
-            <p><a href="${approvalLink}">Approve/Decline Request</a></p>
-            <p>The request will expire after 24 hours.</p>
+            <p>שלום ${mentor.firstName},</p>
+            <p>קיבלת בקשה חדשה ללמידה בתחום <strong>${mainField}</strong> (<strong>${subField}</strong>).</p>
+            <p>אנא לחץ על הקישור למטה כדי לאשר או לדחות את הבקשה.</p>
+            <p><a href="${approvalLink}">אשר/דחה את הבקשה</a></p>
+            <p>הבקשה תפוג לאחר 24 שעות.</p>
         `,
     };
 

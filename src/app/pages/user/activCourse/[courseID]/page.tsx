@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 import { IoPower } from "react-icons/io5";
 
@@ -22,9 +22,16 @@ const StudyPage = () => {
     const route = useRouter()
     const courseID = Array.isArray(params?.courseID) ? params.courseID[0] : params.courseID;
     const [courseData, setCourseData] = useState<ICourse | null>(null);
+    const [daysLeft, setDaysLeft] = useState<number | null>(null);
+
     const user = useUserStore(state => state.user)
 
+
+    console.log("courseId", courseID);
+
     useEffect(() => {
+        console.log("comming to useEffect");
+
         const fetchCourseData = async () => {
             try {
                 const response = await getCourseByID(courseID)
@@ -32,9 +39,8 @@ const StudyPage = () => {
                     throw new Error('Failed to fetch course data');
                 }
                 const data = await response.data.course;
-                console.log("data", data.course);
+                console.log("data", data);
                 setCourseData(data);
-                console.log("course data ", courseData);
 
             } catch (error) {
                 console.error('Error fetching course data:', error);
@@ -69,7 +75,13 @@ const StudyPage = () => {
         return daysLeft;
     };
 
-    const daysLeft = useMemo(() => calculateDaysLeft(new Date(courseData!.beginingDate!)), [courseData]);
+
+    useEffect(() => {
+        if (courseData) {
+            const calculatedDaysLeft = calculateDaysLeft(new Date(courseData.beginingDate));
+            setDaysLeft(calculatedDaysLeft);
+        }
+    }, [courseData]);
 
 
     if (!courseData) {
@@ -79,9 +91,9 @@ const StudyPage = () => {
 
 
     return (
-        <div dir='rtl' className="flex h-screen bg-gray-100  w-full md:w-[900px] mx-auto shadow-md rounded-lg mt-28">
+        <div dir='rtl' className="flex h-screen bg-gray-100 w-full mx-auto shadow-md rounded-lg mt-28">
             {/* Sidebar */}
-            <div className="w-20 bg-white shadow-md flex flex-col items-center py-6 space-y-4 fixed right-0 h-full">
+            <div className="w-20 bg-white shadow-md flex flex-col items-center py-6 space-y-4 fixed right-0 h-full md:w-32 lg:w-40 flex-shrink-0">
                 <button
                     onClick={() => setActiveTab('chat')}
                     className={`p-3 rounded-lg ${activeTab === 'chat' ? 'bg-blue-100 text-blue-500' : 'text-gray-600 hover:bg-gray-200'
@@ -114,9 +126,9 @@ const StudyPage = () => {
             </div>
 
             {/* Content */}
-            <main className="flex-1 p-6 bg-gray-50 w-full">
+            <main className="flex-1 p-6 bg-gray-50 w-full mr-20 md:mr-32 lg:mr-40 overflow-hidden">
                 {activeTab === 'none' && (
-                    <div className="relative bg-cover bg-center h-[400px] flex items-center justify-center text-center" style={{ backgroundImage: 'url(https://www.hrus.co.il/wp-content/uploads/%D7%94%D7%9B%D7%A9%D7%A8%D7%94-%D7%9C%D7%9E%D7%99%D7%93%D7%94-%D7%94%D7%9B%D7%A9%D7%A8%D7%94-%D7%95%D7%A7%D7%95%D7%A8%D7%A1%D7%99%D7%9D-%D7%9C%D7%A2%D7%95%D7%91%D7%93%D7%99%D7%9D-1-1000x580.jpg)' }}>
+                    <div className="relative bg-cover bg-center sm:bg-cover sm:bg-center md:bg-cover md:bg-center h-full flex items-center justify-center text-center" style={{ backgroundImage: 'url(https://www.hrus.co.il/wp-content/uploads/%D7%94%D7%9B%D7%A9%D7%A8%D7%94-%D7%9C%D7%9E%D7%99%D7%93%D7%94-%D7%94%D7%9B%D7%A9%D7%A8%D7%94-%D7%95%D7%A7%D7%95%D7%A8%D7%A1%D7%99%D7%9D-%D7%9C%D7%A2%D7%95%D7%91%D7%93%D7%99%D7%9D-1-1000x580.jpg)' }}>
                         <div className="absolute inset-0 bg-black opacity-70"></div> {/* מסך שקוף על התמונה */}
                         <div className="relative z-10 text-white">
                             <h1 className="text-4xl font-bold mb-4">ברוך הבא לתא ידע</h1>
@@ -141,7 +153,7 @@ const StudyPage = () => {
                 {activeTab === 'video' && (
                     <div>
 
-                        <VideoChat teacher={user?._id==courseData.teacherID} teacherId={String(courseData.teacherID)} studentId={String(courseData.studentID)}/>
+                        <VideoChat teacher={user?._id == courseData.teacherID} teacherId={String(courseData.teacherID)} studentId={String(courseData.studentID)} />
 
                     </div>)}
                 {activeTab === 'upload' && (
@@ -151,15 +163,7 @@ const StudyPage = () => {
                         {/* </Link> */}
                     </div>
                 )}
-                {
-                    activeTab === 'upload' && (
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-4">העלאת קבצים</h2>
-                            <UploadFiles courseId={courseID} userName={user!.firstName!.toString() + " " + user!.lastName!.toString()} />
-                            {/* </Link> */}
-                        </div>
-                    )
-                }
+               
 
             </main >
 
@@ -172,7 +176,7 @@ const StudyPage = () => {
                             <p className="text-gray-600 mb-4">
                                 שים לב כי לאחר סגירת הקורס לא יהיה לך גישה לקבצים או להיסטוריית הצאט.
                             </p>
-                            <p> הקורס יסתיים בכל מקרה בעוד {daysLeft > 0 ? daysLeft : 0} ימים.</p>
+                            <p> הקורס יסתיים בכל מקרה בעוד {daysLeft != null ? daysLeft : 0} ימים.</p>
                             <div className="flex justify-end space-x-4">
                                 <button
                                     onClick={() => setIsModalOpen(false)}

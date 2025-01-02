@@ -14,6 +14,7 @@ import IUser from "@/app/types/IUser";
 import FieldsInputList from "@/app/components/FieldsInputList";
 import IField from "@/app/types/IField";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 
 // import FieldsInputList from "@/app/components/FieldsInputList";
@@ -124,8 +125,11 @@ const SignupForm = () => {
             const userData = await signupUser(data);
             console.log("user data on submit", userData);
 
-            if (userData)
+            if (userData){
                 console.log('User signed up successfully:', userData);
+                toast.success("נרשמת בהצלחה")
+
+            }
             const user = (userData as { user: IUser }).user;
             const token = (userData as { user: IUser, token: string }).token;
 
