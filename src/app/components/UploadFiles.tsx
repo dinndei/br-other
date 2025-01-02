@@ -24,51 +24,8 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
         otherFiles: []
     });
 
-    // const uploadFile = async (file: File) => {
-    //     setUploading(true);
-    //     setError(null);
-
-    //     try {
-    //         const fileName = `sara`;
-
-
-    //         const { data, error: uploadError } = await supabase.storage
-    //             .from('br-other')
-    //             .upload(fileName, file);
-
-    //         if (uploadError) {
-    //             throw uploadError;
-    //         }
-
-    //         const { data: publicUrlData } = supabase.storage
-    //             .from('br-other')
-    //             .getPublicUrl(data.path);
-
-    //         if (!publicUrlData.publicUrl) {
-    //             throw new Error('Failed to generate public URL.');
-    //         }
-
-    //         const fileUrl = publicUrlData.publicUrl;
-    //         setFileUrl(fileUrl);
-
-    //         const { error: insertError } = await supabase
-    //             .from('files')
-    //             .insert({ fileUrl, courseId, userName });
-
-    //         if (insertError) {
-    //             throw insertError;
-    //         }
-
-    //     } catch (error: any) {
-    //         console.error('Error uploading file:', error);
-    //         setError('Failed to upload file, please try again.');
-    //     } finally {
-    //         setUploading(false);
-    //     }
-    // };
 
     const uploadFile = async (file: File) => {
-        console.log("comming");
         setUploading(true);
 
         const fileName = generateSafeFileName(file.name)
@@ -96,6 +53,7 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
                 if (!publicUrlData?.publicUrl) throw new Error("Failed to generate public URL.");
 
                 const fileUrl = publicUrlData.publicUrl;
+                setFileUrl(fileUrl)
                 const savedFile = saveFile(fileUrl, courseId, userName)
                 console.log("File saved to database:", savedFile);
                 setUploadedFiles((prev) => ({
@@ -142,7 +100,9 @@ const UploadFiles: React.FC<UploadFilesProps> = ({ courseId, userName }) => {
         }
     }, [courseId, userName]); // רץ מחדש אם courseId או userName משתנים
 
-
+    if (loading) {
+        <p>loading...</p>
+    }
 
     return (
         <div className="container mx-auto p-4 grid grid-cols-3 gap-6">
