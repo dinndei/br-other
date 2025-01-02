@@ -1,5 +1,4 @@
-
-interface VideoChatProps {
+export interface VideoChatProps {
     teacher: boolean;
     teacherId: string;
     studentId: string;
