@@ -97,8 +97,7 @@ const StudyPage = () => {
                 {activeTab === 'video' && (
                     <div>
 
-                        {/* <VideoChat teacher={user?._id==courseData.teacherID} teacherId={String(courseData.teacherID)} studentId={String(courseData.studentID)}/> */}
-                        <VideoChat teacher={true} teacherId="6756e3cd880448d29fc4a78f" studentId="6761478a0a93b67d9901a805" />
+                        <VideoChat teacher={user?._id==courseData.teacherID} teacherId={String(courseData.teacherID)} studentId={String(courseData.studentID)}/>
 
                     </div>)}
                 {activeTab === 'upload' && (
