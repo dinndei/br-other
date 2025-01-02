@@ -1,4 +1,5 @@
 import React from 'react';
+import { InputProps } from '../types/props/InputProps';
 
 const Input: React.FC<InputProps> = ({
     type,
