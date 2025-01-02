@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { NextResponse } from 'next/server';
 import User from '@/app/DB/models/UserModel';
+import LearningRequestModel from '@/app/DB/models/LearningRequestModel';
 
 export async function POST(req: Request) {
     const { request, isApproved, mentor } = await req.json();
@@ -37,32 +38,35 @@ export async function POST(req: Request) {
             mailOptions = {
                 from: process.env.GMAIL_USER,
                 to: studentEmail,
-                subject: 'Your Learning Request Was Approved!',
-                text: `Hello ${studentName},\n\nGood news! Your request to learn ${mainField} (${subField}) has been approved.\nYour mentor is ${mentor.firstName} ${mentor.lastName}. Please contact them to arrange your lessons.\n\nThank you for choosing our service.`,
+                subject: 'הבקשה ללמידה אושרה!',
+                text: `שלום ${studentName},\n\nיש לנו חדשות טובות! הבקשה שלך ללמוד ${mainField} (${subField}) אושרה.\nהמנטור שלך הוא ${mentor.firstName} ${mentor.lastName}. אנא צור קשר עם המנטור כדי לקבוע את שיעוריך.\n\nתודה שבחרת בשירות שלנו.`,
                 html: `
-                    <p>Hello ${studentName},</p>
-                    <p>Good news! Your request to learn <strong>${mainField}</strong> (<strong>${subField}</strong>) has been approved.</p>
-                    <p>Your mentor is <strong>${mentor.firstName} ${mentor.lastName}</strong>. Please contact them to arrange your lessons.</p>
-                    <p>Thank you for choosing our service.</p>
+                    <p>שלום ${studentName},</p>
+                    <p>יש לנו חדשות טובות! הבקשה שלך ללמוד <strong>${mainField}</strong> (<strong>${subField}</strong>) אושרה.</p>
+                    <p>המנטור שלך הוא <strong>${mentor.firstName} ${mentor.lastName}</strong>. אנא צור קשר עם המנטור כדי לקבוע את שיעוריך.</p>
+                    <p>תודה שבחרת בשירות שלנו.</p>
                 `,
             };
         } else {
             mailOptions = {
                 from: process.env.GMAIL_USER,
                 to: studentEmail,
-                subject: 'No Mentor Found for Your Learning Request',
-                text: `Hello ${studentName},\n\nUnfortunately, we couldn't find a suitable mentor for your request to learn ${mainField} (${subField}) at this time.\nPlease try submitting your request again or consider choosing a different field.\n\nThank you for your understanding.`,
+                subject: 'לא נמצא מנטור מתאים לבקשת הלמידה שלך',
+                text: `שלום ${studentName},\n\nלצערנו, לא מצאנו מנטור מתאים לבקשה שלך ללמוד ${mainField} (${subField}) בזמן זה.\nאנא נסה לשלוח את הבקשה שוב או שקול לבחור תחום אחר.\n\nתודה על ההבנה.`,
                 html: `
-                    <p>Hello ${studentName},</p>
-                    <p>Unfortunately, we couldn't find a suitable mentor for your request to learn <strong>${mainField}</strong> (<strong>${subField}</strong>) at this time.</p>
-                    <p>Please try submitting your request again or consider choosing a different field.</p>
-                    <p>Thank you for your understanding.</p>
+                    <p>שלום ${studentName},</p>
+                    <p>לצערנו, לא מצאנו מנטור מתאים לבקשה שלך ללמוד <strong>${mainField}</strong> (<strong>${subField}</strong>) בזמן זה.</p>
+                    <p>אנא נסה לשלוח את הבקשה שוב או שקול לבחור תחום אחר.</p>
+                    <p>תודה על ההבנה.</p>
                 `,
             };
+
         }
 
         await transporter.sendMail(mailOptions);
         console.log('Notification email sent successfully');
+        await LearningRequestModel.findByIdAndDelete(request._id);
+
 
         return NextResponse.json({ success: true, message: 'Notification email sent successfully' }, { status: 200 });
     } catch (error) {

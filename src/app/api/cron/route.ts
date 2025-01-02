@@ -1,10 +1,9 @@
+import { NextResponse } from 'next/server';
 import { connectToDB } from "@/app/DB/connection/connectToDB";
 import Course from "@/app/DB/models/CourseModel";
 import ICourse from "@/app/types/ICourse";
-import cron from 'node-cron';
 
-
-const updateInactiveCourses = async () => {
+export async function GET() {
     try {
         await connectToDB();
 
@@ -19,7 +18,7 @@ const updateInactiveCourses = async () => {
 
         if (coursesToUpdate.length === 0) {
             console.log('No courses to update');
-            return;
+            return NextResponse.json({ message: 'No courses to update' }, { status: 200 });
         }
 
         // עדכון ה-`isActive` לכל הקורסים שנמצאו
@@ -29,10 +28,10 @@ const updateInactiveCourses = async () => {
         );
 
         console.log(`Updated ${coursesToUpdate.length} courses to inactive`);
+        return NextResponse.json({ message: `Updated ${coursesToUpdate.length} courses to inactive` }, { status: 200 });
+
     } catch (error) {
         console.error('Error updating courses:', error);
+        return NextResponse.json({ error: 'Error updating courses' }, { status: 500 });
     }
-};
-
-// הגדרת ה-cron job להפעיל את הפונקציה כל 24 שעות
-cron.schedule('0 0 * * *', updateInactiveCourses); // כל יום ב-12 בלילה
+}

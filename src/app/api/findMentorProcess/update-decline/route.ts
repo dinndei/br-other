@@ -1,29 +1,29 @@
 // app/api/findMentorProcess/update-declines/route.ts
 import { connectToDB } from '@/app/DB/connection/connectToDB';
-import LearningRequest from '@/app/DB/models/LearningRequestModel';
+import User from '@/app/DB/models/UserModel';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
     try {
-        const { requestId } = await req.json();
+        const { mentorId } = await req.json();
 
-        if (!requestId) {
-            return NextResponse.json({ message: 'requestId is required' }, { status: 400 });
+        if (!mentorId) {
+            return NextResponse.json({ message: 'mentorId is required' }, { status: 400 });
         }
 
         await connectToDB();
 
-        const request = await LearningRequest.findById(requestId);
+        const mentor = await User.findById(mentorId);
 
-        if (!request) {
+        if (!mentor) {
             return NextResponse.json({ message: 'Request not found' }, { status: 404 });
         }
 
-        request.refusalCnt = (request.declinesCount || 0) + 1;
+        mentor.refusalCnt = (mentor.refusalCnt || 0) + 1;
 
-        await request.save();
+        await mentor.save();
 
-        return NextResponse.json({ message: 'Declines count updated successfully', request });
+        return NextResponse.json({ message: 'Declines count updated successfully', mentor });
     } catch (error) {
         console.error('Error updating declines count:', error);
         return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });

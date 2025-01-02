@@ -81,21 +81,34 @@ export async function POST(req: Request) {
         const transporter = nodemailer.createTransport({
             service: 'gmail', 
             auth: {
-                user: 'brother.otpcode@gmail.com', // כתובת הדוא"ל שלך
-                pass: 'ghog ahvy isch skxg', // הסיסמה שלך או אפליקציה מאובטחת
+                user: 'brother.otpcode@gmail.com', 
+                pass: 'ghog ahvy isch skxg', 
             },
         });
-
-        
 
         const mailOptions = {
             from: process.env.GMAIL_USER, 
             to: email, 
-            subject: 'Your OTP Code',
-            text: `Your OTP code is ${otp}. It will expire in 10 minutes.`,
-            html: `<p>Your OTP code is <strong>${otp}</strong>. It will expire in 10 minutes.</p>`, 
+            subject: 'קוד חד-פעמי למערכת',
+            text: `שלום רב,
+        
+        הקוד החד-פעמי שלך למערכת הוא: ${otp}. 
+        שים לב: תוקף הקוד הוא לעשר דקות בלבד.
+        
+        תודה,
+        צוות המערכת`,
+            html: `
+            <div style="direction: rtl; font-family: Arial, sans-serif; line-height: 1.5;">
+                <h3 style="color: #333;">שלום רב,</h3>
+                <p>הקוד החד-פעמי שלך למערכת הוא:</p>
+                <p style="font-size: 18px; font-weight: bold; color: #007BFF;">${otp}</p>
+                <p>שים לב: תוקף הקוד הוא לעשר דקות בלבד.</p>
+                <br>
+                <p>תודה,<br>צוות המערכת</p>
+            </div>
+            `,
         };
-
+        
         await transporter.sendMail(mailOptions);
         console.log('OTP sent successfully');
 
