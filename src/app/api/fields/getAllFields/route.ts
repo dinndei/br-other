@@ -10,11 +10,7 @@ export async function GET() {
 
         if (!fields || fields.length === 0) {
             return NextResponse.json({ message: 'No fields found' }, { status: 404 });
-        }
-
-
-        console.log("fields", fields);
-        
+        }        
         const response = NextResponse.json({
             message: 'Fields retrieved successfully',
             fields: fields,

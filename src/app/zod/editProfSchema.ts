@@ -17,7 +17,7 @@ export const editProfSchema = z.object({
         religionLevel: z.nativeEnum(ReligionLevel),
         politicalAffiliation: z.nativeEnum(PoliticalAffiliation),
     }),
-    profileImage:z.string().optional()
+    profileImage: z.string().optional()
 });
 
 export type EditProfFormData = z.infer<typeof editProfSchema>;

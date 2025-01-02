@@ -14,8 +14,6 @@ export async function GET(request: Request) {
         await connectToDB();
 
         const files = await File.find({ courseId }).select('fileUrl userName'); 
-        console.log('Response data in API:', files);
-
         return NextResponse.json(files, { status: 200 });
     } catch (error) {
         console.error("Error fetching files:", error);

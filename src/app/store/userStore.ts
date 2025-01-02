@@ -20,23 +20,21 @@ export const useUserStore = create<UserStore>((set) => ({
     set({
       user: null,
       isAuthenticated: false,
-      
+
     });
     // Clear cookies or localStorage here
     document.cookie = 'token=; Max-Age=0; path=/'; // Clear token from cookies
   },
 
   setUser: (user: Partial<IUser> | null) => {
-    console.log("setUser called with:", user);
 
     set({
       user: user,
     });
-    
+
   },
 
   setIsAuthenticated: (isAuthenticated: boolean) => {
-    console.log("setIsAuthenticated called with:", isAuthenticated);
 
     set({
       isAuthenticated,
@@ -48,15 +46,12 @@ export const useUserStore = create<UserStore>((set) => ({
     const tokenFromCookie = document.cookie
       .split('; ')
       .find(row => row.startsWith('token='))?.split('=')[1];
-console.log("t f c",tokenFromCookie);
-
     if (tokenFromCookie) {
       const res = await verifyToken(tokenFromCookie);
-console.log("res",res);
 
       if (res.isValid) {
         set({ isAuthenticated: true });
-        set({user:res.decoded.user});
+        set({ user: res.decoded.user });
       } else {
         set({ isAuthenticated: false, user: null });
       }

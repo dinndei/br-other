@@ -26,7 +26,7 @@ const Page = () => {
         </p>
 
         <p className="text-gray-700 text-2xl leading-relaxed">
-         !תהנו
+          !תהנו
         </p>
       </div>
     </div>

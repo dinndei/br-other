@@ -2,7 +2,6 @@ import { connectToDB } from "@/app/DB/connection/connectToDB";
 import ChatMessage from "@/app/DB/models/ChatMessageModel";
 import { NextRequest, NextResponse } from "next/server";
 
-// טיפול בבקשת POST: שמירת הודעה חדשה
 export async function POST(req: NextRequest) {
     try {
         const { username, text ,courseId} = await req.json();

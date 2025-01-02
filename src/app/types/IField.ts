@@ -1,4 +1,4 @@
-export default interface IField{
-    mainField : string,
-    subField : string
+export default interface IField {
+    mainField: string,
+    subField: string
 }

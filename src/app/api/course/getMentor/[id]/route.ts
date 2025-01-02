@@ -4,10 +4,7 @@ import IUser from '@/app/types/IUser';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-    const mentorId = req.nextUrl.pathname.split('/').pop();
-
-    console.log("mentorId", mentorId);
-    
+    const mentorId = req.nextUrl.pathname.split('/').pop();    
     try {
         await connectToDB();
 

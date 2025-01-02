@@ -1,10 +1,10 @@
-import {create} from 'zustand';
-import {UserForResetStore } from '../types/storeTypes/usernameForReset';
+import { create } from 'zustand';
+import { UserForResetStore } from '../types/storeTypes/usernameForReset';
 
 
 export const useUserForResetStore = create<UserForResetStore>((set) => ({
-    usernameForReset: null, 
+    usernameForReset: null,
     setUsernameForReset: (usernameForReset) => set({ usernameForReset: usernameForReset }),
-    emailForReset: null, 
+    emailForReset: null,
     setEmailForReset: (emailForReset) => set({ emailForReset: emailForReset })
 }));

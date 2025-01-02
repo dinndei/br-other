@@ -3,7 +3,6 @@ import { connectToDB } from "@/app/DB/connection/connectToDB";
 import User from "@/app/DB/models/UserModel";
 import { decryptData } from "@/app/lib/dataEncryption/decryptData";
 import { encryptData } from "@/app/lib/dataEncryption/encryptData";
-// import { encryptData } from "@/app/lib/dataEncryption/encryptData";
 import { hashPassword } from "@/app/lib/passwordHash/hashPassword";
 import { generateToken } from "@/app/lib/tokenConfig/generateToken";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
@@ -19,18 +18,9 @@ export async function POST(req: NextRequest) {
         if (!body) {
             return NextResponse.json({ message: "Missing body" }, { status: 400 });
         }
-
-        // const parsedData = userSchema.parse(body);
-        // const newUser = new User(parsedData);
-        console.log("body", body.user);
-        console.log("user", body.user.password);
-
         const hashedPassword = await hashPassword(body.user.password);
         const encryptedTypeReligion = encryptData(String(body.user.typeUser.religionLevel));
-        console.log("encryptedTypeReligion", encryptedTypeReligion);
-
         const encryptedTypePolitical = encryptData(String(body.user.typeUser.politicalAffiliation));
-        console.log("encryptedTypePolitical", encryptedTypePolitical);
 
         // יצירת אובייקט המשתמש עם הסיסמה המוצפנת
         const newUser = new User({
@@ -50,12 +40,7 @@ export async function POST(req: NextRequest) {
 
         });
 
-        console.log("newUser", newUser);
-
         await newUser.save();
-
-        console.log("created", newUser);
-
         // מחזיר רק מידע בטוח
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...userWithoutPassword } = newUser.toObject();
@@ -74,6 +59,7 @@ export async function POST(req: NextRequest) {
             token: token
         },
             { status: 201 });
+            
         //cookies את הטוקן של המשתמש
         response.cookies.set('token', token, {
             httpOnly: true,

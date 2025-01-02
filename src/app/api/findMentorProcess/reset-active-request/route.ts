@@ -1,10 +1,9 @@
 import { connectToDB } from '@/app/DB/connection/connectToDB';
-import User from '@/app/DB/models/UserModel'; // מודל המשתמש שלך
+import User from '@/app/DB/models/UserModel'; 
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
     const { userId } = await req.json();
-    console.log("userId", userId);
 
     try {
         await connectToDB();

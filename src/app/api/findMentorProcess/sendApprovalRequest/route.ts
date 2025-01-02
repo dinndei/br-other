@@ -4,10 +4,6 @@ import User from '@/app/DB/models/UserModel';
 
 export async function POST(req: Request) {
     const { mentor, request } = await req.json();
-
-    console.log("mentor, request", mentor, request);
-
-
     if (!mentor || !request) {
         return NextResponse.json({ success: false, message: 'Mentor and request are required.' }, { status: 400 });
     }
@@ -21,15 +17,7 @@ export async function POST(req: Request) {
     const mainField = request.mainField;
     const subField = request.subField;
 
-    console.log("email,mainField, subField", email, mainField, subField);
-
-
-    console.log('Sending approval request to mentor:', email);
-
-    // יצירת קישור לאישור
-    // const approvalLink = `${process.env.BASE_URL}/approve-mentor?requestId=${request._id}&mentorId=${mentor._id}`;
-
-    const approvalLink ="http://localhost:3000/pages/user/login"
+    const approvalLink ="https://br-other.vercel.app/pages/user/login"
 
 
     const transporter = nodemailer.createTransport({
@@ -61,8 +49,6 @@ export async function POST(req: Request) {
 
         //שליחת המייל
         await transporter.sendMail(mailOptions);
-        console.log('Approval request sent successfully');
-
         return NextResponse.json({ success: true, message: 'Approval request sent successfully' }, { status: 200 });
     } catch (error) {
         console.error('Error sending approval request:', error);

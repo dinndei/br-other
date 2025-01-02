@@ -36,7 +36,6 @@ export async function POST() {
                 if (newSubFields.length > 0) {
                     existingField.subFields.push(...newSubFields);
                     await existingField.save();
-                    console.log(`Updated field: ${field.mainField} with new subFields.`);
                 }
             } else {
                 // יצירת רשומה חדשה
@@ -47,7 +46,6 @@ export async function POST() {
         // הוספת רשומות חדשות
         if (newFields.length > 0) {
             await Field.insertMany(newFields);
-            console.log(`Added new fields: ${newFields.map(f => f.mainField).join(", ")}`);
         }
 
         return NextResponse.json({ message: 'Fields updated successfully', success: true }, { status: 201 });

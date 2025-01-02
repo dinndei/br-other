@@ -1,12 +1,8 @@
 import axios from "axios";
 
 export const getImages = async () => {
-    console.log("comming dalery action");
-
     try {
         const response = await axios.get('/api/galery/get/getAll');
-        console.log("response.data", response.data);
-
         return response.data;
     } catch (error) {
 
@@ -19,12 +15,8 @@ export const getImages = async () => {
 }
 
 export const addImages = async (imageUrl: string) => {
-    console.log("comming dalery action");
-
     try {
         const response = await axios.post('/api/galery/post', { imageUrl });
-        console.log("response.data", response.data);
-
         return response.data;
     } catch (error) {
         console.error("Error in addImages:", error);
@@ -34,15 +26,10 @@ export const addImages = async (imageUrl: string) => {
 }
 
 export const downloadImage = async (url: string, fileName: string) => {
-    console.log("Initiating downloadImage action...");
-
     try {
         const response = await axios.get(`/api/galery/get/download?url=${encodeURIComponent(url)}`, {
             responseType: 'blob', 
         });
-
-        console.log("Response received from API");
-
         const blobUrl = URL.createObjectURL(response.data);
 
         const link = document.createElement('a');
@@ -53,8 +40,6 @@ export const downloadImage = async (url: string, fileName: string) => {
         document.body.removeChild(link); 
 
         URL.revokeObjectURL(blobUrl);
-
-        console.log("Image download completed");
     } catch (error) {
         console.error("Error in downloadImage:", error);
         return { error: error || 'Something went wrong. Please try again.' };
@@ -73,7 +58,6 @@ export const deleteImage=async(imageId:string)=> {
 
         const data = await response.json();
         if (response.ok) {
-            console.log('Image deleted successfully', data);
             return true;
         } else {
             console.error('Error deleting image', data.error);

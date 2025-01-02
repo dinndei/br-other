@@ -5,9 +5,6 @@ import LearningRequestModel from '@/app/DB/models/LearningRequestModel';
 
 export async function POST(req: Request) {
     const { request, isApproved, mentor } = await req.json();
-
-    console.log("request, isApproved, mentor", request, isApproved, mentor);
-
     if (!request || !request.requesterId) {
         return NextResponse.json({ success: false, message: 'Request and student ID are required.' }, { status: 400 });
     }
@@ -64,7 +61,6 @@ export async function POST(req: Request) {
         }
 
         await transporter.sendMail(mailOptions);
-        console.log('Notification email sent successfully');
         await LearningRequestModel.findByIdAndDelete(request._id);
 
 

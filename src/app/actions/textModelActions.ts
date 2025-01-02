@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const translateText = async (text: string): Promise<string> => {
-    const apiKey = 'AIzaSyAtxMf9-PAkuWAHP7ApRhNA9UUOGGFZegg'; // ודא שזה מפתח API תקין
+    const apiKey = 'AIzaSyAtxMf9-PAkuWAHP7ApRhNA9UUOGGFZegg';
     const targetLanguage = 'en';
     const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
-    
+
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -40,17 +40,12 @@ export const isToxic = async (text: string): Promise<boolean> => {
 
         // בדיקה אם הטקסט רעיל
         const predictions = response.data;
-        if(predictions[0][0]["label"]=="LABEL_1")
+        if (predictions[0][0]["label"] == "LABEL_1")
             return true;
         return false;
-        
-        
-        
-        return true; // ערך סף לזיהוי רעילות (ניתן לשנות בהתאם לצורך)
     } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
             if (error.response && error.response.status === 503) {
-                console.log("Model loading, retrying in a few seconds");
                 return new Promise((resolve) => {
                     setTimeout(async () => {
                         resolve(await isToxic(text));

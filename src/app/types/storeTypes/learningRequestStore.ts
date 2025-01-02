@@ -1,6 +1,6 @@
 
 export interface LearningRequestStore {
-    requesterId: string|null;
+    requesterId: string | null;
     mainField: string;
     subField: string;
     createdAt: Date;
@@ -11,5 +11,5 @@ export interface LearningRequestStore {
     setSubField: (subField: string) => void;
     setCreatedAt: (createdAt: Date) => void;
     setExpiresAt: (expiresAt: Date) => void;
-    
+
 }
