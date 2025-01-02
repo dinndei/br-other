@@ -1,4 +1,5 @@
 'use client'
+
 import { loginUser, sendOtpCode, verifyOTP } from '@/app/actions/userActions';
 import PasswordInput from '@/app/components/PasswordInput';
 import { OtpFormData, otpSchema, UserFormData, userSchema } from '@/app/zod/loginSchema';
@@ -19,11 +20,7 @@ const LoginPage = () => {
     const [tempToken, setTempToken] = useState("")
     const [maskedEmail, setMaskEmail] = useState('');
 
-    // const [tempEmail, setTempEmail] = useState("")
-    const login = useUserStore((state) => state.login);
-    const setUser = useUserStore((state) => state.setUser);
-    const user = useUserStore((state) => state.user);
-
+    const { login, setUser, user } = useUserStore();
 
     const { register: registerUser, handleSubmit: handleSubmitUserForm, formState: { errors: userErrors } } = useForm<UserFormData>({
         resolver: zodResolver(userSchema),
@@ -32,7 +29,6 @@ const LoginPage = () => {
     const { register: registerOtp, handleSubmit: handleSubmitOtpForm, formState: { errors: otpErrors } } = useForm<OtpFormData>({
         resolver: zodResolver(otpSchema),
     });
-
 
     const handleLoginSubmit = async (data: UserFormData) => {
         const response = await loginUser(data.username, data.password);
@@ -44,7 +40,6 @@ const LoginPage = () => {
                 if (res.success) {
                     setStep(2);
                 }
-
             }
             catch (error) {
                 console.error(error);
@@ -56,8 +51,6 @@ const LoginPage = () => {
             toast.error("משתמש לא נמצא");
         }
         else {
-            //wrong password
-            //אם יש סיסמא לא נכונה נבלבל אותו....
             toast.error("נתקלנו בבעיה, נסה שוב מאוחר יותר")
         }
     };
@@ -69,21 +62,18 @@ const LoginPage = () => {
             if (response.success) {
                 setUser(tempUser)
                 login(tempUser!, tempToken)
-                console.log("this is the user", user);
-
                 if (tempUser!.learningApprovalPending !== null) {
                     toast("יש לך בקשת למידה שממתינה לאישור. מעבירים אותך לדף האישור.",
                         { icon: '✏' }
                     );
-                    router.push('/pages/user/learning-approval'); // ניתוב לעמוד האישור
+                    router.push('/pages/user/learning-approval');
                 } else {
                     if (tempUser!.activeLearningRequestPending !== null) {
                         toast.success("יש לך למידה שאושרה, מעבירים אותך לקורס");
                         await resetActiveRequest((tempUser!._id) as string)
-
                         router.push(`/pages/user/activCourse/${tempUser!.activeLearningRequestPending}`) // ניתוב לקורס
                     } else {
-                        router.push('/'); // מעבר לדף הבית אם אין בקשת למידה ממתינה
+                        router.push('/');
                     }
                 }
             }
@@ -99,7 +89,6 @@ const LoginPage = () => {
 
     return (
         <div className="relative w-full h-full min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-white to-blue-300 text-gray-800">
-            {/* רקע */}
             <div className="absolute inset-0 bg-opacity-30 pointer-events-none z-0">
                 <div className="absolute inset-0 blur-3xl opacity-60 bg-gradient-to-t from-blue-200 via-white to-blue-100 rounded-full mix-blend-multiply" />
             </div>

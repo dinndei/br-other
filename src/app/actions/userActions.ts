@@ -2,12 +2,8 @@ import axios, { AxiosResponse } from "axios";
 import IUser from "../types/IUser";
 
 export const loginUser = async (userName: string, password: string) => {
-    console.log("comming to action", { userName, password });
-
     try {
         const response = await axios.post('/api/user/login', { userName, password });
-        console.log("response.status", response.data);
-
         return response.data;
     } catch (error) {
 
@@ -22,8 +18,6 @@ export const loginUser = async (userName: string, password: string) => {
 export const signupUser = async (user: Partial<IUser>): Promise<Partial<IUser>> => {
     try {
         const response: AxiosResponse<Partial<IUser>> = await axios.post('/api/user/signup', { user });
-        console.log("res.data", response.data);
-
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -35,10 +29,8 @@ export const signupUser = async (user: Partial<IUser>): Promise<Partial<IUser>> 
 }
 
 export const findUserByUsername = async (userName: string) => {
-    console.log("comming to action", { userName });
     try {
         const response: AxiosResponse = await axios.post('/api/user/findByUserName', { userName });
-        console.log("response.data", response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -50,11 +42,8 @@ export const findUserByUsername = async (userName: string) => {
 }
 
 export const sendOtpCode = async (email: string) => {
-    console.log("comming to action", email);
-
     try {
         const response: AxiosResponse = await axios.post('/api/user/sendOtp', { email });
-        console.log(" response.data", response.data);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -66,7 +55,6 @@ export const sendOtpCode = async (email: string) => {
 }
 
 export async function verifyOTP(email: string, otpInput: string) {
-    console.log("in action", email, otpInput);
     try {
         // שליחה ל-API (קרא לפונקציה verifyOTP)
         const response = await axios.post('/api/user/verifyCode', {
@@ -86,12 +74,8 @@ export async function verifyOTP(email: string, otpInput: string) {
 }
 
 export const resetPassword = async (username: string, newPassword: string) => {
-    console.log("comming to action", { username, newPassword });
-
     try {
         const response: AxiosResponse<Partial<IUser>> = await axios.post('/api/user/reset-password', { username, newPassword });
-        console.log("response.data", response.data);
-
         return response;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -117,13 +101,9 @@ export const editUser = async (userId: string, user: Partial<IUser>): Promise<Pa
 };
 
 export const checkActivCourse = async (user: Partial<IUser>): Promise<boolean> => {
-    console.log("in action", user);
-
     try {
         const response: AxiosResponse = await axios.post('/api/user/check-activ-course',
             { user });
-        console.log("response in action", response);
-
         return response.data.hasActiveCourse
             ;
     } catch (error) {
@@ -135,13 +115,9 @@ export const checkActivCourse = async (user: Partial<IUser>): Promise<boolean> =
 };
 
 export const checkRefusalCnt = async (user: Partial<IUser>): Promise<boolean> => {
-    console.log("in action", user);
-
     try {
         const response: AxiosResponse = await axios.post('/api/user/check-refusal-cnt',
             { user });
-        console.log("response in action", response);
-
         return response.data.refusalCnt;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -152,10 +128,8 @@ export const checkRefusalCnt = async (user: Partial<IUser>): Promise<boolean> =>
 };
 
 export const getUserById = async (id: string): Promise<Partial<IUser>> => {
-    console.log("comming to action", id);
     try {
         const response = await axios.get(`/api/user/get/${id}`);
-        console.log("Response:", response);
         return response.data;
     } catch (error) {
         console.error("Error fetching user:", error);

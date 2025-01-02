@@ -4,10 +4,7 @@ import ICourse from '@/app/types/ICourse';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
-    const courseId = req.nextUrl.pathname.split('/').pop();
-
-    console.log("courseId", courseId);
-    
+    const courseId = req.nextUrl.pathname.split('/').pop();    
     try {
         await connectToDB();
 

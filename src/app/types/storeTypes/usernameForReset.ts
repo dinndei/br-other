@@ -1,8 +1,8 @@
 
 export interface UserForResetStore {
-    usernameForReset: string | null; 
+    usernameForReset: string | null;
     setUsernameForReset: (usernameForReset: string | null) => void;
-    emailForReset :string | null;
+    emailForReset: string | null;
     setEmailForReset: (emailForReset: string | null) => void;
 
 }

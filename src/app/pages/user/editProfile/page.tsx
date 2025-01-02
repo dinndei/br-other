@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,8 +17,6 @@ import IUser from "@/app/types/IUser";
 import axios from "axios";
 import ProfileImage from "@/app/components/ProfileImage";
 import toast from "react-hot-toast";
-
-
 
 const EditUserForm = () => {
 
@@ -83,29 +82,25 @@ const EditUserForm = () => {
         try {
             if (user) {
                 const updatedUser = await editUser(String(user._id), data);
-                if (updatedUser)
-                    console.log("user ypdated", updatedUser);
                 const newUser = (updatedUser as { user: IUser }).user;
                 setUser(newUser);
                 router.push('/')
-                console.log("user", user);
                 toast.success("הפרטים עודכנו בהצלחה")
-}
+            }
             else {
                 toast('משתמש לא נמצא', {
                     icon: '😔',
-                  });
+                });
             }
         } catch (error) {
             console.error("Error updating user:", error);
-         toast.error("לצערנו העדכון נכשל")
+            toast.error("לצערנו העדכון נכשל")
         }
     };
 
 
 
     return (
-        
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md space-y-6 mt-20" dir="rtl">
             <div className="flex items-center space-x-4 mb-6">
                 <ProfileImage url={user?.profileImage} firstName={user?.firstName} size="large" />

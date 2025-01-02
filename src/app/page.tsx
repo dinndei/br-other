@@ -1,10 +1,10 @@
 'use client'
-// import axios from "axios";
+
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from "next/link";
 import { useUserStore } from "./store/userStore";
 export default function Home() {
-const user=useUserStore(st=>st.user);
+  const user = useUserStore(st => st.user);
 
 
   return (
@@ -17,33 +17,33 @@ const user=useUserStore(st=>st.user);
       {/* תוכן */}
       <div className="relative z-10 text-center px-4">
         <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-           אני אחר, אני אח 
+          אני אחר, אני אח
         </h1>
         <p className="mt-4 text-xl md:text-2xl max-w-xl mx-auto">
           כי השינוי מתחיל מאיתנו
         </p>
-{
-      !user&&
-       <div className="mt-8 flex justify-center space-x-4">
-          <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 font-semibold text-lg shadow-lg  flex items-center  text-white rounded-md hover:scale-110 hover:shadow-lg transition-transform duration-300">
-            <span>
-              <Link 
-              href="/pages/user/login"
-              >
-                התחברות
-              </Link></span>
-            <ArrowRightIcon className="h-6 w-6 ml-2" />
-          </button>
-          <button className="px-6 py-3 bg-white hover:bg-gray-100 text-blue-500 rounded-md font-semibold text-lg shadow-lg border border-blue-500 hover:scale-110 hover:shadow-lg flex items-center transition-transform duration-300">
-            <span>
-              <Link href="/pages/user/signup" >
-              הרשמה
-            </Link></span>
-        
-          </button>
-          
-        </div>
-}
+        {
+          !user &&
+          <div className="mt-8 flex justify-center space-x-4">
+            <button className="px-6 py-3 bg-blue-500 hover:bg-blue-600 font-semibold text-lg shadow-lg  flex items-center  text-white rounded-md hover:scale-110 hover:shadow-lg transition-transform duration-300">
+              <span>
+                <Link
+                  href="/pages/user/login"
+                >
+                  התחברות
+                </Link></span>
+              <ArrowRightIcon className="h-6 w-6 ml-2" />
+            </button>
+            <button className="px-6 py-3 bg-white hover:bg-gray-100 text-blue-500 rounded-md font-semibold text-lg shadow-lg border border-blue-500 hover:scale-110 hover:shadow-lg flex items-center transition-transform duration-300">
+              <span>
+                <Link href="/pages/user/signup" >
+                  הרשמה
+                </Link></span>
+
+            </button>
+
+          </div>
+        }
       </div>
     </div>
   );

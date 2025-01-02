@@ -1,4 +1,5 @@
 'use client';
+
 import { findMentors, saveLearningRequest } from '@/app/actions/findMentorAction';
 import useDataStore from '@/app/store/fieldsStore';
 import { useUserStore } from '@/app/store/userStore';
@@ -6,21 +7,16 @@ import IUser from '@/app/types/IUser';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import FieldsInputList from '@/app/components/FieldsInputList';
-// import { findUserByUsername } from '@/app/actions/userActions';
-// import { getCourseByID } from '@/app/actions/courseAction';
 import toast from 'react-hot-toast';
 
 const NewLearningPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(true);
-    const [fields, setFields] = useState([{ mainField: '', subField: '' }]); // נתוני השדות
+    const [fields, setFields] = useState([{ mainField: '', subField: '' }]);
     const [isSearching, setIsSearching] = useState(false);
     const [mentors, setMentors] = useState<IUser[]>([]);
     const user = useUserStore(state => state.user);
     const router = useRouter();
     const { fetchFieldsData, setFieldsData } = useDataStore();
-
-    console.log(mentors);
-
 
     useEffect(() => {
         const savedFields = JSON.parse(localStorage.getItem('fields') || '[]');
@@ -51,10 +47,8 @@ const NewLearningPage: React.FC = () => {
                     console.log('בקשה נשמרה בהצלחה:', saveRequestResponse);
 
                     const response = await findMentors(user!, saveRequestResponse.data.request);
-                    console.log('Mentors found:', response);
-
-                    setMentors(response);
-                    setIsSearching(true);
+                    if (response)
+                        setIsSearching(true);
                 } else {
                     toast.error('אירעה שגיאה בשמירת הבקשה');
                 }
@@ -63,51 +57,9 @@ const NewLearningPage: React.FC = () => {
                 toast.error('לא נמצאו מורים מתאימים או הייתה שגיאה');
             }
         } else {
-            toast('בחר תחום ותת-תחום על מנת להמשיך',{icon:'📩'});
+            toast('בחר תחום ותת-תחום על מנת להמשיך', { icon: '📩' });
         }
     };
-
-
-    // const validateLearningEligibility = async () => {
-    //     if (!user || !user.courses || user.courses.length === 0) {
-    //         toast.error('פרטי המשתמש אינם זמינים או שאין קורסים משויכים למשתמש.');
-    //         return false;
-    //     }
-
-    //     const userFromDB = await findUserByUsername(user.userName!);
-
-    //     // בדיקה אם יש למידה פעילה
-    //     for (const courseId of user.courses) {
-    //         const response = await getCourseByID(courseId.toString());
-    //         const course = response.data.course;
-
-    //         if (course && course.isActiv && course.studentID === userFromDB._id) {
-    //             console.log("משתמש זה כבר בתהליך למידה פעיל:", course);
-    //             toast('יש לך כבר למידה פעילה.',{icon:'👾'});
-    //             return false;
-    //         }
-    //     }
-
-    //     // בדיקה אם יש יותר סירובים ממספר הקורסים שהמשתמש לימד
-    //     let mentorCourseCount = 0;
-    //     for (const courseId of user.courses) {
-    //         const response = await getCourseByID(courseId.toString());
-    //         const course = response.data.course;
-
-    //         if (course && course.mentorId === user._id) {
-    //             mentorCourseCount++;
-    //         }
-    //     }
-    //     const refusalCnt = userFromDB.refusalCnt || 0;
-
-    //     console.log(`Mentor Courses: ${mentorCourseCount}, Rejections: ${refusalCnt}`);
-
-    //     if (refusalCnt > mentorCourseCount) {
-    //         toast.error('לא ניתן לאשר למידה חדשה - יותר מדי סירובים.');
-    //         return false; // מספר הסירובים גבוה ממספר הקורסים
-    //     }
-    //     return true;
-    // };
 
     return (
         <div className="relative min-h-screen bg-gray-900 text-white">

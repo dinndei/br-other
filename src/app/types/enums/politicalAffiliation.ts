@@ -19,18 +19,3 @@ export const politicalAffiliationValues: Record<PoliticalAffiliation, number> = 
 };
 
 
-
-// Function to calculate the gap
-function calculateGap(
-    affiliation1: PoliticalAffiliation,
-    affiliation2: PoliticalAffiliation
-): number {
-    return Math.abs(
-        politicalAffiliationValues[affiliation1] -
-        politicalAffiliationValues[affiliation2]
-    );
-}
-
-// Example usage
-const gap = calculateGap(PoliticalAffiliation.HardRight, PoliticalAffiliation.HardLeft);
-console.log("Gap:", gap); // Output: Gap: 5

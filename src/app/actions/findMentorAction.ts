@@ -4,16 +4,12 @@ import ILearningRequest from "../types/ILearningRequest";
 import { sortByDistance } from "../lib/sortByMatch/sortByDistance";
 
 export const saveLearningRequest = async (requesterId: string, mainField: string, subField: string) => {
-    console.log("comming to action with:", requesterId, mainField, subField);
-
     try {
         const response: AxiosResponse = await axios.post('/api/findMentorProcess/learning-request', {
             requesterId: requesterId,
             mainField: mainField,
             subField: subField,
         });
-        console.log("response in action", response);
-
         return response
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -24,17 +20,13 @@ export const saveLearningRequest = async (requesterId: string, mainField: string
 }
 
 export const findMentors = async (user: Partial<IUser>, request: ILearningRequest): Promise<IUser[]> => {
-    console.log("comming to action with:", request);
-
     try {
         const response: AxiosResponse = await axios.post('/api/findMentorProcess/find-mentor', {
             mainField: request.mainField,
             subField: request.subField,
         });
 
-        console.log("response in action", response);
         const sortedMentors = sortByDistance(user, response.data)
-
         processMentorsApproval(sortedMentors, request);
 
         return response.data
@@ -54,8 +46,6 @@ export const processMentorsApproval = async (mentors: Partial<IUser>[], request:
     for (const mentor of mentors) {
         try {
             await sendApprovalRequest(mentor, request);
-            console.log(`Approval request sent to: ${mentor.email}`);
-
             const isApproved = await waitForApprovalOrTimeout(request._id as string, timeout);
 
             if (isApproved) {
@@ -64,7 +54,6 @@ export const processMentorsApproval = async (mentors: Partial<IUser>[], request:
 
                 return;
             } else {
-                console.log(`Request declined or timeout for: ${mentor.email}`);
                 if (mentor._id) {
                     await resetLearningApprovalPending(mentor._id as string);
                 }
@@ -75,7 +64,6 @@ export const processMentorsApproval = async (mentors: Partial<IUser>[], request:
         }
     }
     if (!approved) {
-        console.log("No mentor approved the request, notifying the requester...");
         notifyUserRequestStatus(request, false)
     }
 
@@ -86,14 +74,12 @@ const resetLearningApprovalPending = async (mentorId: string) => {
         await axios.post('/api/findMentorProcess/reset-approval-pending', {
             mentorId,
         });
-        console.log(`Reset learningApprovalPending for mentor ID: ${mentorId}`);
     } catch (error) {
         console.error(`Failed to reset learningApprovalPending for mentor ID: ${mentorId}`, error);
     }
 };
 
 const notifyUserRequestStatus = async (request: Partial<ILearningRequest>, isApproved: boolean, mentor: Partial<IUser> | null = null) => {
-    console.log("notifyUserRequestStatus");
 
     const response: AxiosResponse = await axios.post('/api/findMentorProcess/notify-user-request', {
         request: request,
@@ -109,7 +95,6 @@ const sendApprovalRequest = async (mentor: Partial<IUser>, request: Partial<ILea
         request: request
     });
 
-    console.log("Approval request sent to:", mentor.email);
     return response;
 }
 
@@ -135,7 +120,6 @@ const waitForApprovalOrTimeout = async (requestId: string, timeout: number): Pro
 const isRequestDeleted = async (requestId: string): Promise<boolean> => {
     try {
         const response: AxiosResponse = await axios.get(`/api/findMentorProcess/get/check-approval/${requestId}`);
-        console.log("Response:", response.data);
 
         return response.data;
     } catch (error) {
@@ -145,12 +129,9 @@ const isRequestDeleted = async (requestId: string): Promise<boolean> => {
 };
 
 export const getRequestByID = async (requestId: string) => {
-    console.log("comming to action with:", requestId);
-
     try {
 
         const response: AxiosResponse = await axios.get(`/api/findMentorProcess/get/getRequest/${requestId}`);
-        console.log("Response:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching request:", error);
@@ -159,11 +140,8 @@ export const getRequestByID = async (requestId: string) => {
 }
 
 export const getStudentByID = async (userId: string) => {
-    console.log("comming to action with:", userId);
-
     try {
         const response: AxiosResponse = await axios.get(`/api/findMentorProcess/get/getStudent/${userId}`);
-        console.log("Response:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching student :", error);
@@ -172,15 +150,12 @@ export const getStudentByID = async (userId: string) => {
 }
 
 export const approveCourse = async (student: IUser, mentor: Partial<IUser>, request: ILearningRequest) => {
-    console.log("comming to action with:", student, request, mentor);
-
     try {
         const response: AxiosResponse = await axios.post('/api/findMentorProcess/open-course', {
             student: student,
             request: request,
             mentor: mentor
         });
-        console.log("Response:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching student :", error);
@@ -189,13 +164,10 @@ export const approveCourse = async (student: IUser, mentor: Partial<IUser>, requ
 }
 
 export const declineCourse = async (mentor: Partial<IUser>) => {
-    console.log("comming to action with:", mentor);
-
     try {
         const response: AxiosResponse = await axios.post('/api/findMentorProcess/update-decline', {
             mentorId: mentor._id
         });
-        console.log("Response:", response.data);
         return response.data;
     } catch (error) {
         console.error("Error fetching mentor :", error);
@@ -204,13 +176,10 @@ export const declineCourse = async (mentor: Partial<IUser>) => {
 }
 
 export const resetActiveRequest = async (userId: string) => {
-    console.log("in action", userId);
-
     try {
         const response: AxiosResponse = await axios.post('/api/findMentorProcess/reset-active-request', {
             userId: userId
         });
-        console.log("Response:", response.data);
     } catch (error) {
         console.error("Error reset  ActiveRequest:", error);
         throw error;

@@ -7,9 +7,6 @@ export async function POST(request: Request) {
 
     try {
         const { fileUrl, courseId, userName } = await request.json();
-        console.log("fileUrl, courseId, userName", fileUrl, courseId, userName);
-
-
         await connectToDB();
 
         const newFile = new File({
