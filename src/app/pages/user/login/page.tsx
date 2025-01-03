@@ -78,10 +78,10 @@ const LoginPage = () => {
                 }
             }
             else {
-                toast.error("קוד ה-OTP שגוי. אנא נסה שוב.");
+                toast.error("הקוד שהקשת שגוי, נסה שוב");
             }
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
         catch (error) {
             console.error(error)
         }
@@ -151,14 +151,14 @@ const LoginPage = () => {
                         <label>{maskedEmail} נשלח אלייך קוד חד פעמי למייל </label>
                         <input
                             type="text"
-                            placeholder="הכנס את ה-OTP"
+                            placeholder="הכנס את הקוד הזמני"
                             {...registerOtp('otp')}
                             className="w-full px-4 py-2 mt-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                         {otpErrors.otp && <p className="text-red-500">{otpErrors.otp.message}</p>}
                         <button type="submit"
                             className="w-full bg-blue-600 text-white rounded py-2 mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            OTP אמת
+                       אימות
                         </button>
                     </form>
                 )}
