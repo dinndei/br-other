@@ -5,7 +5,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserStore } from "@/app/store/userStore";
 import { editUser } from "@/app/actions/userActions";
-import Button from "@/app/components/Button";
 import { ReligionLevel } from "@/app/types/enums/ReligionLevel";
 import { PoliticalAffiliation } from "@/app/types/enums/politicalAffiliation";
 import { Gender } from "@/app/types/enums/gender";
@@ -15,7 +14,6 @@ import FieldsInputList from "@/app/components/FieldsInputList";
 import { useRouter } from "next/navigation";
 import IUser from "@/app/types/IUser";
 import axios from "axios";
-import ProfileImage from "@/app/components/ProfileImage";
 import toast from "react-hot-toast";
 
 const EditUserForm = () => {
@@ -224,13 +222,13 @@ const EditUserForm = () => {
                     {errors.typeUser?.politicalAffiliation && <p className="text-red-500 text-sm">{errors.typeUser.politicalAffiliation.message}</p>}
                 </div>
 
-                <Button
+                <button
                     type="submit"
                     className="w-full bg-blue-500 hover:bg-blue-600 font-bold py-3 px-6 rounded-lg"
 
                 >
                     🤗 סיימתי
-                </Button>
+                </button>
             </div>
         </form>
 

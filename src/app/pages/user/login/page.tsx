@@ -20,7 +20,7 @@ const LoginPage = () => {
     const [tempToken, setTempToken] = useState("")
     const [maskedEmail, setMaskEmail] = useState('');
 
-    const { login, setUser, user } = useUserStore();
+    const { login, setUser } = useUserStore();
 
     const { register: registerUser, handleSubmit: handleSubmitUserForm, formState: { errors: userErrors } } = useForm<UserFormData>({
         resolver: zodResolver(userSchema),

@@ -12,7 +12,6 @@ const ApproveLearningPage = () => {
     const [requestId, setRequestId] = useState<string>('');
     const [requesterId, setRequesterId] = useState<string>('');
     const [studentDetails, setStudentDetails] = useState<IUser>();
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     const route = useRouter();
@@ -48,9 +47,7 @@ const ApproveLearningPage = () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (err) {
             setError('Failed to load request details.');
-        } finally {
-            setLoading(false);
-        }
+        } 
     };
 
 
@@ -62,9 +59,7 @@ const ApproveLearningPage = () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (err) {
             setError('Failed to load student details.');
-        } finally {
-            setLoading(false);
-        }
+        } 
     };
 
     const handleApproval = async (approved: boolean) => {

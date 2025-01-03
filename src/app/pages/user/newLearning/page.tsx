@@ -3,7 +3,6 @@
 import { findMentors, saveLearningRequest } from '@/app/actions/findMentorAction';
 import useDataStore from '@/app/store/fieldsStore';
 import { useUserStore } from '@/app/store/userStore';
-import IUser from '@/app/types/IUser';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import FieldsInputList from '@/app/components/FieldsInputList';
@@ -13,7 +12,6 @@ const NewLearningPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [fields, setFields] = useState([{ mainField: '', subField: '' }]);
     const [isSearching, setIsSearching] = useState(false);
-    const [mentors, setMentors] = useState<IUser[]>([]);
     const user = useUserStore(state => state.user);
     const router = useRouter();
     const { fetchFieldsData, setFieldsData } = useDataStore();
@@ -37,10 +35,6 @@ const NewLearningPage: React.FC = () => {
         const { mainField, subField } = selectedField;
 
         if (mainField && subField) {
-            // if (!(await validateLearningEligibility())) {
-            //     return;
-            // }
-
             try {
                 const saveRequestResponse = await saveLearningRequest(user!._id as string, mainField, subField);
                 if (saveRequestResponse.status == 201) {

@@ -3,7 +3,7 @@ import { PiPhoneDisconnect } from "react-icons/pi";
 import { IoCallOutline } from "react-icons/io5";
 import { useEffect, useRef, useState } from 'react';
 import Peer from 'peerjs';
-
+import { VideoChatProps } from "../types/props/VideoChatProps";
 
 const VideoChat: React.FC<VideoChatProps> = ({ teacher, teacherId, studentId }) => {
   const [isConnected, setIsConnected] = useState(false);
