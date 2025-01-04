@@ -12,7 +12,7 @@ import { MdDelete } from "react-icons/md";
 import toast from "react-hot-toast";
 
 const Chat = ({ courseId = "6763f73f3b12e25ed1e2971d" }: { courseId: string }) => {
-    const ably = new Realtime({ key: process.env.ABLY_API_KEY });
+    const ably = new Realtime({ key:"1jLHPA.p9RW9g:MVb0GFzKUviMVC1i5vyIGPqIX4XyGj1Dg_762-7Mw4c"});
     const [messages, setMessages] = useState<{ _id: string, username: string; text: string }[]>([]);
     const [message, setMessage] = useState("");
     const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
