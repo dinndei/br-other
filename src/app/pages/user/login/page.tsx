@@ -77,7 +77,7 @@ const LoginPage = () => {
                     }
                 }
             }
-            else if(response.){
+            else{
                 toast.error("הקוד שהקשת שגוי, נסה שוב");
             }
         }
