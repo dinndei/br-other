@@ -4,7 +4,7 @@ import axios from 'axios';
 export async function verifyToken(token: string) {
 
   try {
-    const response = await axios.get('/api/user/verify-token', {
+    const response = await axios.get('https://br-other.vercel.app/api/user/verify-token', {
       headers: {
         token,
       },
